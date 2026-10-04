@@ -517,6 +517,33 @@ a.btn{text-decoration:none;color:inherit}
 .stt th{white-space:nowrap}
 .stt td.n,.stt th.n{text-align:right;font-variant-numeric:tabular-nums}
 
+
+/* stampa compatta della sessione */
+.pc{--pz:1;font-size:calc(8.6pt * var(--pz));line-height:1.3;color:#111}
+.pc .p-head{padding-bottom:calc(4pt * var(--pz));margin-bottom:calc(5pt * var(--pz));border-bottom-width:1.5pt}
+.pc .p-head h1{font-size:calc(15pt * var(--pz));margin:1pt 0 2pt}
+.pc .p-meta{font-size:1em;gap:2pt 10pt}
+.pc .p-box{margin:calc(3pt * var(--pz)) 0;padding:calc(3pt * var(--pz)) 6pt;font-size:1em}
+.pc table.p-sched{font-size:.95em;margin:calc(4pt * var(--pz)) 0 calc(6pt * var(--pz))}
+.pc table.p-sched td,.pc table.p-sched th{padding:calc(1.5pt * var(--pz)) 4pt}
+.pcx-grid{display:grid;grid-template-columns:1fr 1fr;gap:calc(5pt * var(--pz)) 6pt}
+.pcx{border:.8pt solid #c8c8c8;border-radius:4pt;overflow:hidden;break-inside:avoid;page-break-inside:avoid}
+.pcx.wide{grid-column:1/-1}
+.pcx-h{display:flex;align-items:center;gap:5pt;background:#f1efe9;padding:calc(2.5pt * var(--pz)) 6pt;border-bottom:.8pt solid #d6d6d6}
+.pcx-h b{font-size:1.1em;line-height:1.15;flex:1}
+.pcx-h .pex-num{min-width:calc(14pt * var(--pz));height:calc(14pt * var(--pz));font-size:.95em}
+.pcx-t{font-size:.9em;color:#555;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pcx-m{font-size:.9em;color:#444;padding:calc(2pt * var(--pz)) 6pt 0}
+.pcx-b{padding:calc(3pt * var(--pz)) 6pt calc(4pt * var(--pz))}
+.pcx-s{width:calc(100% * var(--pz));margin:0 auto calc(3pt * var(--pz))}
+.pcx-s svg,.pcx-s img{width:100%;display:block;border:.5pt solid #ccc;border-radius:2pt}
+.pcx-b p{margin:0 0 calc(2pt * var(--pz))}
+.pcx-b p b{color:#b85f12}
+.pcx-n{margin:0 6pt calc(4pt * var(--pz));background:#fff4e2;border-left:2.5pt solid #e07b22;padding:2pt 5pt;font-size:.95em}
+.pc .p-notes{font-size:.9em;margin-top:calc(6pt * var(--pz));columns:2;column-gap:10pt}
+.pc .p-notes h3{font-size:1.05em;column-span:all}
+.pc .p-footer{margin-top:4pt;font-size:.8em}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -976,7 +1003,7 @@ document.addEventListener('keydown', e => {
 /* ============================================================
    Navigazione
    ============================================================ */
-let ui = {view:'esercizi', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{scaletta:true, schemi:true, note:true}};
+let ui = {view:'esercizi', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{compatto:true, scaletta:true, schemi:true, note:true}};
 
 function go(view, params={}){
   if(ui.dirty && !confirm('Ci sono modifiche non salvate. Vuoi uscire senza salvare?')) return;
@@ -1419,6 +1446,7 @@ function summaryHTML(s){
     </div>
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
       <div class="printopts"><b>Stampa:</b>
+        <label><input type="checkbox" data-po="compatto" ${o.compatto?'checked':''}> <b>Compatta: un foglio fronte e retro</b></label>
         <label><input type="checkbox" data-po="scaletta" ${o.scaletta?'checked':''}> Scaletta riassuntiva</label>
         <label><input type="checkbox" data-po="schemi" ${o.schemi?'checked':''}> Schemi</label>
         <label><input type="checkbox" data-po="note" ${o.note?'checked':''}> Note generali e legenda</label>
@@ -1656,7 +1684,65 @@ function notesBlock(){
   return `<div class="p-notes">${n?`<h3>Note generali</h3><div>${n.split('\n').filter(Boolean).map(l=>{ const m=/^([^:]{2,30}):\s*(.*)$/.exec(l); return `<p style="margin:0 0 3pt">${m?`<b>${esc(m[1])}:</b> ${esc(m[2])}`:esc(l)}</p>`; }).join('')}</div>`:''}
     <div class="p-legend"><h3 style="margin-top:8pt">Legenda degli schemi</h3>${legendSVG()}</div></div>`;
 }
+
+function exPrintCompact(e, o){
+  const ws=o.schemi && hasSchema(e), dos=dosShort(o.dos||e.dosaggio);
+  const meta=[e.fondamentale, e.formazione, dos, e.materiale?'Materiale: '+e.materiale:''].filter(Boolean).join(' · ');
+  const txt=[['Organizzazione',e.organizzazione],['Svolgimento',e.svolgimento],['Punto chiave',e.puntoChiave]].filter(x=>x[1]);
+  return `<section class="pcx"><div class="pcx-h"><span class="pex-num">${o.num}</span><b>${esc(e.titolo)}</b><span class="pcx-t">${esc(o.when)}</span></div>
+    ${meta?`<div class="pcx-m">${esc(meta)}</div>`:''}
+    <div class="pcx-b">${ws?`<div class="pcx-s">${exVisual(e)}</div>`:''}${txt.map(([k,v])=>`<p><b>${k}:</b> ${esc(v).replace(/\n+/g,' ')}</p>`).join('')}</div>
+    ${o.nota?`<div class="pcx-n"><b>Per questa sessione:</b> ${esc(o.nota).replace(/\n+/g,' ')}</div>`:''}</section>`;
+}
+function sessionPrintCompact(s){
+  const o=ui.printOpts, tl=sessTimeline(s);
+  let n=0;
+  const rows=tl.rows.map(r=>{ const info=itemInfo(r.it); const isEx=r.it.type==='ex'; if(isEx) n++; return {...r, info, isEx, n:isEx?n:null, when: r.start!=null?`${fmtClock(r.start)}–${fmtClock(r.end)}`:''}; });
+  let h=`<style>@page{size:A4;margin:8mm}</style><div class="pc"><div class="p-head">${headTeam()}<h1>${esc(s.titolo||'Allenamento')}</h1>
+    <div class="p-meta">${s.data?`<span style="text-transform:capitalize"><b>${esc(fmtDate(s.data))}</b></span>`:''}${tl.start!=null?`<span>Orario <b>${fmtClock(tl.start)}–${fmtClock(tl.end)}</b></span>`:''}<span>Durata <b>${fmtDur(tl.tot)}</b></span><span>Esercizi <b>${n}</b></span>${s.luogo?`<span>${esc(s.luogo)}</span>`:''}</div></div>`;
+  const box=[s.obiettivo?`<b>Obiettivo:</b> ${esc(s.obiettivo).replace(/\n+/g,' ')}`:'', s.note?`<b>Note:</b> ${esc(s.note).replace(/\n+/g,' ')}`:''].filter(Boolean);
+  if(box.length) h+=`<div class="p-box">${box.join(' &nbsp;·&nbsp; ')}</div>`;
+  if(o.scaletta && rows.length){
+    h+=`<table class="p-sched"><thead><tr><th>#</th><th>Orario</th><th>Attività</th><th>Fondamentale</th><th style="text-align:right">Min</th></tr></thead><tbody>
+      ${rows.map(r=>`<tr><td>${r.n??''}</td><td class="n" style="text-align:left">${r.when}</td><td>${esc(r.info.titolo)}${r.isEx&&dosShort(effDos(r.it))?` <span style="color:#555">· ${esc(dosShort(effDos(r.it)))}</span>`:''}</td><td>${esc(r.info.fond)}</td><td class="n">${r.d}</td></tr>`).join('')}
+      </tbody><tfoot><tr><td colspan="4">Totale</td><td class="n">${tl.tot}</td></tr></tfoot></table>`;
+  }
+  h+='<div class="pcx-grid">';
+  for(const r of rows){
+    const when=[r.when, r.d+' min'].filter(Boolean).join(' · ');
+    if(r.isEx && r.info.ex) h+=exPrintCompact(r.info.ex,{num:r.n, when, nota:r.it.nota, schemi:o.schemi, dos:r.it.dosaggio});
+    else if(!r.isEx && r.it.descrizione) h+=`<section class="pcx"><div class="pcx-h"><b>${esc(r.it.titolo||'Voce libera')}</b><span class="pcx-t">${esc(when)}</span></div><div class="pcx-b"><p>${esc(r.it.descrizione).replace(/\n+/g,' ')}</p></div></section>`;
+  }
+  h+='</div>';
+  if(o.note && db.settings.noteGenerali?.trim()) h+=`<div class="p-notes"><h3>Note generali</h3>${db.settings.noteGenerali.trim().split('\n').filter(Boolean).map(l=>{ const m=/^([^:]{2,30}):\s*(.*)$/.exec(l); return `<p style="margin:0 0 2pt">${m?`<b>${esc(m[1])}:</b> ${esc(m[2])}`:esc(l)}</p>`; }).join('')}</div>`;
+  h+=`<div class="p-footer">Stampato il ${new Date().toLocaleDateString('it-IT')} · Volleysched</div></div>`;
+  return fitTwoPages(h);
+}
+/* riduce il testo finché tutto sta in due facciate A4 */
+function fitTwoPages(html){
+  const box=document.createElement('div');
+  box.style.cssText='position:absolute;left:-10000px;top:0;width:194mm;background:#fff;visibility:hidden';
+  box.innerHTML=html; document.body.appendChild(box);
+  const pc=box.querySelector('.pc'), mm=96/25.4, pageH=281*mm;
+  const pages=()=>{   // simula le interruzioni di pagina: una scheda non si spezza
+    let used=pc.querySelector('.pcx-grid')?.offsetTop||0, page=1;
+    const cards=[...pc.querySelectorAll('.pcx')], rowsY={};
+    cards.forEach(c=>{ rowsY[c.offsetTop]=Math.max(rowsY[c.offsetTop]||0, c.offsetHeight); });
+    const tops=Object.keys(rowsY).map(Number).sort((a,b)=>a-b);
+    let pos=used;
+    for(const t of tops){ const hgt=rowsY[t]+6; if(pos+hgt>page*pageH){ pos=page*pageH; page++; } pos+=hgt; }
+    const tail=pc.scrollHeight-((tops.length?tops[tops.length-1]+rowsY[tops[tops.length-1]]:used));
+    if(pos+tail>page*pageH) page++;
+    return page;
+  };
+  let z=1;
+  for(; z>0.62; z-=0.03){ pc.style.setProperty('--pz', z.toFixed(2)); if(pages()<=2) break; }
+  const out=html.replace('<div class="pc">', `<div class="pc" style="--pz:${Math.max(z,0.62).toFixed(2)}">`);
+  box.remove();
+  return out;
+}
 function sessionPrintHTML(s){
+  if(ui.printOpts.compatto) return sessionPrintCompact(s);
   const o=ui.printOpts, tl=sessTimeline(s);
   let n=0;
   const rows=tl.rows.map(r=>{ const info=itemInfo(r.it); const isEx=r.it.type==='ex'; if(isEx) n++; return {...r, info, isEx, n:isEx?n:null, when: r.start!=null?`${fmtClock(r.start)}–${fmtClock(r.end)}`:''}; });

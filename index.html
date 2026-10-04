@@ -510,6 +510,9 @@ a.btn{text-decoration:none;color:inherit}
 .abtn.y{background:#fff1d6;border-color:#f0c56b;color:#8a5a00}
 .abtn.r{background:#fde4e7;border-color:#e9a0aa;color:#b3263a}
 .abtn:active{transform:scale(.97)}
+.abtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;line-height:1}
+.abtn .asym{font-size:22px;font-weight:900;letter-spacing:-1px}
+.abtn .acap{font-size:10.5px;font-weight:600;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .evlist{font-size:13.5px;display:flex;flex-direction:column;gap:2px;max-height:240px;overflow:auto}
 .evlist div{display:flex;gap:8px;border-bottom:1px solid var(--line);padding:4px 0}
 .evlist .sc2{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted)}
@@ -543,6 +546,71 @@ a.btn{text-decoration:none;color:inherit}
 .pc .p-notes{font-size:.9em;margin-top:calc(6pt * var(--pz));columns:2;column-gap:10pt}
 .pc .p-notes h3{font-size:1.05em;column-span:all}
 .pc .p-footer{margin-top:4pt;font-size:.8em}
+
+
+/* ---------- TELEFONO IN ORIZZONTALE ---------- */
+@media (orientation: landscape) and (max-height: 520px){
+  html{overflow-x:clip}
+  body{padding-left:calc(64px + env(safe-area-inset-left));padding-right:env(safe-area-inset-right)}
+  .topbar{position:fixed;left:0;top:0;bottom:0;width:calc(64px + env(safe-area-inset-left));flex-direction:column;align-items:stretch;gap:4px;padding:6px 4px 6px calc(4px + env(safe-area-inset-left));box-shadow:2px 0 10px rgba(0,0,0,.15);z-index:30}
+  .brand{justify-content:center}
+  .brand>div{display:none}
+  .brand svg{width:26px;height:26px}
+  .nav{flex-direction:column;gap:2px;flex:1;justify-content:space-evenly}
+  .nav button{display:flex;flex-direction:column;align-items:center;padding:3px 0;border-radius:10px;font-size:9.5px;line-height:1.1;position:relative}
+  .nav .ni{display:block;font-size:18px;line-height:1.1}
+  .nav .nl-x{display:none}
+  .navbadge{position:absolute;top:0;right:2px;margin:0;font-size:9px;padding:0 4px}
+  .topbar .spacer{display:none}
+  .sync-pill{padding:6px 0;justify-content:center;border-radius:10px}
+  .sync-pill span{display:none}
+  .offline{top:0}
+  main{max-width:none;padding:10px 14px 70px}
+  h1{font-size:21px}
+  .page-head{margin-bottom:10px}
+  .savebar{left:calc(64px + env(safe-area-inset-left));padding:8px 14px}
+  .modal{padding:0;display:block;background:var(--surface)}
+  .modal-box{border-radius:0;min-height:100%;max-width:none!important;box-shadow:none;display:flex;flex-direction:column}
+  .modal-box>.modal-body{flex:1}
+  .modal-head{position:sticky;top:0;background:var(--surface);z-index:2;padding:10px 16px 8px}
+  .modal-foot{position:sticky;bottom:0;border-radius:0;padding:8px 16px}
+  html:has(#modal:not(.hidden)),body:has(#modal:not(.hidden)){overflow:hidden}
+  .toast{bottom:14px}
+  .picker{top:10px;max-height:calc(100vh - 20px)}
+  .cards{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .rotgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+
+  /* statistiche: tutto in una schermata */
+  body.live-land{padding:0}
+  body.live-land .topbar{display:none}
+  body.live-land main{padding:0}
+  .ll{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.2fr) minmax(0,1.25fr);gap:8px;height:100vh;height:100dvh;
+      padding:6px calc(8px + env(safe-area-inset-right)) 6px calc(8px + env(safe-area-inset-left));box-sizing:border-box;background:var(--bg)}
+  .ll>div{min-height:0;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .ll-score .r>*{min-width:0}
+  .ll-score{background:var(--ink);color:#fff;border-radius:10px;padding:5px 8px;display:flex;flex-direction:column;gap:4px}
+  .ll-score .r{display:flex;align-items:center;gap:6px}
+  .ll-score .sc{white-space:nowrap;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+  .ll-score .sc small{font-size:11px;opacity:.7;margin:0 4px;font-weight:600}
+  .ll-score .st{font-size:11px;opacity:.8;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ll-score .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.22);color:#fff;padding:3px 8px;font-size:12.5px}
+  .ll-score select{width:auto;padding:2px 4px;font-size:12px}
+  .ll-score .serve{font-size:12px;padding:2px 8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .ll-court{flex:1;min-height:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:2px;display:flex;justify-content:center}
+  .ll-court svg{height:100%;width:100%;display:block}
+  .ll-players{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-auto-rows:minmax(0,1fr);gap:5px}
+  .ll-players .pchip{border-radius:9px;padding:2px 6px 2px 3px;font-size:14px;min-height:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;justify-content:flex-start}
+  .ll-players .pchip .nr{min-width:22px;height:22px;font-size:11px;flex:none}
+  .ll-last{font-size:11.5px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:3px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ll-acts{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);grid-template-rows:repeat(3,minmax(0,1fr));gap:5px}
+  .ll-acts .actbox{padding:3px 5px 5px;display:flex;flex-direction:column;min-height:0;border-radius:9px}
+  .ll-acts .actbox h4{font-size:10px;margin:0 0 2px}
+  .ll-acts .row{flex:1;min-height:0;display:flex;gap:4px;flex-wrap:nowrap}
+  .ll-acts .abtn{flex:1 1 0;min-width:0;padding:0;border-radius:8px;overflow:hidden}
+  .ll-acts .abtn .asym{font-size:26px}
+  .ll-foot{display:flex;gap:5px}
+  .ll-foot .btn{flex:1;justify-content:center;padding:5px 4px;font-size:12.5px}
+}
 
 #print-area{display:none}
 
@@ -1032,6 +1100,7 @@ function render(){
   else if(ui.view==='benvenuto') app.innerHTML = viewBenvenuto();
   else if(ui.view==='live') app.innerHTML = viewLive();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
+  document.body.classList.toggle('live-land', ui.view==='live' && isLand());
   renderNavBadge();
   renderBackupHint();
 }
@@ -2280,6 +2349,7 @@ const ACTS={
   dif:{l:'Difesa', b:[['+','Difesa','g'],['=','Errore','r']]},
   err:{l:'Altri errori', b:[['=','Fallo / invasione','r']]}
 };
+const ASYM=(k,v,c)=>k==='ric'&&v==='#'?'++':c==='g'?'+':c==='y'?'0':'−';
 const OUR_PT=e=>e.v==='#' && ['bat','att','mur'].includes(e.k) || e.k==='pt';
 const THEIR_PT=e=>e.v==='=' && ['bat','ric','att','dif','err'].includes(e.k) || e.k==='pl';
 function getStats(m){ if(!m.stats) m.stats={sets:[], ev:[], live:null}; const S=m.stats; S.sets=S.sets||[]; S.ev=S.ev||[];
@@ -2289,7 +2359,36 @@ function liveWho(m){ const f=getForm(m), L=getStats(m).live; return slot=>(L.sub
 function onCourt(m){ const who=liveWho(m), f=getForm(m), L=getStats(m).live, z=rotAt(L.k);
   const ids=z.map(s=>who(s)); if(f.libero && f.L) ids.push(f.L); return ids.filter(Boolean); }
 function markPlayed(m){ const L=getStats(m).live; const s=new Set(L.played[L.set]||[]); onCourt(m).forEach(id=>s.add(id)); L.played[L.set]=[...s]; }
+
+const isLand=()=>window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches;
+function viewLiveLand(){
+  const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
+  const f=getForm(m), S=getStats(m), L=S.live, who=liveWho(m), z=rotAt(L.k), server=who(z[0]);
+  const conv=convocati(m), court=new Set(onCourt(m));
+  const roster=[...conv.filter(a=>court.has(a.id)), ...conv.filter(a=>!court.has(a.id))];
+  const e=S.ev[S.ev.length-1];
+  return `<div class="ll">
+  <div>
+    <div class="ll-score">
+      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button><span class="st">Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span><button class="btn" data-action="live-undo" ${S.ev.length?'':'disabled'}>↶</button></div>
+      <div class="r"><span class="sc">${L.noi}<small>–</small>${L.loro}</span><span style="flex:1"></span><button class="btn" data-action="live-pt" title="Punto nostro su errore avversario">+1 noi</button><button class="btn" data-action="live-pl">+1 loro</button></div>
+      <div class="r"><span class="serve ${L.servo?'':'them'}" data-action="live-servo">${L.servo?'🏐 '+esc(athShort(server)):'Battono loro'}</span><span style="flex:1"></span><select data-live="k">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></div>
+    </div>
+    ${formOk(f)?`<div class="ll-court">${courtSVG(f,L.k,'partenza',{who, serve:L.servo, click:true, sel:ui.livePick})}</div>`:`<div class="ll-last" style="white-space:normal">Formazione incompleta: la rotazione non viene seguita.</div>`}
+  </div>
+  <div>
+    <div class="ll-players">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
+    <div class="ll-last">${e?`Ultima: <b>${e.a?esc(athShort(e.a)):'squadra'}</b> · ${esc(evLabel(e))} (${e.noi}-${e.loro})`:'Tocca un giocatore, poi l\'azione'}</div>
+  </div>
+  <div>
+    <div class="ll-acts">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}" title="${l}"><span class="asym">${ASYM(k,v,c)}</span></button>`).join('')}</div></div>`).join('')}</div>
+    <div class="ll-foot"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button><button class="btn" data-action="live-endset">Fine set</button></div>
+  </div></div>`;
+}
+let lastLand=isLand();
+window.addEventListener('resize', ()=>{ const l=isLand(); if(l!==lastLand){ lastLand=l; if(ui.view==='live'){ document.body.classList.toggle('live-land', l); rerenderLive(); } } });
 function viewLive(){
+  if(isLand()) return viewLiveLand();
   const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
   const f=getForm(m), S=getStats(m), L=S.live, who=liveWho(m), z=rotAt(L.k), server=who(z[0]);
   const conv=convocati(m), court=new Set(onCourt(m));
@@ -2312,7 +2411,7 @@ function viewLive(){
         <div class="pchips">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
         <div class="muted" style="font-size:12px;margin-top:6px">In blu chi è in campo.</div></div>
       <div class="panel"><h2 style="margin-bottom:8px">2. Cosa?</h2>
-        <div class="actgrid">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}">${l}</button>`).join('')}</div></div>`).join('')}</div>
+        <div class="actgrid">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}" title="${l}"><span class="asym">${ASYM(k,v,c)}</span><small class="acap">${l}</small></button>`).join('')}</div></div>`).join('')}</div>
         <div class="actions" style="margin-top:10px"><button class="btn" data-action="live-pt">Punto nostro (errore loro)</button><button class="btn" data-action="live-pl">Punto loro</button></div></div>
     </div>
     <div>
@@ -2333,7 +2432,7 @@ function liveEvent(k, v){
   if(k!=='pt' && k!=='pl') ui.livePick=null;
   touchMatch(m); rerenderLive();
 }
-function rerenderLive(){ const y=window.scrollY; $('#app').innerHTML=viewLive(); window.scrollTo(0,y); }
+function rerenderLive(){ const y=window.scrollY; document.body.classList.toggle('live-land', isLand()); $('#app').innerHTML=viewLive(); window.scrollTo(0,y); }
 function liveUndo(){ const m=getMatch(ui.matchId), S=getStats(m), e=S.ev.pop(); if(!e) return; Object.assign(S.live, e.prev); touchMatch(m); rerenderLive(); toast('Ultima azione annullata'); }
 function liveEndSet(){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live;

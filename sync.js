@@ -1,5 +1,5 @@
 /* ==================================================================
-   Schedario Pallavolo – sincronizzazione con un archivio GitHub privato
+   Volleysched – sincronizzazione con un archivio GitHub privato
    Nell'archivio online:
      dati.json      tutte le schede (senza immagini) + lapidi + impostazioni
      img/<hash>.png le immagini degli esercizi e degli atleti, una per file
@@ -66,8 +66,8 @@ const Sync = (() => {
     }
   }
   async function initRepo(c = cfg) {
-    await gh('/contents/README.md', { method: 'PUT', body: { message: 'Archivio dello Schedario Pallavolo', branch: c.branch,
-      content: b64utf8('# Dati dello Schedario Pallavolo\n\nQuesto archivio privato contiene i dati della app (dati.json e le immagini nella cartella img). Non modificarlo a mano.\n') } }, c);
+    await gh('/contents/README.md', { method: 'PUT', body: { message: 'Archivio di Volleysched', branch: c.branch,
+      content: b64utf8('# Dati di Volleysched\n\nQuesto archivio privato contiene i dati della app (dati.json e le immagini nella cartella img). Non modificarlo a mano.\n') } }, c);
   }
   async function readRemote(h, c = cfg) {
     const empty = { doc: { collections: {}, tombs: {}, settings: { values: {}, _mk: {} } }, imgs: new Map(), datiPath: false };

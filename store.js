@@ -1,5 +1,5 @@
 /* ==================================================================
-   Schedario Pallavolo – archivio locale nel browser (IndexedDB)
+   Volleysched – archivio locale nel browser (IndexedDB)
    Fa le stesse cose che faceva il programma Python (app.py):
    l'interfaccia chiama Store.api(metodo, indirizzo, dati) come prima
    chiamava il server.
@@ -193,11 +193,6 @@ const Store = (() => {
     }
     await commitLocal(puts, [['exercises', id]]);
   }
-  async function loadSeed() {
-    const r = await fetch('esercizi_iniziali.json', { cache: 'no-cache' });
-    if (!r.ok) throw new Error('Catalogo iniziale non raggiungibile (serve la connessione la prima volta)');
-    return (await r.json()).exercises || [];
-  }
   function seedExercise(e) {
     const t = Date.now();
     return { id: newId('ex'), titolo: e.titolo, fondamentale: e.fondamentale || '', formazione: e.formazione || '', durata: e.durata ?? '',
@@ -205,10 +200,10 @@ const Store = (() => {
       dosaggio: e.dosaggio || null, svolgimento: e.svolgimento || '', puntoChiave: e.puntoChiave || '', variante: e.variante || '',
       note: e.note || '', image: e.image || null, schema: e.schema || null, origine: 'catalogo', createdAt: t, updatedAt: t };
   }
-  async function insertMissingSeed() {
+  async function insertMissingSeed(list) {
     const have = new Set([...mem.exercises.values()].map(e => e.titolo));
     const puts = [];
-    for (const e of await loadSeed()) if (!have.has(e.titolo)) { const x = prep('exercises', seedExercise(e)); puts.push(['exercises', x]); }
+    for (const e of (list || [])) if (e && s(e.titolo).trim() && !have.has(e.titolo)) { const x = prep('exercises', seedExercise(e)); puts.push(['exercises', x]); }
     if (puts.length) await commitLocal(puts);
     return puts.length;
   }
@@ -305,7 +300,7 @@ const Store = (() => {
     if (method === 'POST') {
       if (url === '/api/importa') return importData((body && body.data) || {}, (body && body.mode) || 'merge');
       if (url === '/api/allenamenti-multipli') { const puts = (body.items || []).map(t => ['trainings', prep('trainings', t)]); await commitLocal(puts); return { aggiunti: puts.length }; }
-      if (url === '/api/ripristina-iniziali') return { aggiunti: await insertMissingSeed() };
+      if (url === '/api/ripristina-iniziali') return { aggiunti: await insertMissingSeed(body && body.exercises) };
     }
     throw new Error('Operazione non prevista: ' + method + ' ' + url);
   }
@@ -349,7 +344,7 @@ const Store = (() => {
   return {
     COLS, init: async () => { idb = await open(); await loadAll(); }, api, fullState, snapshot, applyRemote, replaceAll, isEmpty,
     getMeta: k => meta[k], setMeta, onChange: f => listeners.add(f), seq: () => seq,
-    insertMissingSeed, loadSeed, seedExercise, prep, commitLocal,
+    insertMissingSeed, seedExercise, prep, commitLocal,
     counts: () => Object.fromEntries(COLS.map(c => [c, mem[c].size]))
   };
 })();

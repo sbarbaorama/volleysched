@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Schedario Pallavolo</title>
+<title>Volleysched</title>
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#1f2a44">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Schedario">
+<meta name="apple-mobile-web-app-title" content="Volleysched">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
@@ -520,7 +520,7 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
 <header class="topbar">
   <div class="brand">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#ffd23f" stroke="#fff" stroke-width="2"/><path d="M16 2c-2 6 0 12 6 16M3 12c6 0 11 3 13 4M5 25c3-5 8-8 11-9M29 13c-5-2-9 0-13 3M23 28c0-6-3-9-7-12" fill="none" stroke="#1f2a44" stroke-width="1.6"/></svg>
-    <div>Schedario Pallavolo<small>Esercizi, sessioni, presenze, partite e atleti</small></div>
+    <div>Volleysched<small>Esercizi, sessioni, presenze, partite e atleti</small></div>
   </div>
   <nav class="nav" id="nav">
     <button data-nav="esercizi"><span class="ni">🏐</span><span class="nl">Esercizi</span></button>
@@ -1448,8 +1448,8 @@ ${syncPanelHTML()}
   </div>
   <div class="panel">
     <h2>Esercizi del catalogo</h2>
-    <p style="margin-top:0">Se hai eliminato per errore uno degli esercizi iniziali, puoi reinserirlo. Gli esercizi già presenti con lo stesso titolo non vengono toccati.</p>
-    <button class="btn" data-action="restore-seed">Reinserisci gli esercizi iniziali mancanti</button>
+    <p style="margin-top:0">Se hai eliminato per errore uno degli esercizi del catalogo, puoi reinserirlo scegliendo il file <b>esercizi_iniziali.json</b> (nella cartella dello schedario sul computer, sottocartella «app»). Gli esercizi già presenti con lo stesso titolo non vengono toccati.</p>
+    <button class="btn" data-action="restore-seed">Reinserisci gli esercizi mancanti da un file…</button>
   </div>
   </section>`;
 }
@@ -1490,7 +1490,7 @@ function syncPanelHTML(){
     <ol class="steps">
       <li>Su GitHub crea un archivio nuovo: <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>. Nome: <code>schedario-dati</code>, scegli <b>Private</b>, poi «Create repository».</li>
       <li>Crea il codice di accesso: <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>.
-        Nome: <code>Schedario</code> · Expiration: la durata più lunga disponibile · Repository access: <b>Only select repositories</b> → <code>schedario-dati</code> ·
+        Nome: <code>Volleysched</code> · Expiration: la durata più lunga disponibile · Repository access: <b>Only select repositories</b> → <code>schedario-dati</code> ·
         Permissions → Repository permissions → <b>Contents: Read and write</b>. Poi «Generate token» e copia il codice (inizia con <code>github_pat_</code>).</li>
       <li>Inserisci qui sotto i dati e premi «Collega». Sul telefono fai lo stesso con lo stesso codice (te lo puoi mandare per email o salvarlo nelle note).</li>
     </ol></details>
@@ -1550,17 +1550,17 @@ function refreshFromRemote(){
   loadState().then(()=>{ render(); window.scrollTo(0,y); toast('Dati aggiornati dall\'altro dispositivo'); });
 }
 function viewBenvenuto(){
-  return `<section class="welcome"><h1>Benvenuto nello Schedario</h1>
+  return `<section class="welcome"><h1>Benvenuto in Volleysched</h1>
   <p class="muted">Su questo dispositivo non ci sono ancora dati. Da dove vuoi partire?</p>
   <button type="button" class="choice" data-action="w-sync"><span class="ic">☁️</span><span><b>Collego il mio archivio online</b><span class="muted" style="font-size:13.5px">Se hai già usato l'app su un altro dispositivo, o vuoi tenere computer e telefono allineati.</span></span></button>
   <button type="button" class="choice" data-action="import"><span class="ic">📥</span><span><b>Importo il file esportato dal vecchio programma</b><span class="muted" style="font-size:13.5px">Il file .json con esercizi, sessioni, atleti, partite e presenze.</span></span></button>
-  <button type="button" class="choice" data-action="w-seed"><span class="ic">🏐</span><span><b>Parto dal catalogo degli esercizi</b><span class="muted" style="font-size:13.5px">184 esercizi di pallavolo e di preparazione fisica, con schemi e disegni.</span></span></button>
+  <button type="button" class="choice" data-action="w-empty"><span class="ic">✏️</span><span><b>Parto da zero</b><span class="muted" style="font-size:13.5px">Schedario vuoto: gli esercizi li inserisci tu, o li importi più avanti.</span></span></button>
   </section>`;
 }
 function exportBackup(){
   const st=Store.fullState(); delete st.info;
   const blob=new Blob([JSON.stringify({app:'schedario-pallavolo', exportedAt:new Date().toISOString(), data:st}, null, 1)], {type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='schedario-pallavolo-'+todayISO()+'.json';
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='volleysched-'+todayISO()+'.json';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
   toast('Copia scaricata');
 }
@@ -1630,7 +1630,7 @@ function sessionPrintHTML(s){
     else h+=`<section class="pex free"><div class="pex-head"><div><div class="pex-time">${esc(when)}</div><h2>${esc(r.it.titolo||'Voce libera')}</h2></div></div>${r.it.descrizione?`<div class="pex-text" style="padding-top:6pt">${nl2br(r.it.descrizione)}</div>`:''}</section>`;
   }
   if(o.note) h+=notesBlock();
-  h+=`<div class="p-footer">Stampato il ${new Date().toLocaleDateString('it-IT')} · Schedario Pallavolo</div>`;
+  h+=`<div class="p-footer">Stampato il ${new Date().toLocaleDateString('it-IT')} · Volleysched</div>`;
   return h;
 }
 function doPrint(html, title){
@@ -2309,8 +2309,14 @@ const actions={
   'sync-off': async ()=>{ if(!confirm('Scollegare questo dispositivo dall\'archivio online? I dati restano qui, ma non verranno più sincronizzati.')) return; await Sync.disconnect(); render(); toast('Dispositivo scollegato'); },
   'sync-token': async ()=>{ const c=Sync.config(); await Store.setMeta('syncLast',{owner:c.owner, repo:c.repo}); await Sync.disconnect(); render(); setTimeout(()=>{ const t=$('#sync-form [name=token]'); if(t){ t.focus(); $('#sync-msg').textContent='Inserisci il nuovo codice e premi «Collega»: i dati non vengono toccati.'; } },50); },
   'w-sync': ()=>{ go('impostazioni'); setTimeout(()=>{ const p=$('#sync-panel'); if(p) p.scrollIntoView({behavior:'smooth'}); },60); },
-  'w-seed': ()=>api('POST','/api/ripristina-iniziali').then(async r=>{ await Store.setMeta('avviato', true); await loadState(); go('esercizi'); toast(`Inseriti ${r.aggiunti} esercizi`); }).catch(e=>alert(e.message||e)),
-  'restore-seed': ()=>api('POST','/api/ripristina-iniziali').then(async r=>{ await loadState(); render(); toast(r.aggiunti?`Reinseriti ${r.aggiunti} esercizi`:'Nessun esercizio mancante'); }).catch(saveFail)
+  'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('esercizi'); },
+  'restore-seed': ()=>{
+    const inp=$('#filepick'); inp.value=''; inp.accept='.json,application/json';
+    inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();
+      r.onload=()=>{ let list; try{ const j=JSON.parse(r.result); list=j.exercises || (j.data&&j.data.exercises); if(!Array.isArray(list)) throw 0; }catch(e){ alert('Il file non contiene un catalogo di esercizi.'); return; }
+        api('POST','/api/ripristina-iniziali',{exercises:list}).then(async res=>{ await loadState(); render(); toast(res.aggiunti?`Reinseriti ${res.aggiunti} esercizi`:'Nessun esercizio mancante'); }).catch(saveFail); };
+      r.readAsText(f); };
+    inp.click(); }
 };
 function moveItem(uid,dir){
   const s=getSess(ui.sessId), i=s.items.findIndex(x=>x.uid===uid), j=i+dir;
@@ -2378,7 +2384,7 @@ document.addEventListener('drop', e=>{
 });
 document.addEventListener('dragend', ()=>{ dragUid=null; $$('.item').forEach(x=>{ x.classList.remove('dragging','drop-before','drop-after'); x.draggable=false; }); });
 
-$('#app').innerHTML='<div class="empty">Caricamento dello schedario…</div>';
+$('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
 (async ()=>{
   try{
     await Store.init();
@@ -2391,7 +2397,7 @@ $('#app').innerHTML='<div class="empty">Caricamento dello schedario…</div>';
     render();
   }catch(e){
     console.error(e);
-    $('#app').innerHTML=`<div class="empty" style="text-align:left;max-width:640px;margin:40px auto"><h2 style="margin-bottom:8px">Lo schedario non si è aperto</h2>
+    $('#app').innerHTML=`<div class="empty" style="text-align:left;max-width:640px;margin:40px auto"><h2 style="margin-bottom:8px">Volleysched non si è aperto</h2>
     <p>Il browser non permette di usare l'archivio dei dati. Succede, per esempio, nelle finestre di navigazione in incognito. Apri l'app in una finestra normale.</p>
     <p class="muted" style="font-size:13px">Dettaglio: ${esc(e.message||e)}</p></div>`;
   }
@@ -2414,8 +2420,8 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
     reg.addEventListener('updatefound', ()=>{ const w=reg.installing; w && w.addEventListener('statechange', ()=>{ if(w.state==='installed' && navigator.serviceWorker.controller) offer(w); }); });
     setInterval(()=>reg.update().catch(()=>{}), 60*60*1000);
   }).catch(e=>console.warn('Service worker non registrato', e));
-  let reloaded=false;
-  navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if(reloaded) return; reloaded=true; location.reload(); });
+  let reloaded=false; const hadController=!!navigator.serviceWorker.controller;   // al primo avvio non serve ricaricare
+  navigator.serviceWorker.addEventListener('controllerchange', ()=>{ if(reloaded || !hadController) return; reloaded=true; location.reload(); });
 }
 </script>
 </body>

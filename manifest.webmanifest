@@ -1,6 +1,6 @@
 {
-  "name": "Schedario Pallavolo",
-  "short_name": "Schedario",
+  "name": "Volleysched",
+  "short_name": "Volleysched",
   "description": "Esercizi, sessioni, presenze, partite e atleti",
   "lang": "it",
   "start_url": "./",

@@ -472,6 +472,51 @@ a.btn{text-decoration:none;color:inherit}
   .sync-box{flex-direction:column;align-items:flex-start}
 }
 
+
+/* formazione, rotazioni, statistiche */
+.fslots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.fslots{grid-template-columns:1fr 1fr}}
+.fslot{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.fslot i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:0}
+.rotgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:14px}
+@media (max-width:760px){.rotgrid{grid-template-columns:1fr}}
+.rotcard{border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--surface)}
+.rotcard h3{margin:0 0 6px;font-size:15px}
+.rotpair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rotpair .lbl{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;text-align:center}
+.rotpair svg{width:100%;height:auto;display:block}
+.live-top{position:sticky;top:58px;z-index:12;background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;box-shadow:var(--shadow)}
+@media (max-width:760px){.live-top{top:52px}}
+.live-top .sc{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.live-top .sc small{font-size:13px;font-weight:600;opacity:.75;margin:0 6px}
+@media (max-width:760px){.live-top{padding:6px 10px;gap:4px 10px}.live-top .sc{font-size:22px}.live-top .btn{padding:3px 8px}.serve{font-size:12.5px;padding:2px 8px}.abtn{padding:9px 4px;font-size:13.5px}.actgrid{grid-template-columns:1fr 1fr;gap:8px}}
+.live-top .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fff}
+.live-top select{width:auto;padding:4px 6px;font-size:13px}
+.live-sets{font-size:12.5px;opacity:.8}
+.serve{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px;background:#f6c344;color:#3a2b00;border-radius:999px;padding:3px 10px}
+.serve.them{background:rgba(255,255,255,.18);color:#fff}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchip{border:2px solid var(--line-2);background:#fff;border-radius:999px;padding:5px 11px 5px 5px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:700;font-size:14px}
+.pchip.court{border-color:#9fb6d6}
+.pchip.on{border-color:var(--accent);background:#fff3e6;box-shadow:0 0 0 2px rgba(224,123,34,.25)}
+.pchip .nr{display:inline-grid;place-items:center;min-width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px}
+.pchip.court .nr{background:#2f6fb8}
+.actgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.actbox{border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--surface)}
+.actbox h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.actbox .row{display:flex;flex-wrap:wrap;gap:6px}
+.abtn{flex:1 1 auto;min-width:62px;border:1px solid var(--line-2);border-radius:9px;background:#fff;padding:10px 6px;font-weight:800;font-size:14px;cursor:pointer;touch-action:manipulation}
+.abtn.g{background:#dff3e6;border-color:#7cc99a;color:#1d6b3c}
+.abtn.y{background:#fff1d6;border-color:#f0c56b;color:#8a5a00}
+.abtn.r{background:#fde4e7;border-color:#e9a0aa;color:#b3263a}
+.abtn:active{transform:scale(.97)}
+.evlist{font-size:13.5px;display:flex;flex-direction:column;gap:2px;max-height:240px;overflow:auto}
+.evlist div{display:flex;gap:8px;border-bottom:1px solid var(--line);padding:4px 0}
+.evlist .sc2{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--muted)}
+.stt{font-size:13px}
+.stt th{white-space:nowrap}
+.stt td.n,.stt th.n{text-align:right;font-variant-numeric:tabular-nums}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -544,7 +589,7 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
 <datalist id="dl-form"></datalist>
 <datalist id="dl-carichi"><option value="Corpo libero"><option value="Elastico leggero"><option value="Elastico medio"><option value="Elastico forte"><option value="Palla medica"><option value="Manubri"></datalist>
 <datalist id="dl-distretti"><option value="Spalle"><option value="Schiena"><option value="Core"><option value="Glutei e anche"><option value="Gambe"><option value="Ginocchia"><option value="Caviglie"><option value="Mobilità"><option value="Tutto il corpo"></datalist>
-<datalist id="dl-ruoli"><option value="Palleggiatore"><option value="Opposto"><option value="Centrale"><option value="Schiacciatore (banda)"><option value="Libero"><option value="Universale"></datalist>
+<datalist id="dl-ruoli"><option value="Palleggiatore"><option value="Banda"><option value="Centrale"><option value="Opposto"><option value="Libero"><option value="Universale"></datalist>
 
 <script src="store.js"></script>
 <script src="sync.js"></script>
@@ -945,7 +990,7 @@ function go(view, params={}){
 window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault(); e.returnValue=''; } });
 
 function render(){
-  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || (ui.view==='partita' && b.dataset.nav==='partite')));
+  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live') && b.dataset.nav==='partite')));
   refreshDatalists();
   const app=$('#app');
   if(ui.view==='esercizi') app.innerHTML = viewEsercizi();
@@ -958,6 +1003,7 @@ function render(){
   else if(ui.view==='partita') app.innerHTML = viewPartita();
   else if(ui.view==='presenze') app.innerHTML = viewPresenze();
   else if(ui.view==='benvenuto') app.innerHTML = viewBenvenuto();
+  else if(ui.view==='live') app.innerHTML = viewLive();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
   renderNavBadge();
   renderBackupHint();
@@ -1542,7 +1588,7 @@ let lastInteract=0;
 let remoteTimer=null;
 function refreshFromRemote(){
   clearTimeout(remoteTimer);
-  const busy = ui.dirty || !$('#modal').classList.contains('hidden') || ['esercizio','sessione','partita'].includes(ui.view) || Date.now()-lastInteract<2500
+  const busy = ui.dirty || !$('#modal').classList.contains('hidden') || ['esercizio','sessione','partita','live'].includes(ui.view) || Date.now()-lastInteract<2500
     || document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
   if(busy){ ui.remotePending=true; remoteTimer=setTimeout(refreshFromRemote, 3000); return; }
   ui.remotePending=false;
@@ -1644,7 +1690,7 @@ window.addEventListener('afterprint', ()=>{ $('#print-area').innerHTML=''; });
 /* ============================================================
    Anagrafica atleti
    ============================================================ */
-const RUOLI=['Palleggiatore','Opposto','Centrale','Schiacciatore (banda)','Libero','Universale'];
+const RUOLI=['Palleggiatore','Banda','Centrale','Opposto','Libero','Universale'];
 const TAGLIE=['XS','S','M','L','XL','XXL','3XL'];
 const BDAY_DAYS=15;   // avviso compleanno: giorni di anticipo
 const SCAD_DAYS=30;   // avviso scadenze visita/documento: giorni di anticipo
@@ -1866,8 +1912,364 @@ function viewPartite(){
   ${!all.length?`<div class="empty">Nessuna partita in calendario. Aggiungi la prima con «+ Nuova partita».<br><span style="font-size:13px">Suggerimento: dopo la prima, usa «Duplica» per le successive: palestra, orari e convocati restano già compilati.</span></div>`:''}
   ${next.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>Prossime partite</h2><span class="muted">${next.length}</span></div><div class="match-list">${next.map((m,i)=>matchCard(m, i===0 && !!m.data)).join('')}</div>`:''}
   ${past.length?`<div class="group-title" style="--c:#8a94a6"><span class="bar"></span><h2>Partite giocate</h2><span class="muted">${past.length}</span></div><div class="match-list">${past.map(m=>matchCard(m,false,true)).join('')}</div>`:''}
+  ${all.length?convSummaryHTML():''}
+  ${seasonStatsHTML()}
   </section>`;
 }
+
+/* ============================================================
+   Convocazioni: suggerimento automatico e riepilogo
+   ============================================================ */
+const ROLE_QUOTA_DEF={'Palleggiatore':2,'Banda':4,'Centrale':3,'Opposto':2,'Libero':0};
+const ROLE_LBL_NOTE='';
+const isPlayed=m=>!!m.data && (m.data<todayISO() || !!(m.risultato||'').trim());
+function convCount(aid, beforeISO, exceptId){   // partite giocate in cui l'atleta era convocato
+  return db.matches.filter(m=>m.id!==exceptId && isPlayed(m) && (!beforeISO || m.data<beforeISO) && (m.convocati||[]).includes(aid)).length;
+}
+function suggestCandidates(m, o){
+  const ref=m.data||'9999-12-31', out=[], excl=[];
+  for(const a of db.athletes){
+    if(!a.iscritto){ excl.push({a, why:'non iscritto'}); continue; }
+    if(o.noVisita && a.scadenzaVisita && a.scadenzaVisita<(m.data||todayISO())){ excl.push({a, why:'visita medica scaduta'}); continue; }
+    const st=absStats(a.id, ref), pres=st.n-st.ass;
+    out.push({a, st, pres, played:convCount(a.id, m.data, m.id), sp:seasonPct(a.id)??-1});
+  }
+  out.sort((x,y)=>(y.pres-x.pres) || (x.played-y.played) || (y.sp-x.sp) || fullName(x.a).localeCompare(fullName(y.a),'it'));
+  out.forEach((c,i)=>c.rank=i);
+  return {cands:out, excl};
+}
+const isF=a=>/^f/i.test(a.sesso||'');
+function suggestList(m, o){
+  const {cands, excl}=suggestCandidates(m, o), N=Math.max(1, o.n|0), pick=[], warn=[];
+  const take=(c,why)=>{ c.why=why; pick.push(c); };
+  const free=()=>cands.filter(c=>!pick.includes(c));
+  if(o.mode==='ruoli'){
+    const roles=Object.entries(o.quota).filter(([r,q])=>q>0);
+    roles.sort((x,y)=>cands.filter(c=>roleKey(c.a.ruolo)===roleKey(x[0])).length-cands.filter(c=>roleKey(c.a.ruolo)===roleKey(y[0])).length);
+    for(const [r,q] of roles){
+      const L=free().filter(c=>roleKey(c.a.ruolo)===roleKey(r)).slice(0,q);
+      L.forEach(c=>take(c,''));
+      if(L.length<q) warn.push(`${r}: ${q-L.length} mancant${q-L.length===1?'e':'i'}`);
+    }
+    if(pick.length>N) pick.splice(N);
+  }
+  for(const c of free()){ if(pick.length>=N) break; take(c, o.mode==='ruoli'?'completa la lista':''); }
+  // minimo di donne (campionati misti)
+  let need=Math.max(0,(o.minF|0)-pick.filter(c=>isF(c.a)).length);
+  while(need>0){
+    const w=free().find(c=>isF(c.a)); if(!w){ warn.push(`mancano ${need} atlete per il minimo richiesto`); break; }
+    const men=pick.filter(c=>!isF(c.a));
+    if(!men.length) break;
+    const same=men.filter(c=>c.a.ruolo===w.a.ruolo), out=(same.length?same:men).sort((x,y)=>y.rank-x.rank)[0];
+    pick.splice(pick.indexOf(out),1); take(w, 'per il minimo di donne'); need--;
+  }
+  if(pick.length<N) warn.push(`solo ${pick.length} atleti disponibili su ${N}`);
+  pick.sort((x,y)=>x.rank-y.rank);
+  return {pick, rest:free(), excl, warn};
+}
+function marksHTML(st){ return st.n?`<span class="dots">${st.marks.map(s=>`<i class="dot d${s}"></i>`).join('')}</span>`:'<span class="muted">—</span>'; }
+function suggestRows(L, chk){
+  return L.map(c=>`<tr><td style="width:30px">${chk?`<input type="checkbox" data-sg="${c.a.id}" ${chk==='on'?'checked':''}>`:''}</td>
+    <td class="num">${esc(c.a.numeroMaglia)||'–'}</td><td>${avatarHTML(c.a,24)}<b>${esc(fullName(c.a))}</b><div class="muted" style="font-size:12px">${[c.a.ruolo||'ruolo non indicato', isF(c.a)?'F':'', c.why].filter(Boolean).map(esc).join(' · ')}</div></td>
+    <td style="white-space:nowrap">${marksHTML(c.st)} <b>${c.st.n?c.pres+'/'+c.st.n:''}</b></td><td style="text-align:center">${c.played}</td></tr>`).join('');
+}
+function openSuggest(){
+  const m=getMatch(ui.matchId); if(!m) return;
+  if(!db.athletes.some(a=>a.iscritto)){ alert('Non ci sono atleti iscritti in anagrafica.'); return; }
+  const roles=Object.keys(ROLE_QUOTA_DEF);
+  const o=ui.sugg=Object.assign({mode:'presenze', n:12, minF:0, noVisita:true, quota:Object.fromEntries(roles.map(r=>[r, ROLE_QUOTA_DEF[r]||0]))}, ui.sugg||{});
+  openModal(`<div class="modal-box" style="max-width:860px">
+    <div class="modal-head"><div style="flex:1"><h2>Suggerisci i convocati</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${m.data?' · '+esc(fmtDate(m.data)):''}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="seg" id="sg-mode"><label><input type="radio" name="sgmode" value="presenze" ${o.mode==='presenze'?'checked':''}> In base alle presenze</label><label><input type="radio" name="sgmode" value="ruoli" ${o.mode==='ruoli'?'checked':''}> In base ai ruoli (e alle presenze)</label></div>
+      <div class="grid g3" style="margin-bottom:10px">
+        <label class="f">Quanti convocati<input type="number" id="sg-n" min="1" max="30" value="${o.n}"></label>
+        <label class="f">Minimo di donne in lista<input type="number" id="sg-f" min="0" max="20" value="${o.minF}"></label>
+        <label class="sw" style="align-self:end"><input type="checkbox" id="sg-vis" ${o.noVisita?'checked':''}> Escludi chi ha la visita scaduta</label>
+      </div>
+      <div id="sg-quota" class="${o.mode==='ruoli'?'':'hidden'}" style="margin-bottom:12px"><div class="muted" style="font-size:13px;margin-bottom:6px">Quanti per ruolo (5-1):</div>
+        <div class="daypick">${roles.map(r=>`<label class="dayopt on" style="min-width:120px"><span style="font-size:13px;font-weight:700">${esc(r)}</span><input type="number" min="0" max="12" data-quota="${esc(r)}" value="${o.quota[r]}" style="width:70px"></label>`).join('')}</div>
+        <div class="muted" style="font-size:12.5px;margin-top:6px" id="sg-qsum"></div></div>
+      <p class="muted" style="font-size:13px;margin:0 0 8px">Ordine: più presenze negli ultimi 5 allenamenti segnati prima della partita; a parità, chi è stato convocato meno volte finora, poi la percentuale di presenze della stagione.</p>
+      <div id="sg-out"></div>
+    </div>
+    <div class="modal-foot"><button class="btn" data-action="close-modal">Annulla</button><span style="flex:1"></span><span class="muted" id="sg-count" style="font-size:13.5px"></span><button class="btn primary" id="sg-apply">Usa questa lista</button></div></div>`);
+  const box=$('#modal .modal-box');
+  const draw=()=>{
+    const r=suggestList(m,o);
+    $('#sg-qsum').textContent=`Totale per ruolo: ${Object.values(o.quota).reduce((s,q)=>s+(+q||0),0)} su ${o.n}`;
+    $('#sg-out').innerHTML=`${r.warn.length?`<div class="warn" style="margin-bottom:10px">⚠ ${r.warn.map(esc).join(' · ')}</div>`:''}
+      <table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Proposti (${r.pick.length})</th><th>Ultimi 5 all.</th><th style="text-align:center" title="Partite giocate finora da convocato">Conv.</th></tr></thead><tbody>${suggestRows(r.pick,'on')}</tbody></table>
+      ${r.rest.length?`<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Altri disponibili (${r.rest.length})</summary><table class="ctable"><tbody>${suggestRows(r.rest,'off')}</tbody></table></details>`:''}
+      ${r.excl.length?`<div class="muted" style="font-size:12.5px;margin-top:10px">Esclusi: ${r.excl.map(x=>esc(fullName(x.a))+' ('+x.why+')').join(', ')}</div>`:''}`;
+    const upd=()=>{ $('#sg-count').textContent=$$('#sg-out [data-sg]:checked').length+' selezionati'; };
+    $$('#sg-out [data-sg]').forEach(c=>c.onchange=upd); upd();
+  };
+  box.addEventListener('input', e=>{
+    const t=e.target;
+    if(t.name==='sgmode'){ o.mode=t.value; $('#sg-quota').classList.toggle('hidden', o.mode!=='ruoli'); }
+    else if(t.id==='sg-n') o.n=Math.max(1,parseInt(t.value,10)||12);
+    else if(t.id==='sg-f') o.minF=Math.max(0,parseInt(t.value,10)||0);
+    else if(t.id==='sg-vis') o.noVisita=t.checked;
+    else if(t.dataset.quota) o.quota[t.dataset.quota]=Math.max(0,parseInt(t.value,10)||0);
+    else return;
+    draw();
+  });
+  $('#sg-apply').onclick=()=>{
+    const ids=new Set($$('#sg-out [data-sg]:checked').map(c=>c.dataset.sg));
+    if(!ids.size){ alert('Nessun atleta selezionato.'); return; }
+    if((m.convocati||[]).length && !confirm(`Sostituire i ${m.convocati.length} convocati attuali con questa lista?`)) return;
+    m.convocati=db.athletes.filter(a=>ids.has(a.id)).map(a=>a.id);
+    touchMatch(m); closeModal(); refreshMatch(m,'conv'); toast(`Convocati ${ids.size} atleti`);
+  };
+  draw();
+}
+/* riepilogo: quante partite ha giocato da convocato ogni atleta */
+function convSummary(all){
+  const played=db.matches.filter(isPlayed), future=db.matches.filter(m=>!isPlayed(m));
+  const L=db.athletes.filter(a=>all || a.iscritto).map(a=>{
+    const mine=played.filter(m=>(m.convocati||[]).includes(a.id)).sort((x,y)=>x.data.localeCompare(y.data));
+    return {a, n:mine.length, next:future.filter(m=>(m.convocati||[]).includes(a.id)).length, last:mine.length?mine[mine.length-1].data:'', sp:seasonPct(a.id)};
+  }).sort((x,y)=>(x.n-y.n) || fullName(x.a).localeCompare(fullName(y.a),'it'));
+  const avg=L.length?L.reduce((s,x)=>s+x.n,0)/L.length:0;
+  return {L, played:played.length, avg, max:Math.max(0,...L.map(x=>x.n))};
+}
+function convSummaryHTML(){
+  const S=convSummary(ui.csAll);
+  if(!db.athletes.length) return '';
+  const rows=S.L.map(x=>{ const low=S.played && x.n < S.avg-1, high=S.played && x.n > S.avg+1, pct=S.played?Math.round(100*x.n/S.played):0;
+    return `<tr class="${x.a.iscritto?'':'off'}"><td>${avatarHTML(x.a,24)}<b class="nm" data-action="edit-at" data-id="${x.a.id}">${esc(fullName(x.a))}</b></td><td class="muted">${esc(x.a.ruolo)||'—'}</td>
+      <td style="min-width:150px"><div style="display:flex;align-items:center;gap:8px"><b style="min-width:42px;text-align:right">${x.n} / ${S.played}</b><span class="compbar" style="flex:1;min-width:60px"><span style="width:${pct}%;background:${low?'#e0a020':high?'#2f6fb8':'#22a05a'}"></span></span></div></td>
+      <td style="text-align:center">${x.next||'<span class="muted">—</span>'}</td>
+      <td class="n">${x.sp===null?'<span class="muted">—</span>':x.sp+'%'}</td>
+      <td class="muted" style="white-space:nowrap">${x.last?shortDate(x.last):'mai'}</td>
+      <td>${low?'<span class="conv-no">sotto la media</span>':high?'<span style="color:#2f6fb8;font-weight:700">sopra la media</span>':''}</td></tr>`; }).join('');
+  return `<details class="panel" id="conv-sum" ${ui.csOpen?'open':''} style="margin-top:22px"><summary><b style="font-size:18px">Riepilogo convocazioni</b> <span class="muted">· ${S.played} partit${S.played===1?'a giocata':'e giocate'} · media ${S.avg.toFixed(1).replace('.',',')} a testa</span></summary>
+    <div class="actions" style="margin:12px 0 8px"><label class="sw" style="min-height:0"><input type="checkbox" id="cs-all" ${ui.csAll?'checked':''}> Mostra anche i non iscritti</label><span style="flex:1"></span><button class="btn sm" data-action="print-convsum">Stampa riepilogo</button></div>
+    <div style="overflow:auto"><table class="atable"><thead><tr><th>Atleta</th><th>Ruolo</th><th title="Partite giocate da convocato / partite giocate">Partite da convocato</th><th style="text-align:center" title="Partite future in cui è già convocato">In programma</th><th class="n">Presenze all.</th><th>Ultima</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Si contano le partite con data passata (o con il risultato inserito). In arancione chi è più di una partita sotto la media, in blu chi è più di una partita sopra.</p></details>`;
+}
+document.addEventListener('toggle', e=>{ if(e.target.id==='conv-sum') ui.csOpen=e.target.open; }, true);
+function printConvSummary(){
+  const S=convSummary(ui.csAll);
+  doPrint(`<div class="p-head">${headTeam()}<h1>Riepilogo convocazioni</h1><div class="p-meta"><span>${S.played} partite giocate</span><span>media ${S.avg.toFixed(1).replace('.',',')} a testa</span></div></div>
+    <table class="p-sched"><thead><tr><th>Atleta</th><th>Ruolo</th><th>Convocato</th><th>In programma</th><th>Presenze all.</th><th>Ultima convocazione</th></tr></thead>
+    <tbody>${S.L.map(x=>`<tr><td><b>${esc(fullName(x.a))}</b></td><td>${esc(x.a.ruolo)}</td><td class="n"><b>${x.n}</b> / ${S.played}</td><td class="n">${x.next||''}</td><td class="n">${x.sp===null?'':x.sp+'%'}</td><td>${x.last?shortDate(x.last):'mai'}</td></tr>`).join('')}</tbody></table>`, 'Riepilogo convocazioni');
+}
+
+/* ============================================================
+   Formazione 5-1, rotazioni e statistiche in partita
+   ============================================================ */
+function roleKey(r){ r=(r||'').toLowerCase();
+  if(/palleg|alzat/.test(r)) return 'P'; if(/oppost/.test(r)) return 'O'; if(/centr/.test(r)) return 'C';
+  if(/liber/.test(r)) return 'L'; if(/banda|schiacc|laterale/.test(r)) return 'B'; return ''; }
+const SLOTS=[['P','Palleggiatore'],['O','Opposto'],['B1','Banda 1'],['B2','Banda 2'],['C1','Centrale 1'],['C2','Centrale 2']];
+const SLOT_ROLE={P:'P',O:'O',B1:'B',B2:'B',C1:'C',C2:'C',L:'L'};
+const ROLE_COL={P:'#7b5cc4',O:'#d64a5a',B:'#2f6fb8',C:'#e07b22',L:'#22a05a'};
+const ORDER=['P','B1','C1','O','B2','C2'];          // zone 1..6 con il palleggiatore in zona 1
+const ROTNAME=['P1','P6','P5','P4','P3','P2'];
+const ZXY={1:[240,205],2:[240,70],3:[150,70],4:[60,70],5:[60,205],6:[150,205]};
+function rotAt(k){ let z=[...ORDER]; for(let i=0;i<((k%6)+6)%6;i++) z=[z[1],z[2],z[3],z[4],z[5],z[0]]; return z; }   // z[0]=zona 1 ... z[5]=zona 6
+function getForm(m){ return Object.assign({P:'',O:'',B1:'',B2:'',C1:'',C2:'',L:'',libero:false,start:0}, m.formazione||{}); }
+function formOk(f){ return SLOTS.every(([s])=>f[s]); }
+function athShort(id){ const a=getAt(id); if(!a) return '?'; const base=a.cognome||a.nome||'?';
+  const same=db.athletes.filter(x=>x.id!==a.id && (x.cognome||x.nome)===base); if(!same.length) return base;
+  const ini=(a.nome||'')[0]||''; return same.some(x=>((x.nome||'')[0]||'')===ini) ? base+' '+(a.numeroMaglia||a.nome||'') : base+' '+ini+'.'; }
+function athNum(id){ const a=getAt(id); return a ? (a.numeroMaglia || ((a.nome||'')[0]||'')+((a.cognome||'')[0]||'')) : '?'; }
+/* posizioni di gioco dopo il servizio: avanti B4 C3 P/O2, dietro P/O1 B6 C5 */
+function playZone(slot, front){ const r=SLOT_ROLE[slot]; if(front) return r==='B'?4:r==='C'?3:2; return r==='B'?6:r==='C'?5:1; }
+function courtSVG(f, k, mode, opt={}){
+  const z=rotAt(k), who=opt.who||(s=>f[s]), W=300, H=opt.serve?330:300;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><rect x="15" y="20" width="270" height="270" fill="#f4d3a1" stroke="#fff" stroke-width="3"/><rect x="15" y="20" width="270" height="90" fill="#efc387"/>
+    <line x1="15" y1="110" x2="285" y2="110" stroke="#fff" stroke-width="2.5"/><line x1="5" y1="20" x2="295" y2="20" stroke="#1f2a44" stroke-width="5"/><text x="150" y="13" text-anchor="middle" font-size="10" fill="#666">rete</text>`;
+  const pts=[];
+  z.forEach((slot,i)=>{ const zone=i+1, front=[2,3,4].includes(zone);
+    let pos=ZXY[zone];
+    if(mode==='gioco') pos=ZXY[playZone(slot,front)];
+    let sl=slot;
+    if(f.libero && f.L && SLOT_ROLE[slot]==='C' && !front && !(zone===1 && opt.serve)) sl='L';
+    pts.push({slot:sl, zone, front, pos}); });
+  if(mode==='partenza'){   // il palleggiatore va a rete per alzare
+    const p=pts.find(x=>x.slot==='P');
+    if(p && !(p.zone===2||p.zone===3)) s+=`<path d="M${p.pos[0]} ${p.pos[1]} L 200 44" stroke="#1e9e5a" stroke-width="3" stroke-dasharray="6 4" fill="none" marker-end="url(#ar)"/>`;
+    s+=`<defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1e9e5a"/></marker></defs>`;
+  }
+  for(const p of pts){
+    let [x,y]=p.pos; if(opt.serve && p.zone===1 && mode==='partenza'){ y=312; }
+    const r=SLOT_ROLE[p.slot], id=who(p.slot), sel=opt.sel && id===opt.sel;
+    s+=`<g ${opt.click?`data-pick="${esc(id)}" style="cursor:pointer"`:''}><circle cx="${x}" cy="${y}" r="21" fill="${ROLE_COL[r]}" stroke="${sel?'#e07b22':'#fff'}" stroke-width="${sel?5:2.5}"/>
+      <text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">${esc(id?athNum(id):p.slot)}</text>
+      <text x="${x}" y="${y+35}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44">${esc(id?athShort(id):'')}</text></g>`;
+  }
+  if(opt.serve && mode==='partenza') s+=`<text x="285" y="326" text-anchor="end" font-size="10.5" fill="#8a5a00" font-weight="700">batte</text>`;
+  return s+'</svg>';
+}
+function formOptions(m, f, slot){
+  const conv=convocati(m), pool=conv.length?conv:db.athletes.filter(a=>a.iscritto);
+  const want=SLOT_ROLE[slot], used=new Set(Object.entries(f).filter(([k,v])=>k!==slot && v && SLOTS.concat([['L']]).some(([s])=>s===k)).map(([,v])=>v));
+  const fit=pool.filter(a=>roleKey(a.ruolo)===want), other=pool.filter(a=>roleKey(a.ruolo)!==want);
+  const o=a=>`<option value="${a.id}" ${f[slot]===a.id?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}${used.has(a.id)?' (già in campo)':''}</option>`;
+  const extra=f[slot] && !pool.some(a=>a.id===f[slot]) && getAt(f[slot]) ? o(getAt(f[slot])) : '';
+  return `<option value="">—</option>${extra}${fit.length?`<optgroup label="Ruolo giusto">${fit.map(o).join('')}</optgroup>`:''}${other.length?`<optgroup label="Altri">${other.map(o).join('')}</optgroup>`:''}`;
+}
+function formWarn(m,f){
+  const w=[], ids=SLOTS.map(([s])=>f[s]).concat(f.libero?[f.L]:[]).filter(Boolean), conv=new Set(m.convocati||[]);
+  if(new Set(ids).size<ids.length) w.push('la stessa persona è in due posti');
+  if(conv.size && ids.some(id=>!conv.has(id))) w.push('c\'è chi non è tra i convocati');
+  const miss=SLOTS.filter(([s])=>!f[s]).map(([,l])=>l); if(miss.length) w.push('manca: '+miss.join(', '));
+  return w;
+}
+function formPanelHTML(m){
+  const f=getForm(m), w=formWarn(m,f), st=m.stats&&m.stats.ev&&m.stats.ev.length;
+  return `<h2>Formazione 5-1 e rotazioni</h2>
+    <div class="fslots">${SLOTS.map(([s,l])=>`<label class="fslot"><span><i style="background:${ROLE_COL[SLOT_ROLE[s]]}"></i>${l}</span><select data-fs="${s}">${formOptions(m,f,s)}</select></label>`).join('')}</div>
+    <div class="actions" style="margin-top:12px;gap:8px 16px">
+      <label class="sw" style="min-height:0"><input type="checkbox" data-fs="libero" ${f.libero?'checked':''}> Usiamo il libero</label>
+      ${f.libero?`<label class="fslot" style="flex-direction:row;align-items:center;gap:8px"><span><i style="background:${ROLE_COL.L}"></i>Libero</span><select data-fs="L" style="width:auto">${formOptions(m,f,'L')}</select></label>`:''}
+      <label class="fslot" style="flex-direction:row;align-items:center;gap:8px">Si parte in<select data-fs="start" style="width:auto">${ROTNAME.map((n,i)=>`<option value="${i}" ${+f.start===i?'selected':''}>${n} (palleggiatore in zona ${n.slice(1)})</option>`).join('')}</select></label>
+    </div>
+    ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}
+    <div class="actions" style="margin-top:12px"><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
+      <button class="btn primary" data-action="live-open">📊 ${st?'Riprendi le statistiche':'Statistiche in partita'}</button>${st?`<button class="btn" data-action="stats-match">Riepilogo statistiche</button>`:''}</div>`;
+}
+function rotCardsHTML(m, f){
+  return ROTNAME.map((n,i)=>{ const k=(+f.start+i)%6, z=rotAt(k), server=f[z[0]];
+    return `<div class="rotcard"><h3>Rotazione ${i+1} · ${ROTNAME[k]} <span class="muted" style="font-weight:600;font-size:12.5px">· batte ${esc(athShort(server))}</span></h3>
+      <div class="rotpair"><div><div class="lbl">Partenza (ricezione)</div>${courtSVG(f,k,'partenza',{serve:false})}</div><div><div class="lbl">In gioco</div>${courtSVG(f,k,'gioco')}</div></div></div>`; }).join('');
+}
+const ROT_LEGEND=`<div class="legend-row" style="margin-top:10px">${[['P','Palleggiatore'],['O','Opposto'],['B','Banda'],['C','Centrale'],['L','Libero']].map(([r,l])=>`<span><i style="background:${ROLE_COL[r]};border-radius:50%"></i>${l}</span>`).join('')}<span>— — ▸ il palleggiatore va a rete ad alzare</span></div>`;
+function openRotations(){
+  const m=getMatch(ui.matchId), f=getForm(m);
+  openModal(`<div class="modal-box" style="max-width:1100px"><div class="modal-head"><div style="flex:1"><h2>Le 6 rotazioni</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))} · a sinistra le posizioni al momento della battuta avversaria, a destra dove si va a giocare subito dopo.</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><div class="rotgrid">${rotCardsHTML(m,f)}</div>${ROT_LEGEND}</div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="rot-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
+}
+function printRotations(){
+  const m=getMatch(ui.matchId), f=getForm(m);
+  doPrint(`<style>.rotgrid{display:grid;grid-template-columns:1fr 1fr;gap:6mm}.rotcard{border:1pt solid #ccc;border-radius:3mm;padding:2mm 3mm;break-inside:avoid}.rotcard h3{font-size:10.5pt;margin:0 0 1mm}.rotpair{display:grid;grid-template-columns:1fr 1fr;gap:2mm}.rotpair .lbl{font-size:7pt;text-transform:uppercase;color:#777;text-align:center}.rotpair svg{width:100%}.legend-row{font-size:8pt;margin-top:3mm;display:flex;gap:4mm;flex-wrap:wrap}.legend-row i{display:inline-block;width:8pt;height:8pt;margin-right:2pt}</style>
+    <div class="p-head">${headTeam()}<h1>Rotazioni 5-1</h1><div class="p-meta"><span><b>${esc(matchTitle(m))}</b></span><span>${m.data?esc(fmtDate(m.data)):''}</span></div></div>
+    <div class="rotgrid">${rotCardsHTML(m,f)}</div>${ROT_LEGEND}`, 'Rotazioni');
+}
+
+/* -------------------- statistiche in partita -------------------- */
+const ACTS={
+  bat:{l:'Battuta', b:[['#','Ace','g'],['+','In campo','y'],['=','Errore','r']]},
+  ric:{l:'Ricezione', b:[['#','Perfetta','g'],['+','Positiva','g'],['-','Negativa','y'],['=','Errore','r']]},
+  att:{l:'Attacco', b:[['#','Punto','g'],['+','In gioco','y'],['=','Errore / murato','r']]},
+  mur:{l:'Muro', b:[['#','Punto','g'],['+','Toccata','y']]},
+  dif:{l:'Difesa', b:[['+','Difesa','g'],['=','Errore','r']]},
+  err:{l:'Altri errori', b:[['=','Fallo / invasione','r']]}
+};
+const OUR_PT=e=>e.v==='#' && ['bat','att','mur'].includes(e.k) || e.k==='pt';
+const THEIR_PT=e=>e.v==='=' && ['bat','ric','att','dif','err'].includes(e.k) || e.k==='pl';
+function getStats(m){ if(!m.stats) m.stats={sets:[], ev:[], live:null}; const S=m.stats; S.sets=S.sets||[]; S.ev=S.ev||[];
+  if(!S.live){ const f=getForm(m); S.live={set:1, noi:0, loro:0, servo:false, k:+f.start||0, subs:{}, played:{}}; }
+  S.live.subs=S.live.subs||{}; S.live.played=S.live.played||{}; return S; }
+function liveWho(m){ const f=getForm(m), L=getStats(m).live; return slot=>(L.subs[slot]!==undefined?L.subs[slot]:f[slot]); }
+function onCourt(m){ const who=liveWho(m), f=getForm(m), L=getStats(m).live, z=rotAt(L.k);
+  const ids=z.map(s=>who(s)); if(f.libero && f.L) ids.push(f.L); return ids.filter(Boolean); }
+function markPlayed(m){ const L=getStats(m).live; const s=new Set(L.played[L.set]||[]); onCourt(m).forEach(id=>s.add(id)); L.played[L.set]=[...s]; }
+function viewLive(){
+  const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
+  const f=getForm(m), S=getStats(m), L=S.live, who=liveWho(m), z=rotAt(L.k), server=who(z[0]);
+  const conv=convocati(m), court=new Set(onCourt(m));
+  const roster=[...conv.filter(a=>court.has(a.id)), ...conv.filter(a=>!court.has(a.id))];
+  const last=S.ev.slice(-8).reverse();
+  return `<section>
+  <div class="page-head" style="margin-bottom:10px"><div><a href="#" data-action="live-close" class="muted" style="font-size:13.5px;text-decoration:none">← Torna alla partita</a><h1 style="margin-top:4px;font-size:20px">${esc(matchTitle(m))}</h1></div>
+    <div class="actions"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button><button class="btn" data-action="live-endset">Fine set</button></div></div>
+  <div class="live-top">
+    <div><div class="live-sets">Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</div><div class="sc">${L.noi}<small>noi – loro</small>${L.loro}</div></div>
+    <div style="display:flex;gap:6px"><button class="btn sm" data-action="live-pt">+1 noi</button><button class="btn sm" data-action="live-pl">+1 loro</button></div>
+    <div style="display:flex;flex-direction:column;gap:4px"><span class="serve ${L.servo?'':'them'}" data-action="live-servo" style="cursor:pointer">${L.servo?'🏐 Batte: '+esc(athShort(server)):'Battono loro'}</span>
+      <label style="font-size:12.5px">Rotazione <select data-live="k">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></label></div>
+    <button class="btn sm" data-action="live-undo" style="margin-left:auto" ${S.ev.length?'':'disabled'}>↶ Annulla</button>
+  </div>
+  ${formOk(f)?'':`<div class="warn" style="margin-top:12px">La formazione non è completa: i giocatori in campo e la rotazione non vengono seguiti. Completala nella pagina della partita.</div>`}
+  <div class="sess-layout" style="margin-top:14px;grid-template-columns:minmax(0,1fr) 330px">
+    <div>
+      <div class="panel"><h2 style="margin-bottom:8px">1. Chi?</h2>
+        <div class="pchips">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
+        <div class="muted" style="font-size:12px;margin-top:6px">In blu chi è in campo.</div></div>
+      <div class="panel"><h2 style="margin-bottom:8px">2. Cosa?</h2>
+        <div class="actgrid">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}">${l}</button>`).join('')}</div></div>`).join('')}</div>
+        <div class="actions" style="margin-top:10px"><button class="btn" data-action="live-pt">Punto nostro (errore loro)</button><button class="btn" data-action="live-pl">Punto loro</button></div></div>
+    </div>
+    <div>
+      ${formOk(f)?`<div class="panel" style="padding:10px">${courtSVG(f,L.k,'partenza',{who, serve:L.servo, click:true, sel:ui.livePick})}</div>`:''}
+      <div class="panel"><h2 style="margin-bottom:6px;font-size:15px">Ultime azioni</h2><div class="evlist">${last.map(e=>`<div><span>${e.a?esc(athShort(e.a)):'<span class="muted">squadra</span>'}</span><span class="muted">${esc(evLabel(e))}</span><span class="sc2">${e.noi}-${e.loro}</span></div>`).join('')||'<span class="muted">Nessuna azione.</span>'}</div></div>
+    </div>
+  </div></section>`;
+}
+function evLabel(e){ if(e.k==='pt') return 'punto nostro'; if(e.k==='pl') return 'punto loro'; const A=ACTS[e.k]; const b=A&&A.b.find(x=>x[0]===e.v); return A?A.l+': '+(b?b[1].toLowerCase():e.v):e.k; }
+function liveEvent(k, v){
+  const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
+  if(k!=='pt' && k!=='pl' && !ui.livePick){ toast('Tocca prima il giocatore'); return; }
+  const e={id:newId('ev'), t:Date.now(), s:L.set, a:(k==='pt'||k==='pl')?'':ui.livePick, k, v:v||'', prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k}};
+  if(OUR_PT(e)){ L.noi++; if(!L.servo){ L.k=(L.k+1)%6; L.servo=true; } }
+  else if(THEIR_PT(e)){ L.loro++; L.servo=false; }
+  e.noi=L.noi; e.loro=L.loro;
+  S.ev.push(e); markPlayed(m);
+  if(k!=='pt' && k!=='pl') ui.livePick=null;
+  touchMatch(m); rerenderLive();
+}
+function rerenderLive(){ const y=window.scrollY; $('#app').innerHTML=viewLive(); window.scrollTo(0,y); }
+function liveUndo(){ const m=getMatch(ui.matchId), S=getStats(m), e=S.ev.pop(); if(!e) return; Object.assign(S.live, e.prev); touchMatch(m); rerenderLive(); toast('Ultima azione annullata'); }
+function liveEndSet(){
+  const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
+  if(!confirm(`Chiudere il set ${L.set} sul ${L.noi}-${L.loro}?`)) return;
+  S.sets.push({noi:L.noi, loro:L.loro});
+  const won=S.sets.filter(x=>x.noi>x.loro).length, lost=S.sets.length-won;
+  L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
+  if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=`${won}-${lost}`;
+  markPlayed(m); touchMatch(m); rerenderLive();
+  toast(`Set chiuso · risultato ${won}-${lost}. Controlla rotazione e chi batte per il set ${L.set}.`);
+}
+function liveSub(){
+  const m=getMatch(ui.matchId), S=getStats(m), who=liveWho(m), z=rotAt(S.live.k);
+  const court=z.map(s=>({s, id:who(s)})), bench=convocati(m).filter(a=>!onCourt(m).includes(a.id));
+  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><div style="flex:1"><h2>Cambio</h2></div><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><div class="grid g2"><label class="f">Esce<select id="sub-out">${court.map(c=>`<option value="${c.s}">${esc(athShort(c.id))} (${esc(SLOTS.find(x=>x[0]===c.s)[1])})</option>`).join('')}</select></label>
+    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}</option>`).join('')}</select></label></div></div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>Fai il cambio</button></div></div>`);
+  $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
+}
+/* -------------------- riepiloghi -------------------- */
+function statTable(evs, played, ids){
+  const P={}; const g=id=>P[id]||(P[id]={bat:0,ace:0,batE:0,ric:0,ricP:0,ricG:0,ricE:0,att:0,attP:0,attE:0,mur:0,dif:0,err:0,set:0});
+  for(const e of evs){ if(!e.a) continue; const p=g(e.a);
+    if(e.k==='bat'){ p.bat++; if(e.v==='#') p.ace++; if(e.v==='=') p.batE++; }
+    if(e.k==='ric'){ p.ric++; if(e.v==='#') p.ricP++; if(e.v==='#'||e.v==='+') p.ricG++; if(e.v==='=') p.ricE++; }
+    if(e.k==='att'){ p.att++; if(e.v==='#') p.attP++; if(e.v==='=') p.attE++; }
+    if(e.k==='mur' && e.v==='#') p.mur++;
+    if(e.k==='dif' && e.v==='+') p.dif++;
+    if(e.k==='err' || (e.k==='dif' && e.v==='=')) p.err++;
+  }
+  for(const [id,n] of Object.entries(played||{})) g(id).set=n;
+  const pc=(a,b)=>b?Math.round(100*a/b)+'%':'—';
+  const rows=Object.entries(P).filter(([id])=>!ids || ids.has(id)).map(([id,p])=>({a:getAt(id), p, pts:p.ace+p.attP+p.mur})).filter(x=>x.a).sort((x,y)=>y.pts-x.pts || fullName(x.a).localeCompare(fullName(y.a),'it'));
+  if(!rows.length) return '<div class="muted">Nessuna statistica registrata.</div>';
+  return `<div style="overflow:auto"><table class="atable stt"><thead><tr><th>Atleta</th><th class="n" title="Set giocati">Set</th><th class="n">Punti</th><th class="n" title="Battute totali / ace / errori">Battute</th><th class="n" title="Battute sbagliate">Err. batt.</th><th class="n" title="Ricezioni totali">Ricez.</th><th class="n" title="Ricezioni perfette o positive">Ric. +</th><th class="n" title="Ricezioni perfette">Ric. #</th><th class="n" title="Attacchi totali / punti / errori">Attacchi</th><th class="n" title="(punti - errori) / attacchi">Effic. att.</th><th class="n">Muri</th><th class="n">Difese</th><th class="n" title="Falli, invasioni, errori in difesa">Errori</th></tr></thead><tbody>
+    ${rows.map(({a,p,pts})=>`<tr><td style="white-space:nowrap">${avatarHTML(a,22)}<b>${esc(fullName(a))}</b></td><td class="n">${p.set||'—'}</td><td class="n"><b>${pts}</b></td><td class="n">${p.bat} / ${p.ace} / ${p.batE}</td><td class="n">${pc(p.batE,p.bat)}</td><td class="n">${p.ric}</td><td class="n">${pc(p.ricG,p.ric)}</td><td class="n">${pc(p.ricP,p.ric)}</td><td class="n">${p.att} / ${p.attP} / ${p.attE}</td><td class="n">${p.att?Math.round(100*(p.attP-p.attE)/p.att)+'%':'—'}</td><td class="n">${p.mur}</td><td class="n">${p.dif}</td><td class="n">${p.err}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:6px 0 0">Battute: totali / ace / errori · Ric. +: perfette o positive · Effic. att.: (punti − errori) ÷ attacchi.</p>`;
+}
+function playedCount(m){ const out={}; const P=(m.stats&&m.stats.live&&m.stats.live.played)||{}; for(const ids of Object.values(P)) for(const id of ids) out[id]=(out[id]||0)+1; return out; }
+function openMatchStats(){
+  const m=getMatch(ui.matchId), S=getStats(m);
+  const team={pt:S.ev.filter(OUR_PT).length, err:S.ev.filter(e=>THEIR_PT(e) && e.k!=='pl').length};
+  openModal(`<div class="modal-box" style="max-width:1000px"><div class="modal-head"><div style="flex:1"><h2>Statistiche della partita</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${S.sets.length?' · set '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''} · punti nostri ${S.ev.filter(e=>OUR_PT(e)).length} (di cui ${S.ev.filter(e=>e.k==='pt').length} su errore avversario) · errori nostri ${team.err}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body">${statTable(S.ev, playedCount(m))}</div>
+    <div class="modal-foot"><button class="btn danger" data-action="stats-reset">Azzera le statistiche</button><span style="flex:1"></span><button class="btn" data-action="stats-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
+}
+function seasonStatsHTML(){
+  const ms=db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.length);
+  if(!ms.length) return '';
+  const ev=ms.flatMap(m=>m.stats.ev), played={};
+  ms.forEach(m=>{ for(const [id,n] of Object.entries(playedCount(m))) played[id]=(played[id]||0)+n; });
+  return `<details class="panel" id="stats-sum" ${ui.ssOpen?'open':''} style="margin-top:16px"><summary><b style="font-size:18px">Statistiche della stagione</b> <span class="muted">· ${ms.length} partit${ms.length===1?'a':'e'} con statistiche</span></summary>
+    <div style="margin-top:12px">${statTable(ev, played)}</div></details>`;
+}
+document.addEventListener('toggle', e=>{ if(e.target.id==='stats-sum') ui.ssOpen=e.target.open; }, true);
 function convTable(m){
   if(!db.athletes.length) return `<div class="empty">Nessun atleta in anagrafica: aggiungili nella sezione «Atleti».</div>`;
   const ids=new Set(m.convocati||[]);
@@ -1912,9 +2314,10 @@ function viewPartita(){
     </div></div>
     <div class="panel">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Convocazioni</h2><span class="muted" id="conv-count">${convCountText(m)}</span><span style="flex:1"></span>
-        <button class="btn sm" data-action="conv-all">Tutti gli iscritti</button><button class="btn sm" data-action="conv-none">Nessuno</button></div>
+        <button class="btn sm primary" data-action="conv-suggest">✨ Suggerisci</button><button class="btn sm" data-action="conv-all">Tutti gli iscritti</button><button class="btn sm" data-action="conv-none">Nessuno</button></div>
       <div id="conv-box">${convTable(m)}</div>
     </div>
+    <div class="panel" id="form-panel">${formPanelHTML(m)}</div>
   </div>
   <div class="panel picker"><h2>Invia e stampa</h2>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Il messaggio si aggiorna da solo con i dati e i convocati; puoi ritoccarlo qui prima di inviarlo.</p>
@@ -1931,6 +2334,7 @@ function viewPartita(){
 function refreshMatch(m, field){
   $('#m-title').textContent=matchTitle(m); $('#m-sub').textContent=matchSub(m);
   $('#wa-text').value=waText(m);
+  if(field==='conv' && $('#form-panel')) $('#form-panel').innerHTML=formPanelHTML(m);
   if(field==='conv' || field==='data'){ $('#conv-box').innerHTML=convTable(m); $('#conv-count').textContent=convCountText(m); }
 }
 function touchMatch(m){
@@ -2260,6 +2664,21 @@ const actions={
   'del-match': ()=>{ const m=getMatch(ui.matchId); if(!m || !confirm(`Eliminare la partita «${matchTitle(m)}»?`)) return; clearTimeout(touchMatch._t);
     api('DELETE','/api/partite/'+encodeURIComponent(m.id)).then(()=>{ db.matches=db.matches.filter(x=>x.id!==m.id); go('partite'); toast('Partita eliminata'); }).catch(saveFail); },
   'conv-all': ()=>{ const m=getMatch(ui.matchId); m.convocati=db.athletes.filter(a=>a.iscritto).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); },
+  'conv-suggest': ()=>openSuggest(),
+  'rot-view': ()=>openRotations(),
+  'rot-print': ()=>printRotations(),
+  'live-open': ()=>{ const m=getMatch(ui.matchId); getStats(m); markPlayed(m); ui.livePick=null; go('live',{matchId:m.id}); },
+  'live-close': ()=>go('partita',{matchId:ui.matchId}),
+  'live-pt': ()=>liveEvent('pt'),
+  'live-pl': ()=>liveEvent('pl'),
+  'live-undo': ()=>liveUndo(),
+  'live-endset': ()=>liveEndSet(),
+  'live-sub': ()=>liveSub(),
+  'live-servo': ()=>{ const m=getMatch(ui.matchId), L=getStats(m).live; L.servo=!L.servo; touchMatch(m); rerenderLive(); },
+  'stats-match': ()=>openMatchStats(),
+  'stats-print': ()=>{ const m=getMatch(ui.matchId), S=getStats(m); doPrint(`<div class="p-head">${headTeam()}<h1>Statistiche</h1><div class="p-meta"><span><b>${esc(matchTitle(m))}</b></span><span>${m.data?esc(fmtDate(m.data)):''}</span><span>${S.sets.map(x=>x.noi+'-'+x.loro).join(', ')}</span></div></div>`+statTable(S.ev, playedCount(m)), 'Statistiche'); },
+  'stats-reset': ()=>{ const m=getMatch(ui.matchId); if(!confirm('Cancellare tutte le statistiche di questa partita (azioni, set, punteggio)?')) return; m.stats=null; touchMatch(m); closeModal(); if(ui.view==='live') rerenderLive(); else render(); toast('Statistiche azzerate'); },
+  'print-convsum': ()=>printConvSummary(),
   'conv-none': ()=>{ const m=getMatch(ui.matchId); m.convocati=[]; touchMatch(m); refreshMatch(m,'conv'); },
   'wa-copy': ()=>copyText($('#wa-text').value),
   'wa-open': ()=>{ window.open('https://wa.me/?text='+encodeURIComponent($('#wa-text').value), '_blank'); },
@@ -2328,6 +2747,11 @@ document.addEventListener('click', e=>{
   if(a.closest('.sed')) return;
   const fn=actions[a.dataset.action]; if(fn){ e.preventDefault(); fn(a,e); }
 });
+document.addEventListener('click', e=>{
+  if(ui.view!=='live') return;
+  const pk=e.target.closest('[data-pick]'); if(pk){ ui.livePick = ui.livePick===pk.dataset.pick ? null : pk.dataset.pick; rerenderLive(); return; }
+  const ev=e.target.closest('[data-ev]'); if(ev) liveEvent(ev.dataset.ev, ev.dataset.v);
+});
 document.addEventListener('input', e=>{
   const t=e.target;
   if(t.id==='ex-q'){ ui.f.q=t.value; $('#ex-results').innerHTML=exResults(); return; }
@@ -2356,6 +2780,10 @@ document.addEventListener('change', e=>{
   if(t.closest('#at-form') && t.name==='dataNascita') refreshAtDerived();
   if(t.dataset.conv){ const m=getMatch(ui.matchId); if(!m) return; const s=new Set(m.convocati||[]); if(t.checked) s.add(t.dataset.conv); else s.delete(t.dataset.conv);
     m.convocati=db.athletes.filter(a=>s.has(a.id)).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); return; }
+  if(t.dataset.fs){ const m=getMatch(ui.matchId); if(!m) return; const f=getForm(m); const k=t.dataset.fs;
+    f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
+  if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; markPlayed(m); touchMatch(m); rerenderLive(); return; }
+  if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if(t.id==='p-all'){ ui.pAll=t.checked; $('#reg').innerHTML=regTable(); return; }
   if(t.dataset.calday!==undefined){ const c=getCal(); if(t.checked) c.giorni[t.dataset.calday]=c.giorni[t.dataset.calday]||''; else delete c.giorni[t.dataset.calday]; saveCal(c);
     const box=t.closest('.dayopt'); box.classList.toggle('on',t.checked); box.querySelector('input[type=time]').disabled=!t.checked; return; }

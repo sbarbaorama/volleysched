@@ -580,6 +580,8 @@ a.btn{text-decoration:none;color:inherit}
   .cards{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
   .rotgrid{grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
 
+}
+@media (orientation: landscape) and (max-height: 520px), (orientation: landscape) and (pointer: coarse) and (min-height: 521px) and (max-width: 1440px){
   /* statistiche: tutto in una schermata */
   body.live-land{padding:0}
   body.live-land .topbar{display:none}
@@ -610,6 +612,78 @@ a.btn{text-decoration:none;color:inherit}
   .ll-acts .abtn .asym{font-size:26px}
   .ll-foot{display:flex;gap:5px}
   .ll-foot .btn{flex:1;justify-content:center;padding:5px 4px;font-size:12.5px}
+}
+
+/* ---------- TABLET ---------- */
+/* intestazione compatta: evita che il menu allarghi la pagina oltre lo schermo */
+@media (min-width:761px) and (max-width:1180px) and (min-height:521px){
+  .topbar{gap:12px;padding:6px 16px}
+  .brand small{display:none}
+  .nav{gap:2px;flex:1;justify-content:center}
+  .nav button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 12px;font-size:12px;border-radius:12px;position:relative}
+  .nav .ni{display:block;font-size:20px;line-height:1.15}
+  .nav .nl-x{display:none}
+  .topbar .spacer{display:none}
+  .sync-pill{flex:none;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+  .live-top{top:64px}
+}
+@media (min-width:761px) and (max-width:900px) and (min-height:521px){ .sync-pill span{display:none} .sync-pill{padding:8px 10px} }
+/* statistiche in partita su tablet (touch, schermo grande) */
+@media (pointer: coarse) and (min-width:761px) and (min-height:521px){
+  .live-top{padding:12px 18px;gap:10px 20px}
+  .live-top .sc{font-size:40px}
+  .live-top [data-action=live-pt], .live-top [data-action=live-pl]{font-size:22px;padding:14px 26px;border-radius:14px;font-weight:800}
+  .live-top [data-action=live-undo]{font-size:16px;padding:10px 16px}
+  .serve{font-size:16px;padding:6px 14px}
+  .pchip{font-size:17px;padding:8px 14px 8px 8px}
+  .pchip .nr{min-width:32px;height:32px;font-size:14px}
+  .abtn{min-height:76px}
+  .abtn .asym{font-size:32px}
+  .abtn .acap{font-size:12.5px}
+  .actbox h4{font-size:13px}
+  /* orizzontale: tutto in una schermata, più grande */
+  .ll{gap:12px;padding:10px 14px}
+  .ll>div{gap:10px}
+  .ll-score{padding:10px 12px;gap:8px;border-radius:14px}
+  .ll-score .sc{font-size:46px}
+  .ll-score .st{font-size:14px}
+  .ll-score .btn{font-size:17px;padding:8px 12px}
+  .ll-score [data-action=live-pt], .ll-score [data-action=live-pl]{font-size:24px;padding:14px 18px;border-radius:14px;font-weight:800}
+  .ll-score .serve{font-size:16px;padding:5px 12px}
+  .ll-score select{font-size:16px;padding:4px 6px}
+  .ll-players{gap:8px}
+  .ll-players .pchip{font-size:18px;border-radius:12px;padding:4px 10px 4px 6px}
+  .ll-players .pchip .nr{min-width:34px;height:34px;font-size:15px}
+  .ll-last{font-size:15px;padding:6px 10px}
+  .ll-acts{gap:8px}
+  .ll-acts .actbox{padding:6px 8px 8px;border-radius:12px}
+  .ll-acts .actbox h4{font-size:13px;margin-bottom:4px}
+  .ll-acts .row{gap:6px}
+  .ll-acts .abtn{min-height:0;border-radius:10px}
+  .ll-acts .abtn .asym{font-size:40px}
+  .ll-foot{gap:8px}
+  .ll-foot .btn{font-size:17px;padding:12px 6px}
+}
+/* tablet in verticale: giocatori e campo affiancati, azioni a tutta larghezza */
+@media (pointer: coarse) and (orientation: portrait) and (min-width:761px){
+  .live-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;grid-template-areas:"chi court" "cosa cosa" "last last";gap:12px!important;align-items:start}
+  .live-grid>div{display:contents}
+  .live-grid>div:first-child>.panel:nth-child(1){grid-area:chi}
+  .live-grid>div:first-child>.panel:nth-child(2){grid-area:cosa}
+  .live-grid>div:last-child>.panel:has(svg){grid-area:court}
+  .live-grid>div:last-child>.panel:not(:has(svg)){grid-area:last}
+  .live-grid .panel{margin:0}
+  .live-grid .pchips{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .live-grid .pchip{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .live-grid .actgrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .live-grid .abtn{min-height:70px}
+  .live-grid .pchip{padding:5px 10px 5px 6px}
+  .live-grid .panel{padding:12px 16px}
+  .live-grid .panel h2{margin-bottom:6px!important}
+  .live-top{flex-wrap:nowrap;gap:12px}
+  .live-top [data-action=live-pt], .live-top [data-action=live-pl]{padding:14px 18px}
+  .live-top [data-action=live-undo]{padding:10px 12px}
+  .live-grid .abtn .asym{font-size:36px}
 }
 
 #print-area{display:none}
@@ -2360,7 +2434,7 @@ function onCourt(m){ const who=liveWho(m), f=getForm(m), L=getStats(m).live, z=r
   const ids=z.map(s=>who(s)); if(f.libero && f.L) ids.push(f.L); return ids.filter(Boolean); }
 function markPlayed(m){ const L=getStats(m).live; const s=new Set(L.played[L.set]||[]); onCourt(m).forEach(id=>s.add(id)); L.played[L.set]=[...s]; }
 
-const isLand=()=>window.matchMedia('(orientation: landscape) and (max-height: 520px)').matches;
+const isLand=()=>window.matchMedia('(orientation: landscape) and (max-height: 520px), (orientation: landscape) and (pointer: coarse) and (min-height: 521px) and (max-width: 1440px)').matches;
 function viewLiveLand(){
   const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
   const f=getForm(m), S=getStats(m), L=S.live, who=liveWho(m), z=rotAt(L.k), server=who(z[0]);
@@ -2405,7 +2479,7 @@ function viewLive(){
     <button class="btn sm" data-action="live-undo" style="margin-left:auto" ${S.ev.length?'':'disabled'}>↶ Annulla</button>
   </div>
   ${formOk(f)?'':`<div class="warn" style="margin-top:12px">La formazione non è completa: i giocatori in campo e la rotazione non vengono seguiti. Completala nella pagina della partita.</div>`}
-  <div class="sess-layout" style="margin-top:14px;grid-template-columns:minmax(0,1fr) 330px">
+  <div class="sess-layout live-grid" style="margin-top:14px;grid-template-columns:minmax(0,1fr) 330px">
     <div>
       <div class="panel"><h2 style="margin-bottom:8px">1. Chi?</h2>
         <div class="pchips">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>

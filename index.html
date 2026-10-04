@@ -1736,8 +1736,8 @@ function renderNavBadge(){
 }
 function filteredAt(){
   const f=ui.af, q=f.q.toLowerCase().trim();
-  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.ruolo,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento].join(' ').toLowerCase().includes(w)))
-      && (!f.ruolo || a.ruolo===f.ruolo) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
+  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento].join(' ').toLowerCase().includes(w)))
+      && (!f.ruolo || a.ruolo===f.ruolo || a.ruolo2===f.ruolo) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
     .sort((x,y)=>(x.cognome||'').localeCompare(y.cognome||'','it') || (x.nome||'').localeCompare(y.nome||'','it'));
 }
 const isPhone=()=>window.matchMedia('(max-width:760px)').matches;
@@ -1745,7 +1745,7 @@ function atCards(l){
   if(!db.athletes.length) return `<div class="empty" style="margin:10px">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div>`;
   if(!l.length) return `<div class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</div>`;
   return l.map(a=>{ const age=ageOf(a), p=seasonPct(a.id);
-    const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', a.ruolo, a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
+    const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', roleText(a), a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
     const b=[a.cellulare?`<a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 ${esc(a.cellulare)}</a>`:'', a.dataNascita?`<span><b>Compleanno</b> ${bdayBadge(a,true)}</span>`:'',
       a.scadenzaVisita?`<span><b>Visita</b> ${scadBadge(a.scadenzaVisita)}</span>`:'', a.scadenzaDocumento?`<span><b>Documento</b> ${scadBadge(a.scadenzaDocumento)}</span>`:'', a.taglia?`<span><b>Taglia</b> ${esc(a.taglia)}</span>`:''].filter(Boolean).join('');
     return `<div class="atc ${a.iscritto?'':'off'}">${avatarHTML(a,40)}<div><div class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}${a.note?' 📝':''}</div><div class="meta">${meta||'&nbsp;'}</div></div>
@@ -1758,7 +1758,7 @@ function atRows(){
   if(!l.length) return `<tr><td colspan="13" class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</td></tr>`;
   return l.map(a=>{ const age=ageOf(a); return `<tr class="${a.iscritto?'':'off'}"><td class="n" style="font-weight:800;font-size:15px">${esc(a.numeroMaglia)}</td>
     <td style="white-space:nowrap">${avatarHTML(a,30)}<span class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}</span>${a.note?` <span title="${esc(a.note)}" style="cursor:help">📝</span>`:''}</td>
-    <td>${esc(a.ruolo)||'<span class="muted">—</span>'}</td>
+    <td>${esc(roleText(a))||'<span class="muted">—</span>'}</td>
     <td style="text-align:center">${esc(a.sesso)||'<span class="muted">—</span>'}</td>
     <td class="n">${age===null?'<span class="muted">—</span>':age}</td>
     <td style="white-space:nowrap">${a.cellulare?`<a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">${esc(a.cellulare)}</a>`:'<span class="muted">—</span>'}</td>
@@ -1796,7 +1796,7 @@ function viewAtleti(){
   </section>`;
 }
 function openAtModal(id){
-  const a = id ? clone(getAt(id)) : {id:null,nome:'',cognome:'',cellulare:'',ruolo:'',sesso:'',dataNascita:'',scadenzaVisita:'',scadenzaDocumento:'',taglia:'',numeroMaglia:'',numeroDocumento:'',avatar:'',iscritto:true,note:''};
+  const a = id ? clone(getAt(id)) : {id:null,nome:'',cognome:'',cellulare:'',ruolo:'',ruolo2:'',sesso:'',dataNascita:'',scadenzaVisita:'',scadenzaDocumento:'',taglia:'',numeroMaglia:'',numeroDocumento:'',avatar:'',iscritto:true,note:''};
   ui.atDraft=a; const age=ageOf(a);
   const opt=(list,v)=>list.map(x=>`<option value="${esc(x[0])}" ${v===x[0]?'selected':''}>${esc(x[1])}</option>`).join('');
   openModal(`<div class="modal-box" style="max-width:780px"><form id="at-form" autocomplete="off" onsubmit="return false">
@@ -1807,6 +1807,7 @@ function openAtModal(id){
       <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
       <label class="f">Cellulare<input type="tel" name="cellulare" value="${esc(a.cellulare)}" placeholder="Es. 333 1234567"></label>
       <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
+      <label class="f">Secondo ruolo (se può giocare anche lì)<input type="text" name="ruolo2" list="dl-ruoli" value="${esc(a.ruolo2||'')}" placeholder="Es. Banda"></label>
       <label class="f">Sesso<select name="sesso"><option value="">—</option>${opt([['M','Maschile'],['F','Femminile']],a.sesso)}</select></label>
       <label class="f">Taglia maglia gara<select name="taglia"><option value="">—</option>${opt([...new Set([...TAGLIE, a.taglia].filter(Boolean))].map(t=>[t,t]),a.taglia)}</select></label>
       <label class="f">Data di nascita<input type="date" name="dataNascita" value="${esc(a.dataNascita)}"></label>
@@ -1830,7 +1831,7 @@ function refreshAtDerived(){
 }
 async function saveAt(){
   const fd=new FormData($('#at-form')), a=ui.atDraft;
-  for(const k of ['nome','cognome','cellulare','ruolo','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
+  for(const k of ['nome','cognome','cellulare','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
   a.iscritto=!!fd.get('iscritto');
   if(!a.nome && !a.cognome){ alert('Inserisci almeno il nome o il cognome.'); $('#at-form [name=nome]').focus(); return; }
   const isNew=!a.id; if(isNew){ a.id=newId('at'); a.createdAt=Date.now(); }
@@ -1920,7 +1921,7 @@ function viewPartite(){
 /* ============================================================
    Convocazioni: suggerimento automatico e riepilogo
    ============================================================ */
-const ROLE_QUOTA_DEF={'Palleggiatore':2,'Banda':4,'Centrale':3,'Opposto':2,'Libero':0};
+const ROLE_QUOTA_DEF={'Palleggiatore':2,'Banda':4,'Centrale':4,'Opposto':2,'Libero':0};
 const ROLE_LBL_NOTE='';
 const isPlayed=m=>!!m.data && (m.data<todayISO() || !!(m.risultato||'').trim());
 function convCount(aid, beforeISO, exceptId){   // partite giocate in cui l'atleta era convocato
@@ -1939,30 +1940,38 @@ function suggestCandidates(m, o){
   return {cands:out, excl};
 }
 const isF=a=>/^f/i.test(a.sesso||'');
+const isM=a=>/^m/i.test(a.sesso||'');
+function sexOf(a){ return isF(a)?'F':isM(a)?'M':''; }
+function rolesOf(a){ return [roleKey(a.ruolo), roleKey(a.ruolo2)].filter(Boolean); }
+function roleText(a){ return [a.ruolo, a.ruolo2].filter(Boolean).join(' / '); }
 function suggestList(m, o){
-  const {cands, excl}=suggestCandidates(m, o), N=Math.max(1, o.n|0), pick=[], warn=[];
+  const {cands, excl}=suggestCandidates(m, o), cap={M:Math.max(0,o.men|0), F:Math.max(0,o.women|0)}, N=cap.M+cap.F, pick=[], warn=[];
+  const cnt=s=>pick.filter(c=>sexOf(c.a)===s).length;
+  const room=c=>{ const s=sexOf(c.a); return !!s && cnt(s)<cap[s]; };
   const take=(c,why)=>{ c.why=why; pick.push(c); };
   const free=()=>cands.filter(c=>!pick.includes(c));
+  cands.forEach(c=>{ c.why=''; });
   if(o.mode==='ruoli'){
-    const roles=Object.entries(o.quota).filter(([r,q])=>q>0);
-    roles.sort((x,y)=>cands.filter(c=>roleKey(c.a.ruolo)===roleKey(x[0])).length-cands.filter(c=>roleKey(c.a.ruolo)===roleKey(y[0])).length);
-    for(const [r,q] of roles){
-      const L=free().filter(c=>roleKey(c.a.ruolo)===roleKey(r)).slice(0,q);
-      L.forEach(c=>take(c,''));
-      if(L.length<q) warn.push(`${r}: ${q-L.length} mancant${q-L.length===1?'e':'i'}`);
+    const roles=Object.entries(o.quota).filter(([r,q])=>q>0).map(([r,q])=>[r,q,roleKey(r)]);
+    const avail=k=>cands.filter(c=>rolesOf(c.a).includes(k)).length;
+    roles.sort((x,y)=>avail(x[2])-avail(y[2]));
+    const need={}; roles.forEach(([r,q,k])=>need[k]=(need[k]||0)+q);
+    for(const pass of [0,1]){            // 0 = ruolo principale, 1 = secondo ruolo
+      for(const [r,q,k] of roles){
+        for(const c of free()){
+          if(need[k]<=0 || pick.length>=N) break;
+          const ok = pass===0 ? roleKey(c.a.ruolo)===k : roleKey(c.a.ruolo2)===k;
+          if(ok && room(c)){ take(c, pass?`come ${r} (2° ruolo)`:''); need[k]--; }
+        }
+      }
     }
-    if(pick.length>N) pick.splice(N);
+    for(const [r,q,k] of roles) if(need[k]>0){ warn.push(`${r}: ${need[k]} mancant${need[k]===1?'e':'i'}`); need[k]=0; }
   }
-  for(const c of free()){ if(pick.length>=N) break; take(c, o.mode==='ruoli'?'completa la lista':''); }
-  // minimo di donne (campionati misti)
-  let need=Math.max(0,(o.minF|0)-pick.filter(c=>isF(c.a)).length);
-  while(need>0){
-    const w=free().find(c=>isF(c.a)); if(!w){ warn.push(`mancano ${need} atlete per il minimo richiesto`); break; }
-    const men=pick.filter(c=>!isF(c.a));
-    if(!men.length) break;
-    const same=men.filter(c=>c.a.ruolo===w.a.ruolo), out=(same.length?same:men).sort((x,y)=>y.rank-x.rank)[0];
-    pick.splice(pick.indexOf(out),1); take(w, 'per il minimo di donne'); need--;
-  }
+  for(const c of free()){ if(pick.length>=N) break; if(room(c)) take(c, o.mode==='ruoli'?'completa la lista':''); }
+  const sF=cap.F-cnt('F'), sM=cap.M-cnt('M');
+  if(sF>0) warn.push(`solo ${cnt('F')} donne disponibili su ${cap.F}`);
+  if(sM>0) warn.push(`solo ${cnt('M')} uomini disponibili su ${cap.M}`);
+  for(const c of free()){ if(pick.length>=N) break; take(c, !sexOf(c.a)?'sesso non indicato in anagrafica':(sF>0?'al posto di una donna':'al posto di un uomo')); }
   if(pick.length<N) warn.push(`solo ${pick.length} atleti disponibili su ${N}`);
   pick.sort((x,y)=>x.rank-y.rank);
   return {pick, rest:free(), excl, warn};
@@ -1970,21 +1979,21 @@ function suggestList(m, o){
 function marksHTML(st){ return st.n?`<span class="dots">${st.marks.map(s=>`<i class="dot d${s}"></i>`).join('')}</span>`:'<span class="muted">—</span>'; }
 function suggestRows(L, chk){
   return L.map(c=>`<tr><td style="width:30px">${chk?`<input type="checkbox" data-sg="${c.a.id}" ${chk==='on'?'checked':''}>`:''}</td>
-    <td class="num">${esc(c.a.numeroMaglia)||'–'}</td><td>${avatarHTML(c.a,24)}<b>${esc(fullName(c.a))}</b><div class="muted" style="font-size:12px">${[c.a.ruolo||'ruolo non indicato', isF(c.a)?'F':'', c.why].filter(Boolean).map(esc).join(' · ')}</div></td>
+    <td class="num">${esc(c.a.numeroMaglia)||'–'}</td><td>${avatarHTML(c.a,24)}<b>${esc(fullName(c.a))}</b><div class="muted" style="font-size:12px">${[roleText(c.a)||'ruolo non indicato', isF(c.a)?'donna':isM(c.a)?'uomo':'', c.why].filter(Boolean).map(esc).join(' · ')}</div></td>
     <td style="white-space:nowrap">${marksHTML(c.st)} <b>${c.st.n?c.pres+'/'+c.st.n:''}</b></td><td style="text-align:center">${c.played}</td></tr>`).join('');
 }
 function openSuggest(){
   const m=getMatch(ui.matchId); if(!m) return;
   if(!db.athletes.some(a=>a.iscritto)){ alert('Non ci sono atleti iscritti in anagrafica.'); return; }
   const roles=Object.keys(ROLE_QUOTA_DEF);
-  const o=ui.sugg=Object.assign({mode:'presenze', n:12, minF:0, noVisita:true, quota:Object.fromEntries(roles.map(r=>[r, ROLE_QUOTA_DEF[r]||0]))}, ui.sugg||{});
+  const o=ui.sugg=Object.assign({mode:'presenze', men:6, women:6, noVisita:true, quota:Object.fromEntries(roles.map(r=>[r, ROLE_QUOTA_DEF[r]||0]))}, ui.sugg||{});
   openModal(`<div class="modal-box" style="max-width:860px">
     <div class="modal-head"><div style="flex:1"><h2>Suggerisci i convocati</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${m.data?' · '+esc(fmtDate(m.data)):''}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body">
       <div class="seg" id="sg-mode"><label><input type="radio" name="sgmode" value="presenze" ${o.mode==='presenze'?'checked':''}> In base alle presenze</label><label><input type="radio" name="sgmode" value="ruoli" ${o.mode==='ruoli'?'checked':''}> In base ai ruoli (e alle presenze)</label></div>
       <div class="grid g3" style="margin-bottom:10px">
-        <label class="f">Quanti convocati<input type="number" id="sg-n" min="1" max="30" value="${o.n}"></label>
-        <label class="f">Minimo di donne in lista<input type="number" id="sg-f" min="0" max="20" value="${o.minF}"></label>
+        <label class="f">Uomini<input type="number" id="sg-m" min="0" max="20" value="${o.men}"></label>
+        <label class="f">Donne<input type="number" id="sg-w" min="0" max="20" value="${o.women}"></label>
         <label class="sw" style="align-self:end"><input type="checkbox" id="sg-vis" ${o.noVisita?'checked':''}> Escludi chi ha la visita scaduta</label>
       </div>
       <div id="sg-quota" class="${o.mode==='ruoli'?'':'hidden'}" style="margin-bottom:12px"><div class="muted" style="font-size:13px;margin-bottom:6px">Quanti per ruolo (5-1):</div>
@@ -1997,9 +2006,9 @@ function openSuggest(){
   const box=$('#modal .modal-box');
   const draw=()=>{
     const r=suggestList(m,o);
-    $('#sg-qsum').textContent=`Totale per ruolo: ${Object.values(o.quota).reduce((s,q)=>s+(+q||0),0)} su ${o.n}`;
+    $('#sg-qsum').textContent=`Totale per ruolo: ${Object.values(o.quota).reduce((s,q)=>s+(+q||0),0)} su ${o.men+o.women}. Chi ha un secondo ruolo viene usato anche lì se mancano giocatori del ruolo.`;
     $('#sg-out').innerHTML=`${r.warn.length?`<div class="warn" style="margin-bottom:10px">⚠ ${r.warn.map(esc).join(' · ')}</div>`:''}
-      <table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Proposti (${r.pick.length})</th><th>Ultimi 5 all.</th><th style="text-align:center" title="Partite giocate finora da convocato">Conv.</th></tr></thead><tbody>${suggestRows(r.pick,'on')}</tbody></table>
+      <table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Proposti (${r.pick.length} · ${r.pick.filter(c=>isM(c.a)).length} U · ${r.pick.filter(c=>isF(c.a)).length} D)</th><th>Ultimi 5 all.</th><th style="text-align:center" title="Partite giocate finora da convocato">Conv.</th></tr></thead><tbody>${suggestRows(r.pick,'on')}</tbody></table>
       ${r.rest.length?`<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Altri disponibili (${r.rest.length})</summary><table class="ctable"><tbody>${suggestRows(r.rest,'off')}</tbody></table></details>`:''}
       ${r.excl.length?`<div class="muted" style="font-size:12.5px;margin-top:10px">Esclusi: ${r.excl.map(x=>esc(fullName(x.a))+' ('+x.why+')').join(', ')}</div>`:''}`;
     const upd=()=>{ $('#sg-count').textContent=$$('#sg-out [data-sg]:checked').length+' selezionati'; };
@@ -2008,8 +2017,8 @@ function openSuggest(){
   box.addEventListener('input', e=>{
     const t=e.target;
     if(t.name==='sgmode'){ o.mode=t.value; $('#sg-quota').classList.toggle('hidden', o.mode!=='ruoli'); }
-    else if(t.id==='sg-n') o.n=Math.max(1,parseInt(t.value,10)||12);
-    else if(t.id==='sg-f') o.minF=Math.max(0,parseInt(t.value,10)||0);
+    else if(t.id==='sg-m') o.men=Math.max(0,parseInt(t.value,10)||0);
+    else if(t.id==='sg-w') o.women=Math.max(0,parseInt(t.value,10)||0);
     else if(t.id==='sg-vis') o.noVisita=t.checked;
     else if(t.dataset.quota) o.quota[t.dataset.quota]=Math.max(0,parseInt(t.value,10)||0);
     else return;
@@ -2038,7 +2047,7 @@ function convSummaryHTML(){
   const S=convSummary(ui.csAll);
   if(!db.athletes.length) return '';
   const rows=S.L.map(x=>{ const low=S.played && x.n < S.avg-1, high=S.played && x.n > S.avg+1, pct=S.played?Math.round(100*x.n/S.played):0;
-    return `<tr class="${x.a.iscritto?'':'off'}"><td>${avatarHTML(x.a,24)}<b class="nm" data-action="edit-at" data-id="${x.a.id}">${esc(fullName(x.a))}</b></td><td class="muted">${esc(x.a.ruolo)||'—'}</td>
+    return `<tr class="${x.a.iscritto?'':'off'}"><td>${avatarHTML(x.a,24)}<b class="nm" data-action="edit-at" data-id="${x.a.id}">${esc(fullName(x.a))}</b></td><td class="muted">${esc(roleText(x.a))||'—'}</td>
       <td style="min-width:150px"><div style="display:flex;align-items:center;gap:8px"><b style="min-width:42px;text-align:right">${x.n} / ${S.played}</b><span class="compbar" style="flex:1;min-width:60px"><span style="width:${pct}%;background:${low?'#e0a020':high?'#2f6fb8':'#22a05a'}"></span></span></div></td>
       <td style="text-align:center">${x.next||'<span class="muted">—</span>'}</td>
       <td class="n">${x.sp===null?'<span class="muted">—</span>':x.sp+'%'}</td>
@@ -2099,7 +2108,7 @@ function courtSVG(f, k, mode, opt={}){
     const r=SLOT_ROLE[p.slot], id=who(p.slot), sel=opt.sel && id===opt.sel;
     s+=`<g ${opt.click?`data-pick="${esc(id)}" style="cursor:pointer"`:''}><circle cx="${x}" cy="${y}" r="21" fill="${ROLE_COL[r]}" stroke="${sel?'#e07b22':'#fff'}" stroke-width="${sel?5:2.5}"/>
       <text x="${x}" y="${y+5}" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">${esc(id?athNum(id):p.slot)}</text>
-      <text x="${x}" y="${y+35}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44">${esc(id?athShort(id):'')}</text></g>`;
+      <text x="${x}" y="${y+35}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44">${esc(id?athShort(id):'')}</text>${id&&getAt(id)&&sexOf(getAt(id))?`<circle cx="${x+17}" cy="${y-15}" r="8" fill="#fff" stroke="#1f2a44" stroke-width="1"/><text x="${x+17}" y="${y-11.5}" text-anchor="middle" font-size="10" font-weight="800" fill="${isF(getAt(id))?'#c2185b':'#1f4f8f'}">${isF(getAt(id))?'D':'U'}</text>`:''}</g>`;
   }
   if(opt.serve && mode==='partenza') s+=`<text x="285" y="326" text-anchor="end" font-size="10.5" fill="#8a5a00" font-weight="700">batte</text>`;
   return s+'</svg>';
@@ -2107,16 +2116,41 @@ function courtSVG(f, k, mode, opt={}){
 function formOptions(m, f, slot){
   const conv=convocati(m), pool=conv.length?conv:db.athletes.filter(a=>a.iscritto);
   const want=SLOT_ROLE[slot], used=new Set(Object.entries(f).filter(([k,v])=>k!==slot && v && SLOTS.concat([['L']]).some(([s])=>s===k)).map(([,v])=>v));
-  const fit=pool.filter(a=>roleKey(a.ruolo)===want), other=pool.filter(a=>roleKey(a.ruolo)!==want);
-  const o=a=>`<option value="${a.id}" ${f[slot]===a.id?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}${used.has(a.id)?' (già in campo)':''}</option>`;
+  const fit=pool.filter(a=>roleKey(a.ruolo)===want), fit2=pool.filter(a=>roleKey(a.ruolo)!==want && roleKey(a.ruolo2)===want), other=pool.filter(a=>!fit.includes(a) && !fit2.includes(a));
+  const o=a=>`<option value="${a.id}" ${f[slot]===a.id?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'})${used.has(a.id)?' – già in campo':''}</option>`;
   const extra=f[slot] && !pool.some(a=>a.id===f[slot]) && getAt(f[slot]) ? o(getAt(f[slot])) : '';
-  return `<option value="">—</option>${extra}${fit.length?`<optgroup label="Ruolo giusto">${fit.map(o).join('')}</optgroup>`:''}${other.length?`<optgroup label="Altri">${other.map(o).join('')}</optgroup>`:''}`;
+  return `<option value="">—</option>${extra}${fit.length?`<optgroup label="Ruolo principale">${fit.map(o).join('')}</optgroup>`:''}${fit2.length?`<optgroup label="Secondo ruolo">${fit2.map(o).join('')}</optgroup>`:''}${other.length?`<optgroup label="Altri">${other.map(o).join('')}</optgroup>`:''}`;
+}
+function autoForm(m){
+  const f=getForm(m), conv=convocati(m), pool=(conv.length?conv:db.athletes.filter(a=>a.iscritto));
+  const ref=m.data||'9999-12-31', pres=a=>{ const st=absStats(a.id, ref); return st.n-st.ass; };
+  const order=['P','O','C1','C2','B1','B2'];   // prima i ruoli con meno scelta
+  let best=null;
+  for(const first of ['F','M']){
+    const sexFor=slot=>{ const i=ORDER.indexOf(slot); return i%2===0?first:(first==='F'?'M':'F'); };
+    const used=new Set(), res={}; let score=0, miss=0, second=[];
+    for(const slot of order){
+      const want=SLOT_ROLE[slot], sx=sexFor(slot);
+      const c=pool.filter(a=>!used.has(a.id) && sexOf(a)===sx).map(a=>({a, fit:roleKey(a.ruolo)===want?2:roleKey(a.ruolo2)===want?1:0, p:pres(a)}))
+        .sort((x,y)=>(y.fit-x.fit)||(y.p-x.p))[0];
+      if(c){ res[slot]=c.a.id; used.add(c.a.id); score+=c.fit*10+c.p; if(c.fit===1) second.push(athShort(c.a.id)+' come '+SLOTS.find(x=>x[0]===slot)[1].replace(/ \d$/,'')); if(!c.fit) miss++; }
+      else { res[slot]=''; miss+=2; }
+    }
+    score-=miss*25;
+    if(!best || score>best.score) best={res, score, second, miss};
+  }
+  Object.assign(f, best.res); m.formazione=f; touchMatch(m);
+  $('#form-panel').innerHTML=formPanelHTML(m);
+  toast(best.miss ? 'Formazione proposta: controlla i posti segnalati' : 'Formazione proposta'+(best.second.length?' · '+best.second.join(', '):''));
 }
 function formWarn(m,f){
   const w=[], ids=SLOTS.map(([s])=>f[s]).concat(f.libero?[f.L]:[]).filter(Boolean), conv=new Set(m.convocati||[]);
   if(new Set(ids).size<ids.length) w.push('la stessa persona è in due posti');
   if(conv.size && ids.some(id=>!conv.has(id))) w.push('c\'è chi non è tra i convocati');
   const miss=SLOTS.filter(([s])=>!f[s]).map(([,l])=>l); if(miss.length) w.push('manca: '+miss.join(', '));
+  if(!miss.length){ const sx=ORDER.map(s=>{ const a=getAt(f[s]); return a?sexOf(a):''; });
+    if(sx.some(x=>!x)) w.push('a qualcuno manca il sesso in anagrafica');
+    else if(!sx.every((x,i)=>x!==sx[(i+1)%6])) w.push('in campo uomini e donne devono essere alternati (3 e 3): nell\'ordine Palleggiatore, Banda 1, Centrale 1, Opposto, Banda 2, Centrale 2 si alternano uomo e donna'); }
   return w;
 }
 function formPanelHTML(m){
@@ -2129,7 +2163,7 @@ function formPanelHTML(m){
       <label class="fslot" style="flex-direction:row;align-items:center;gap:8px">Si parte in<select data-fs="start" style="width:auto">${ROTNAME.map((n,i)=>`<option value="${i}" ${+f.start===i?'selected':''}>${n} (palleggiatore in zona ${n.slice(1)})</option>`).join('')}</select></label>
     </div>
     ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}
-    <div class="actions" style="margin-top:12px"><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
+    <div class="actions" style="margin-top:12px"><button class="btn" data-action="form-auto">✨ Proponi formazione</button><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
       <button class="btn primary" data-action="live-open">📊 ${st?'Riprendi le statistiche':'Statistiche in partita'}</button>${st?`<button class="btn" data-action="stats-match">Riepilogo statistiche</button>`:''}</div>`;
 }
 function rotCardsHTML(m, f){
@@ -2230,9 +2264,11 @@ function liveSub(){
   const court=z.map(s=>({s, id:who(s)})), bench=convocati(m).filter(a=>!onCourt(m).includes(a.id));
   openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><div style="flex:1"><h2>Cambio</h2></div><button class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body"><div class="grid g2"><label class="f">Esce<select id="sub-out">${court.map(c=>`<option value="${c.s}">${esc(athShort(c.id))} (${esc(SLOTS.find(x=>x[0]===c.s)[1])})</option>`).join('')}</select></label>
-    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}</option>`).join('')}</select></label></div></div>
+    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div></div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>Fai il cambio</button></div></div>`);
-  $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
+  $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; const outA=getAt(who(s)), inA=getAt(id);
+    if(outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Fare il cambio lo stesso?')) return;
+    S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
 }
 /* -------------------- riepiloghi -------------------- */
 function statTable(evs, played, ids){
@@ -2281,9 +2317,9 @@ function convTable(m){
       <td style="width:30px"><input type="checkbox" id="cv-${a.id}" data-conv="${a.id}" ${on?'checked':''}></td>
       <td class="num">${esc(a.numeroMaglia)||'–'}</td>
       <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
-      <td class="muted">${esc(a.ruolo)}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
+      <td class="muted">${esc(roleText(a))}${a.sesso?' · '+(isF(a)?'D':'U'):''}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
 }
-function convCountText(m){ const c=convocati(m).length; return `${c} convocat${c===1?'o':'i'}`; }
+function convCountText(m){ const L=convocati(m), c=L.length, u=L.filter(isM).length, d=L.filter(isF).length; return `${c} convocat${c===1?'o':'i'}`+(c?` · ${u} U · ${d} D`:'')+(c && (u!==d)?' ⚠':''); }
 function matchInfo(m){
   const g=(m.giornata||'').trim(), n=(m.numeroGara||'').trim();
   return [(m.competizione||'').trim(), g?(/^\d+$/.test(g)?g+'ª giornata':g):'', n?'gara n° '+n:''].filter(Boolean).join(' · ');
@@ -2666,6 +2702,7 @@ const actions={
   'conv-all': ()=>{ const m=getMatch(ui.matchId); m.convocati=db.athletes.filter(a=>a.iscritto).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); },
   'conv-suggest': ()=>openSuggest(),
   'rot-view': ()=>openRotations(),
+  'form-auto': ()=>{ const m=getMatch(ui.matchId); const f=getForm(m); if(SLOTS.some(([s])=>f[s]) && !confirm('Sostituire la formazione attuale con quella proposta?')) return; autoForm(m); },
   'rot-print': ()=>printRotations(),
   'live-open': ()=>{ const m=getMatch(ui.matchId); getStats(m); markPlayed(m); ui.livePick=null; go('live',{matchId:m.id}); },
   'live-close': ()=>go('partita',{matchId:ui.matchId}),

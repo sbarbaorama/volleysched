@@ -108,7 +108,7 @@ const Store = (() => {
       obiettivo: s(x.obiettivo), note: s(x.note), items,
       createdAt: (old && old.createdAt) || x.createdAt || Date.now(), updatedAt: x.updatedAt || Date.now() };
   }
-  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar'];
+  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'ruolo2', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar'];
   function normAt(a, old) {
     if (!(s(a.nome).trim() || s(a.cognome).trim())) throw new Error('Inserisci almeno il nome o il cognome');
     const r = { id: s(a.id) };

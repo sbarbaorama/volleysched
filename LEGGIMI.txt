@@ -1,0 +1,14 @@
+SCHEDARIO PALLAVOLO - versione per computer e telefono
+=======================================================
+
+Questa cartella contiene l'app da pubblicare su GitHub Pages.
+Carica TUTTO il contenuto della cartella (anche la cartella "icons")
+nell'archivio pubblico "schedario-pallavolo" su GitHub.
+Questo file LEGGIMI.txt puoi anche non caricarlo.
+
+Qui non ci sono dati personali: esercizi, atleti, presenze e partite
+stanno solo sui tuoi dispositivi e nell'archivio PRIVATO "schedario-dati".
+Il file esercizi_iniziali.json contiene solo il catalogo degli esercizi.
+
+Per aggiornare l'app in futuro: si sostituiscono i file nell'archivio
+"schedario-pallavolo". Al successivo avvio l'app propone "Aggiorna".

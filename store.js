@@ -133,6 +133,7 @@ const Store = (() => {
     }
     r.inCasa = ![false, 0, '0', 'false'].includes(m.inCasa);
     r.convocati = (m.convocati || []).filter(Boolean).map(String);
+    r.assenti = (m.assenti || []).filter(Boolean).map(String);
     r.formazione = (m.formazione && typeof m.formazione === 'object') ? clone(m.formazione) : null;
     r.stats = (m.stats && typeof m.stats === 'object') ? clone(m.stats) : null;
     r.createdAt = (old && old.createdAt) || m.createdAt || Date.now(); r.updatedAt = m.updatedAt || Date.now();

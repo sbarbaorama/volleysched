@@ -873,6 +873,26 @@ a.btn{text-decoration:none;color:inherit}
 :root[data-theme=dark] .chip.on{background:var(--ink);color:var(--bg)}
 }
 
+
+/* assenti per impegni personali */
+.abs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.abs-chip{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:4px 11px 4px 5px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--ink-2)}
+.abs-chip .av{margin:0}
+.abs-chip.on{border-color:#d64a5a;background:#fde4e7;color:#9b1c30}
+.abs-chip.on::after{content:"assente";display:inline-block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:#d64a5a;color:#fff;border-radius:999px;padding:0 6px;margin-left:2px}
+.abs-pill{color:#b3263a;font-weight:700}
+.ctable tr.abs td{opacity:.75}
+.abs-tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;background:#d64a5a;color:#fff;border-radius:999px;padding:1px 7px;vertical-align:2px}
+.at-games{margin-top:14px;border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;background:var(--surface-2)}
+.at-games h3{font-size:14px;margin:0 0 6px}
+.at-games .nums{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px}
+.at-games .nums b{font-size:17px}
+.at-games ul{margin:6px 0 0;padding-left:18px;font-size:13px}
+@media screen{
+:root[data-theme=dark] .abs-chip.on{background:rgba(214,74,90,.2);color:#f4a0ab;border-color:rgba(214,74,90,.6)}
+:root[data-theme=dark] .abs-pill,:root[data-theme=dark] .cwarn{color:#f4a0ab}
+}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2313,7 +2333,7 @@ function openAtModal(id){
       <label class="f">Scadenza documento d'identità<input type="date" name="scadenzaDocumento" value="${esc(a.scadenzaDocumento)}"></label>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>
       <label class="f span3">Note<textarea name="note" rows="3" placeholder="Allergie, infortuni, disponibilità…">${esc(a.note)}</textarea></label>
-    </div></div>
+    </div>${athleteGamesHTML(id)}</div>
     <div class="modal-foot">${id?`<button type="button" class="btn danger" data-action="del-at" data-id="${a.id}">Elimina</button>`:''}<span style="flex:1"></span>
       <button type="button" class="btn" data-action="close-modal">Annulla</button><button type="button" class="btn primary" data-action="save-at">Salva</button></div>
   </form></div>`);
@@ -2394,7 +2414,7 @@ function matchCard(m,isNext,past){
     <div class="mdate">${d?`<div class="wd">${d.toLocaleDateString('it-IT',{weekday:'short'})}</div><div class="dd">${d.getDate()}</div><div class="mm">${d.toLocaleDateString('it-IT',{month:'short'})} ${String(d.getFullYear()).slice(2)}</div>`:'<div class="mm">data da definire</div>'}</div>
     <div><h3>${esc(matchTitle(m))}<span class="ha ${m.inCasa?'casa':'trasf'}">${m.inCasa?'Casa':'Trasferta'}</span>${isNext?'<span class="next-pill">Prossima</span>':''}</h3>
       <div class="mmeta">${m.ora?`<span>⏰ ${esc(m.ora)}${m.oraRitrovo?' · ritrovo '+esc(m.oraRitrovo):''}</span>`:''}${m.palestra?`<span>📍 ${esc(m.palestra)}</span>`:''}${matchInfo(m)?`<span>${esc(matchInfo(m))}</span>`:''}</div></div>
-    <div class="mside">${m.risultato?`<div class="res">${esc(m.risultato)}</div>`:''}${past?(n?`<span class="muted">${n} convocati</span>`:''):(n?`<span class="conv-ok">✓ ${n} convocati</span>`:`<span class="conv-no">Convocazioni da fare</span>`)}</div>
+    <div class="mside">${m.risultato?`<div class="res">${esc(m.risultato)}</div>`:''}${past?(n?`<span class="muted">${n} convocati</span>`:''):(n?`<span class="conv-ok">✓ ${n} convocati</span>`:`<span class="conv-no">Convocazioni da fare</span>`)}${(!past && (m.assenti||[]).length)?`<span class="abs-pill">${m.assenti.length} assent${m.assenti.length===1?'e':'i'}</span>`:''}</div>
   </article>`;
 }
 function viewPartite(){
@@ -2426,6 +2446,7 @@ function suggestCandidates(m, o){
   const ref=m.data||'9999-12-31', out=[], excl=[];
   for(const a of db.athletes){
     if(!a.iscritto){ excl.push({a, why:'non iscritto'}); continue; }
+    if((m.assenti||[]).includes(a.id)){ excl.push({a, why:'assente per impegni personali'}); continue; }
     if(o.noVisita && a.scadenzaVisita && a.scadenzaVisita<(m.data||todayISO())){ excl.push({a, why:'visita medica scaduta'}); continue; }
     const st=absStats(a.id, ref), pres=st.n-st.ass;
     out.push({a, st, pres, played:convCount(a.id, m.data, m.id), sp:seasonPct(a.id)??-1});
@@ -2831,6 +2852,42 @@ function seasonStatsHTML(){
     <div style="margin-top:12px">${statTable(ev, played)}</div></details>`;
 }
 document.addEventListener('toggle', e=>{ if(e.target.id==='stats-sum') ui.ssOpen=e.target.open; }, true);
+
+const absentOf=m=>new Set(m.assenti||[]);
+function absPanelHTML(m){
+  const A=absentOf(m), L=db.athletes.filter(a=>a.iscritto || A.has(a.id)).sort((x,y)=>(x.cognome||'').localeCompare(y.cognome||'','it')||(x.nome||'').localeCompare(y.nome||'','it'));
+  return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><h2 style="margin:0">Assenti per impegni personali</h2><span class="muted" id="abs-count">${A.size?`${A.size} assent${A.size===1?'e':'i'}`:'nessuno'}</span></div>
+    <p class="muted" style="margin:0 0 10px;font-size:13px">Tocca chi ti ha avvisato che non ci sarà: non verrà proposto nei suggerimenti né in «Tutti gli iscritti».</p>
+    <div class="abs-chips">${L.map(a=>`<button type="button" class="abs-chip ${A.has(a.id)?'on':''}" data-action="abs-toggle" data-id="${a.id}">${avatarHTML(a,24)}${esc(fullName(a))}</button>`).join('')||'<span class="muted">Nessun atleta iscritto.</span>'}</div>`;
+}
+function toggleAbsent(id){
+  const m=getMatch(ui.matchId); if(!m) return; const A=absentOf(m), a=getAt(id);
+  if(A.has(id)) A.delete(id); else {
+    A.add(id);
+    if((m.convocati||[]).includes(id)){ m.convocati=m.convocati.filter(x=>x!==id); toast(`${fullName(a)} tolto dai convocati`); }
+  }
+  m.assenti=[...A]; touchMatch(m);
+  $('#abs-panel').innerHTML=absPanelHTML(m); refreshMatch(m,'conv');
+}
+function athleteGames(aid){
+  const played=db.matches.filter(isPlayed), future=db.matches.filter(m=>!isPlayed(m)).sort((x,y)=>(x.data||'').localeCompare(y.data||''));
+  const conv=played.filter(m=>(m.convocati||[]).includes(aid));
+  const onCourt=played.filter(m=>{ const P=m.stats&&m.stats.live&&m.stats.live.played; return P && Object.values(P).some(l=>(l||[]).includes(aid)); });
+  const sets=played.reduce((s,m)=>{ const P=m.stats&&m.stats.live&&m.stats.live.played; return s+(P?Object.values(P).filter(l=>(l||[]).includes(aid)).length:0); },0);
+  return {played:played.length, conv:conv.length, onCourt:onCourt.length, sets, next:future.filter(m=>(m.convocati||[]).includes(aid)), abs:future.filter(m=>(m.assenti||[]).includes(aid)), absPast:played.filter(m=>(m.assenti||[]).includes(aid)).length, last:conv.length?conv.sort((x,y)=>(x.data||'').localeCompare(y.data||''))[conv.length-1]:null};
+}
+function athleteGamesHTML(aid){
+  if(!aid || !db.matches.length) return '';
+  const g=athleteGames(aid), lbl=m=>`${m.data?shortDate(m.data):'data da definire'} · ${esc(matchTitle(m))}`;
+  return `<div class="at-games"><h3>🏐 Partite</h3><div class="nums">
+      <span>Convocato <b>${g.conv}</b> su ${g.played} giocat${g.played===1?'a':'e'}</span>
+      ${g.onCourt?`<span>In campo <b>${g.onCourt}</b> partit${g.onCourt===1?'a':'e'} · ${g.sets} set</span>`:''}
+      ${g.absPast?`<span>Assente per impegni <b>${g.absPast}</b></span>`:''}
+      ${g.last?`<span class="muted">Ultima: ${shortDate(g.last.data)}</span>`:''}</div>
+    ${g.next.length?`<div style="margin-top:6px;font-size:13px"><b>Già convocato:</b> ${g.next.map(lbl).join(' · ')}</div>`:''}
+    ${g.abs.length?`<div class="abs-pill" style="margin-top:4px;font-size:13px">Assente a: ${g.abs.map(lbl).join(' · ')}</div>`:''}
+    ${g.onCourt?'':'<div class="muted" style="font-size:12px;margin-top:4px">«In campo» e i set si contano dalle partite seguite con le statistiche.</div>'}</div>`;
+}
 function convTable(m){
   if(!db.athletes.length) return `<div class="empty">Nessun atleta in anagrafica: aggiungili nella sezione «Atleti».</div>`;
   const ids=new Set(m.convocati||[]);
@@ -2838,10 +2895,11 @@ function convTable(m){
   const nums={}; list.filter(a=>ids.has(a.id)).forEach(a=>{ if(a.numeroMaglia) nums[a.numeroMaglia]=(nums[a.numeroMaglia]||0)+1; });
   const ref=m.data||'9999-12-31';
   return `<table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Atleta</th><th>Ruolo</th><th style="text-align:right" title="Allenamenti con presenze segnate prima della partita">Assenze ultimi 5 all.</th></tr></thead><tbody>${list.map(a=>{ const on=ids.has(a.id), w=on?convWarn(a,m,nums):[];
-    return `<tr class="${on?'sel':''} ${a.iscritto?'':'off'}">
+    const ab=(m.assenti||[]).includes(a.id); if(ab && on) w.unshift('segnato assente per impegni personali');
+    return `<tr class="${on?'sel':''} ${a.iscritto?'':'off'} ${ab?'abs':''}">
       <td style="width:30px"><input type="checkbox" id="cv-${a.id}" data-conv="${a.id}" ${on?'checked':''}></td>
       <td class="num">${esc(a.numeroMaglia)||'–'}</td>
-      <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
+      <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${ab?'<span class="abs-tag">assente</span>':''}${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
       <td class="muted">${esc(roleText(a))}${a.sesso?' · '+(isF(a)?'D':'U'):''}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
 }
 function convCountText(m){ const L=convocati(m), c=L.length, u=L.filter(isM).length, d=L.filter(isF).length; return `${c} convocat${c===1?'o':'i'}`+(c?` · ${u} U · ${d} D`:'')+(c && (u!==d)?' ⚠':''); }
@@ -2873,6 +2931,7 @@ function viewPartita(){
       ${f('risultato','Risultato','text','Es. 3-1')}
       <label class="f span3">Note per i convocati<textarea data-mf="note" rows="2">${esc(m.note)}</textarea></label>
     </div></div>
+    <div class="panel" id="abs-panel">${absPanelHTML(m)}</div>
     <div class="panel">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Convocazioni</h2><span class="muted" id="conv-count">${convCountText(m)}</span><span style="flex:1"></span>
         <button class="btn sm primary" data-action="conv-suggest">✨ Suggerisci</button><button class="btn sm" data-action="conv-all">Tutti gli iscritti</button><button class="btn sm" data-action="conv-none">Nessuno</button></div>
@@ -3232,7 +3291,8 @@ const actions={
   'dup-match': ()=>{ const m=newMatch(getMatch(ui.matchId)); go('partita',{matchId:m.id}); toast('Partita duplicata: giornata aumentata di 1, inserisci data, avversario e n° gara'); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
   'del-match': ()=>{ const m=getMatch(ui.matchId); if(!m || !confirm(`Eliminare la partita «${matchTitle(m)}»?`)) return; clearTimeout(touchMatch._t);
     api('DELETE','/api/partite/'+encodeURIComponent(m.id)).then(()=>{ db.matches=db.matches.filter(x=>x.id!==m.id); go('partite'); toast('Partita eliminata'); }).catch(saveFail); },
-  'conv-all': ()=>{ const m=getMatch(ui.matchId); m.convocati=db.athletes.filter(a=>a.iscritto).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); },
+  'abs-toggle': b=>toggleAbsent(b.dataset.id),
+  'conv-all': ()=>{ const m=getMatch(ui.matchId); const A=new Set(m.assenti||[]); m.convocati=db.athletes.filter(a=>a.iscritto && !A.has(a.id)).map(a=>a.id); if(A.size) toast(`Esclusi ${A.size} assent${A.size===1?'e':'i'}`); touchMatch(m); refreshMatch(m,'conv'); },
   'conv-suggest': ()=>openSuggest(),
   'rot-view': ()=>openRotations(),
   'form-auto': ()=>{ const m=getMatch(ui.matchId); const f=getForm(m); if(SLOTS.some(([s])=>f[s]) && !confirm('Sostituire la formazione attuale con quella proposta?')) return; autoForm(m); },

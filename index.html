@@ -968,6 +968,52 @@ a.btn{text-decoration:none;color:inherit}
 :root[data-theme=dark] .mev.trasf{background:rgba(47,111,184,.3);color:#a5c8f3}
 }
 
+
+/* ---------- HOME ---------- */
+.brand[data-nav]{cursor:pointer}
+.hero[data-action]{cursor:pointer}
+.hero[data-action]:hover{filter:brightness(1.06)}
+.home-head{display:flex;align-items:center;gap:14px;margin:4px 0 18px}
+.home-head img{width:56px;height:56px;border-radius:50%;object-fit:contain;background:#fff;box-shadow:0 0 0 1px var(--line-2)}
+.home-head h1{font-size:26px}
+.home-head p{margin:2px 0 0;color:var(--muted);text-transform:capitalize}
+.home-next{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:12px;margin-bottom:14px}
+.hn{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow);cursor:pointer;min-width:0}
+.hn:hover{border-color:var(--line-2)}
+.hn .dd{flex:none;width:56px;text-align:center;border-radius:10px;padding:4px 0;background:var(--surface-2);border:1px solid var(--line)}
+.hn .dd b{display:block;font-size:22px;line-height:1.1}
+.hn .dd span{font-size:11px;font-weight:800;text-transform:uppercase;color:var(--accent)}
+.hn .tx{min-width:0}
+.hn .k{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.hn .t{font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hn .s{font-size:13px;color:var(--ink-2)}
+.home-alerts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.home-alerts button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:6px 12px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink)}
+.home-alerts .red{border-color:#f2b8bf;background:#fdecee;color:#7a1626}
+.home-alerts .ora{border-color:#f5c98a;background:#fff4e5;color:#8a4a00}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow);cursor:pointer;text-align:left;min-height:150px;position:relative;overflow:hidden;font:inherit;color:inherit}
+.tile:hover{transform:translateY(-1px);border-color:var(--c)}
+.tile:active{transform:scale(.98)}
+.tile .ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c)}
+.tile .ic svg{width:32px;height:32px}
+.tile b{font-size:19px}
+.tile small{color:var(--ink-2);font-size:13px;line-height:1.35}
+.tile::after{content:'';position:absolute;right:-30px;bottom:-30px;width:110px;height:110px;border-radius:50%;background:color-mix(in srgb,var(--c) 8%,transparent)}
+@media (max-width:760px){
+  .tiles{grid-template-columns:1fr 1fr;gap:10px}
+  .tile{min-height:132px;padding:14px;border-radius:16px;gap:8px}
+  .tile .ic{width:48px;height:48px;border-radius:14px}
+  .tile .ic svg{width:28px;height:28px}
+  .tile b{font-size:17px}
+  .home-head h1{font-size:22px}
+  .home-head img{width:46px;height:46px}
+}
+@media screen{
+:root[data-theme=dark] .home-alerts .red{background:rgba(215,38,61,.15);border-color:rgba(215,38,61,.45);color:#f6aab4}
+:root[data-theme=dark] .home-alerts .ora{background:rgba(224,123,34,.12);border-color:rgba(224,123,34,.4);color:#f3c590}
+}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1016,7 +1062,7 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">
+  <div class="brand" data-nav="home" title="Pagina iniziale">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="#ffd23f" stroke="#fff" stroke-width="2"/><path d="M16 2c-2 6 0 12 6 16M3 12c6 0 11 3 13 4M5 25c3-5 8-8 11-9M29 13c-5-2-9 0-13 3M23 28c0-6-3-9-7-12" fill="none" stroke="#1f2a44" stroke-width="1.6"/></svg>
     <div>Volleysched<small>Esercizi, sessioni, presenze, partite e atleti</small></div>
   </div>
@@ -1430,7 +1476,7 @@ document.addEventListener('keydown', e => {
 /* ============================================================
    Navigazione
    ============================================================ */
-let ui = {view:'atleti', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{compatto:true, scaletta:true, schemi:true, note:true}};
+let ui = {view:'home', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{compatto:true, scaletta:true, schemi:true, note:true}};
 
 function go(view, params={}){
   if(ui.dirty && !confirm('Ci sono modifiche non salvate. Vuoi uscire senza salvare?')) return;
@@ -1452,6 +1498,7 @@ function render(){
   else if(ui.view==='sessioni') app.innerHTML = viewSessioni();
   else if(ui.view==='sessione') { app.innerHTML = viewSessione(); $$('#items textarea').forEach(autoGrow); }
   else if(ui.view==='impostazioni') app.innerHTML = viewImpostazioni();
+  else if(ui.view==='home') app.innerHTML = viewHome();
   else if(ui.view==='atleti') app.innerHTML = viewAtleti();
   else if(ui.view==='partite') app.innerHTML = viewPartite();
   else if(ui.view==='partita') app.innerHTML = viewPartita();
@@ -1831,6 +1878,34 @@ function lookPanelHTML(){
     <p class="muted" style="font-size:12.5px;margin:12px 0 0">Colori e logo si sincronizzano su tutti i tuoi dispositivi; il logo compare in alto e nelle stampe. Se scegli un colore troppo chiaro per la barra, l'app lo scurisce quanto basta per leggere le scritte.</p>
     <div class="actions" style="margin-top:10px"><button class="btn sm" data-action="brand-reset">Ripristina i colori predefiniti</button></div></div>`;
 }
+
+function viewHome(){
+  const t=todayISO(), st=db.settings||{};
+  const nextM=[...db.matches].filter(m=>m.data && m.data>=t).sort((a,b)=>matchDT(a).localeCompare(matchDT(b)))[0];
+  const nextT=[...(db.trainings||[])].filter(x=>x.data && x.data>=t && !x.annullato).sort((a,b)=>(a.data+(a.ora||'')).localeCompare(b.data+(b.ora||'')))[0];
+  const iscr=db.athletes.filter(a=>a.iscritto), noVis=iscr.filter(a=>!a.scadenzaVisita || daysTo(a.scadenzaVisita)<=SCAD_DAYS).length;
+  const bd=upcomingBdays(), bdToday=bd.filter(x=>x.nb.days===0);
+  const lastS=[...db.sessions].sort((a,b)=>(b.data||'').localeCompare(a.data||''))[0];
+  const ddBox=iso=>{ const d=parseISO(iso); return `<div class="dd"><span>${d.toLocaleDateString('it-IT',{weekday:'short'})}</span><b>${d.getDate()}</b><span style="color:var(--muted)">${d.toLocaleDateString('it-IT',{month:'short'})}</span></div>`; };
+  const rel=iso=>{ const n=daysUntil(iso); return n===0?'oggi':n===1?'domani':'tra '+n+' giorni'; };
+  const tiles=[
+    ['atleti','Atleti','#2f6fb8',`${iscr.length} iscritt${iscr.length===1?'o':'i'}${bd.length?' · 🎂 '+bd.length:''}`],
+    ['partite','Partite','#e07b22', nextM?`Prossima ${rel(nextM.data)}`:`${db.matches.length} in calendario`],
+    ['presenze','Presenze','#22a05a', nextT?`Prossimo allenamento ${rel(nextT.data)}`:'Registro degli allenamenti'],
+    ['sessioni','Sessioni','#7b5cc4', lastS?`Ultima: ${esc(lastS.titolo||'senza titolo')}`:`${db.sessions.length} sessioni`],
+    ['esercizi','Esercizi','#d64a5a', `${db.exercises.length} schede`],
+    ['impostazioni','Archivio','#6b7280','Copie, sincronizzazione, aspetto'],
+  ];
+  return `<section>
+  <div class="home-head">${st.logo?`<img src="${st.logo}" alt="">`:''}<div><h1>${esc(st.squadra||'Volleysched')}</h1><p>${esc(new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</p></div></div>
+  ${(nextM||nextT)?`<div class="home-next">
+    ${nextM?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
+    ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
+  </div>`:''}
+  ${(bdToday.length||noVis)?`<div class="home-alerts">${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
+  </section>`;
+}
 function viewSessioni(){
   const list=[...db.sessions].sort((a,b)=>(b.data||'').localeCompare(a.data||'')||(b.updatedAt-a.updatedAt));
   return `<section>
@@ -2103,7 +2178,7 @@ async function syncConnect(tokenOnly){
     msg.textContent='Sincronizzo… (la prima volta può volerci qualche minuto)';
     await Sync.connect(p.cfg, replace);
     await Store.setMeta('avviato', true);
-    await loadState(); ui.view = ui.view==='benvenuto' ? 'atleti' : ui.view; render();
+    await loadState(); ui.view = ui.view==='benvenuto' ? 'home' : ui.view; render();
     const st=Sync.status();
     toast(st.status==='error' ? 'Collegato, ma la sincronizzazione ha dato un errore' : 'Archivio collegato: dati sincronizzati');
   }catch(e){ console.error(e); msg.textContent=''; alert('Collegamento non riuscito.\n\n'+(e.message||e)); }
@@ -2148,7 +2223,7 @@ function importBackup(){
         <div class="modal-body"><p><b>Unisci</b>: aggiunge allo schedario ciò che manca e aggiorna le schede modificate più di recente nel file.</p><p><b>Sostituisci</b>: cancella esercizi e sessioni attuali e li rimpiazza con il contenuto del file.</p><p class="muted" style="font-size:13.5px">Se l'archivio online è collegato, la versione precedente resta comunque recuperabile dalla cronologia di GitHub.</p></div>
         <div class="modal-foot"><button class="btn" data-action="close-modal">Annulla</button><span style="flex:1"></span><button class="btn danger" id="imp-replace">Sostituisci tutto</button><button class="btn primary" id="imp-merge">Unisci</button></div></div>`);
       const run = mode => api('POST','/api/importa',{mode, data:d}).then(async res=>{
-        await Store.setMeta('avviato', true); if(ui.view==='benvenuto') ui.view='atleti';
+        await Store.setMeta('avviato', true); if(ui.view==='benvenuto') ui.view='home';
         await loadState(); closeModal(); render();
         toast(mode==='merge' ? `Importati: ${res.aggiunti} nuovi, ${res.aggiornati} aggiornati` : 'Archivio sostituito');
       }).catch(e=>alert('Importazione non riuscita: '+(e.message||'')));
@@ -2528,11 +2603,11 @@ function heroHTML(m){
   const n=m.data?daysUntil(m.data):null, conv=convocati(m), u=conv.filter(isM).length, d=conv.filter(isF).length;
   const nv=conv.filter(a=>!visitaOk(a,m)).length, ab=(m.assenti||[]).length, fo=formOk(getForm(m));
   const place=[m.palestra,m.indirizzo].filter(Boolean).join(', ');
-  return `<div class="hero">
+  return `<div class="hero" data-action="open-match" data-id="${m.id}" title="Apri la partita">
     <div class="cd ${n===0?'today':''}">${n===null?'<b>?</b><span>data da definire</span>':n===0?'<b>Oggi</b><span>si gioca</span>':n===1?'<b>1</b><span>giorno</span>':`<b>${n}</b><span>giorni</span>`}</div>
     <div class="kick">Prossima partita${campSel()==='__all'&&m.competizione?' · '+esc(m.competizione):''}</div>
     <div><h2>${esc(matchTitle(m))} <span class="ha ${m.inCasa?'casa':'trasf'}">${m.inCasa?'Casa':'Trasferta'}</span></h2></div>
-    <div class="hm">${m.data?`<span>📅 ${esc(cap(fmtDate(m.data)))}</span>`:''}${m.ora?`<span>⏰ ${esc(m.ora)}${m.oraRitrovo?' · ritrovo '+esc(m.oraRitrovo):''}</span>`:''}${place?`<span>📍 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}" target="_blank" rel="noopener">${esc(m.palestra||place)}</a></span>`:''}</div>
+    <div class="hm">${m.data?`<span>📅 ${esc(cap(fmtDate(m.data)))}</span>`:''}${m.ora?`<span>⏰ ${esc(m.ora)}${m.oraRitrovo?' · ritrovo '+esc(m.oraRitrovo):''}</span>`:''}${place?`<span>📍 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}" target="_blank" rel="noopener" data-action="map">${esc(m.palestra||place)}</a></span>`:''}</div>
     <div class="hs">${conv.length?`<span class="ok">✓ ${conv.length} convocati · ${u} U · ${d} D</span>`:'<span class="ko">Convocazioni da fare</span>'}${ab?`<span>${ab} assent${ab===1?'e':'i'}</span>`:''}${nv?`<span class="ko">${nv} convocat${nv===1?'o':'i'} senza visita valida</span>`:''}${conv.length?(fo?'<span class="ok">Formazione pronta</span>':'<span>Formazione da fare</span>'):''}</div>
     <div class="hb"><button class="btn primary" data-action="open-match" data-id="${m.id}">${conv.length?'Apri la partita':'Fai le convocazioni'}</button>${conv.length?`<button class="btn" data-action="hero-wa" data-id="${m.id}">Invia con WhatsApp</button><button class="btn" data-action="hero-live" data-id="${m.id}">📊 Statistiche</button>`:''}</div>
   </div>`;
@@ -3421,6 +3496,7 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'map': b=>window.open(b.href,'_blank','noopener'),
   'camp-sel': b=>{ ui.camp=b.dataset.v; ui.cmonth=null; render(); },
   'camp-new': ()=>{ const v=(prompt('Nome del nuovo campionato (es. Primaverile 2027):')||'').trim(); if(!v) return; if(v===CAMP_NONE||v==='__all'){ alert('Scegli un altro nome.'); return; }
     if(!campList().some(c=>c.name===v)) saveCampDefs([...campDefs(), v]); ui.camp=v; ui.cmonth=null; render(); toast(`Campionato «${v}» creato`); },
@@ -3543,7 +3619,7 @@ const actions={
   'sync-off': async ()=>{ if(!confirm('Scollegare questo dispositivo dall\'archivio online? I dati restano qui, ma non verranno più sincronizzati.')) return; await Sync.disconnect(); render(); toast('Dispositivo scollegato'); },
   'sync-token': async ()=>{ const c=Sync.config(); await Store.setMeta('syncLast',{owner:c.owner, repo:c.repo}); await Sync.disconnect(); render(); setTimeout(()=>{ const t=$('#sync-form [name=token]'); if(t){ t.focus(); $('#sync-msg').textContent='Inserisci il nuovo codice e premi «Collega»: i dati non vengono toccati.'; } },50); },
   'w-sync': ()=>{ go('impostazioni'); setTimeout(()=>{ const p=$('#sync-panel'); if(p) p.scrollIntoView({behavior:'smooth'}); },60); },
-  'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('atleti'); },
+  'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('home'); },
   'restore-seed': ()=>{
     const inp=$('#filepick'); inp.value=''; inp.accept='.json,application/json';
     inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();

@@ -1163,6 +1163,139 @@ a.btn{text-decoration:none;color:inherit}
 :root[data-theme=dark] .fpanel .opts button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 }
 
+
+/* ---------- PRESENZE: vista per allenamento ---------- */
+.pday-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pday-head .iconbtn{width:40px;height:40px;font-size:22px;flex:none}
+.pd-date{flex:1;text-align:center;min-width:0}
+.pd-date b{display:block;font-size:18px;text-transform:capitalize}
+.pd-date span{font-size:13px;color:var(--muted)}
+.pd-count{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:10px}
+.pd-count span{border-radius:999px;padding:3px 10px;font-size:13px;font-weight:700}
+.pd-count .cP{background:#dff3e6;color:#1d6b3c}.pd-count .cA{background:#fde4e7;color:#b3263a}.pd-count .cG{background:#fff1d6;color:#8a5a00}.pd-count .c0{background:var(--surface-2);color:var(--muted)}
+.pd-acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
+.pd-list{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pd-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-top:1px solid var(--line);background:var(--surface)}
+.pd-row:first-child{border-top:0}
+.pd-row .av{margin:0}
+.pd-row .nm b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-row .nm small{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pd-seg{display:flex;gap:6px}
+.pd-seg button{width:46px;height:42px;border-radius:10px;border:1.5px solid var(--line-2);background:var(--surface);font-size:19px;font-weight:800;color:#b9bec9;cursor:pointer;touch-action:manipulation}
+.pd-seg .sP.on{background:#22a05a;border-color:#22a05a;color:#fff}
+.pd-seg .sA.on{background:#d64a5a;border-color:#d64a5a;color:#fff}
+.pd-seg .sG.on{background:#e0a020;border-color:#e0a020;color:#fff}
+.pd-row.s0 .nm b::after{content:' ·';color:var(--muted)}
+@media (max-width:760px){
+  .reg .sticky{max-width:118px;overflow:hidden;text-overflow:ellipsis}
+  .reg .sticky .av{display:none}
+  .pd-seg button{width:44px;height:44px}
+}
+/* ---------- PARTITA a schede ---------- */
+.mtabs{display:none}
+@media (max-width:1100px){
+  .mtabs{display:flex;gap:4px;position:sticky;top:56px;z-index:12;background:var(--bg);padding:6px 0 8px;margin:-6px 0 8px}
+  .mtabs button{flex:1 1 auto;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:8px 6px;font-weight:700;font-size:13px;white-space:nowrap;color:var(--ink-2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0}
+  .mtabs button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+  .mtabs .b{background:var(--accent);color:var(--accent-ink);border-radius:999px;font-size:10.5px;padding:0 5px;min-width:16px;line-height:16px}
+  .mtabs .b[hidden]{display:none}
+  .mtabbed .sess-layout{grid-template-columns:1fr!important}
+  .mtabbed [data-mt]{display:none!important}
+  .mtabbed.mt-dati [data-mt=dati],.mtabbed.mt-conv [data-mt=conv],.mtabbed.mt-form [data-mt=form]{display:block!important}
+  .mtabbed.mt-invia [data-mt=invia]{display:flex!important;position:static;max-height:none}
+  .mtabbed.mt-dati .msum[data-mt=dati]{display:grid!important}
+  .mtabbed [data-mt].hidden{display:none!important}
+}
+@media (min-width:761px) and (max-width:1100px){ .mtabs{top:64px} }
+@media (orientation: landscape) and (max-height:520px){ .mtabs{top:0} }
+.msum{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 18px}
+.msum .it{display:flex;flex-direction:column;gap:1px;min-width:0}
+.msum .it span{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.msum .it b{font-size:15px;overflow-wrap:anywhere}
+.msum .full{grid-column:1/-1}
+.msum .ed{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:760px){ .msum{grid-template-columns:1fr 1fr;gap:8px 12px} .msum .it b{font-size:14px} .pd-seg{gap:4px} .pd-seg button{width:40px;height:42px} }
+/* ---------- PROFILO ATLETA ---------- */
+.atp-head{display:flex;align-items:center;gap:14px;min-width:0}
+.atp-head .avw{margin:0}
+.atp-head h2{font-size:21px}
+.atp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.atp-tags span{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:12.5px;font-weight:700;color:var(--ink-2)}
+.atp-tags .off{color:#b3263a}
+.atp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:12px}
+.atp-t{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
+.atp-t .k{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.atp-t b{display:block;font-size:19px;margin-top:2px}
+.atp-t small{display:block;font-size:12.5px;color:var(--ink-2)}
+.atp-t.ok{border-color:#7cc99a}.atp-t.ok b{color:#1d6b3c}
+.atp-t.warn{border-color:#f0c56b}.atp-t.warn b{color:#8a5a00}
+.atp-t.bad{border-color:#e9a0aa}.atp-t.bad b{color:#b3263a}
+.atp-t.go{cursor:pointer}
+.atp-contact{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.atp-contact .btn{text-decoration:none}
+.atp-note{background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+.atf{margin-bottom:14px}
+.atf h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent);margin:0 0 8px;font-weight:800}
+.atf-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+.atf-g .w2{grid-column:span 2}.atf-g .w3{grid-column:1/-1}
+@media (max-width:760px){
+  .atf-g{grid-template-columns:1fr 1fr;gap:8px 10px}
+  .atf-g .w2,.atf-g .w3{grid-column:1/-1}
+  .avpick{gap:10px;margin-bottom:12px;padding-bottom:12px}
+  .avpick #at-av .av{width:56px!important;height:56px!important}
+  .avpick .muted{display:none}
+  .avpick .actions{gap:6px}
+  .avpick .btn{padding:5px 9px;font-size:12.5px}
+  .atp-grid{grid-template-columns:1fr 1fr}
+  .atp-t b{font-size:17px}
+}
+/* ---------- SESSIONE ---------- */
+.ssum{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center}
+.ssum .it{display:flex;flex-direction:column;min-width:0}
+.ssum .it span{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ssum .it b{font-size:15px}
+.ssum .ob{flex-basis:100%;font-size:14px;color:var(--ink-2)}
+.pk-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pk-head h2{flex:1;margin:0}
+.pk-close{display:none}
+.picker > .chips{display:none}
+.pk-idx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.pk-idx .ftile{padding:10px;gap:10px;border-radius:12px}
+.pk-idx .ftile .exi{width:38px;height:38px;padding:8px;border-radius:11px}
+.pk-idx .ftile b{font-size:14px}
+.pk-idx .ftile small{font-size:12px}
+.pk-back{display:flex;align-items:center;gap:8px;margin:2px 0 8px;font-weight:800;color:var(--c)}
+.pk-back .exi{width:28px;height:28px;padding:5px;border-radius:8px;background:color-mix(in srgb,var(--c) 15%,transparent)}
+.pitem:has(.mini.ic){grid-template-columns:40px minmax(0,1fr) auto}
+.pitem .mini.ic{aspect-ratio:1;width:40px;border:0;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);padding:9px;border-radius:10px}
+.pitem .mini.ic svg{width:100%;height:100%}
+@media (max-width:760px){
+  .picker{display:none!important}
+  .picker.open{display:flex!important;position:fixed;inset:0;z-index:70;background:var(--bg);margin:0;border-radius:0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));max-height:none}
+  .picker.open .plist{flex:1;max-height:none}
+  .pk-close{display:inline-grid}
+  body:has(.picker.open) .fab{display:none}
+}
+/* ---------- ATLETI ---------- */
+.role-legend button{border:1px solid transparent;background:none;border-radius:999px;padding:3px 9px;display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.role-legend button.on{border-color:var(--line-2);background:var(--surface);color:var(--ink);font-weight:700;box-shadow:var(--shadow)}
+.role-legend button i{width:10px;height:10px;border-radius:50%;display:inline-block}
+/* ---------- ARCHIVIO a sezioni ---------- */
+.acc > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px}
+.acc > summary::-webkit-details-marker{display:none}
+details.panel.acc > summary::before{display:none}
+.acc > summary h2{margin:0;flex:1}
+.acc > summary::after{content:'▾';font-size:18px;color:var(--muted);transition:transform .15s}
+.acc[open] > summary{margin-bottom:12px}
+.acc[open] > summary::after{transform:rotate(180deg)}
+@media screen{
+:root[data-theme=dark] .pd-count .cP{background:rgba(34,160,90,.2);color:#97e4b8}
+:root[data-theme=dark] .pd-count .cA{background:rgba(214,74,90,.2);color:#f4a0ab}
+:root[data-theme=dark] .pd-count .cG{background:rgba(240,180,60,.18);color:#f3ca72}
+:root[data-theme=dark] .mtabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:root[data-theme=dark] .atp-t.ok b{color:#97e4b8}:root[data-theme=dark] .atp-t.warn b{color:#f3ca72}:root[data-theme=dark] .atp-t.bad b{color:#f4a0ab}
+}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1646,7 +1779,7 @@ function render(){
   else if(ui.view==='esercizio') { app.innerHTML = viewEsercizio(); mountSchemaBox(); updateDosUI(true); }
   else if(ui.view==='sessioni') app.innerHTML = viewSessioni();
   else if(ui.view==='sessione') { app.innerHTML = viewSessione(); $$('#items textarea').forEach(autoGrow); }
-  else if(ui.view==='impostazioni') app.innerHTML = viewImpostazioni();
+  else if(ui.view==='impostazioni'){ app.innerHTML = viewImpostazioni(); accordionize(); }
   else if(ui.view==='home') app.innerHTML = viewHome();
   else if(ui.view==='atleti') app.innerHTML = viewAtleti();
   else if(ui.view==='partite') app.innerHTML = viewPartite();
@@ -2055,10 +2188,10 @@ function sessRowsHTML(list){
 }
 
 const ICO = {atleti:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.2c2.8.2 4.8 2.1 4.8 5"/></svg>',sessioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4.5"/></svg>',presenze:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12.3l2.7 2.7 5.5-5.7"/></svg>',partite:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8 13.5h3M13 13.5h3M8 17h3"/></svg>',esercizi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 12c-.6-3.6.6-6.6 3.4-8M12 12c3 2 4.4 4.9 4.2 7.9M12 12c-3.4 1.4-6.6 1.2-8.9-.6"/><path d="M8.3 4.3c-.4 2.3.2 4.5 1.6 6.3M19.9 9c-2-.9-4.3-.9-6.4 0M10.6 20.3c1.3-1.8 1.8-4 1.4-6.2"/></svg>',impostazioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.7" cy="6.5" r=".9"/><circle cx="4.7" cy="12" r=".9"/><circle cx="4.7" cy="17.5" r=".9"/></svg>',plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'};
-const FAB={atleti:['new-at','Nuovo atleta'],sessioni:['new-sess','Nuova sessione'],esercizi:['new-ex','Nuovo esercizio'],partite:['new-match','Nuova partita'],presenze:['new-tr','Aggiungi allenamento']};
+const FAB={sessione:['pick-open','Aggiungi esercizio'],atleti:['new-at','Nuovo atleta'],sessioni:['new-sess','Nuova sessione'],esercizi:['new-ex','Nuovo esercizio'],partite:['new-match','Nuova partita'],presenze:['new-tr','Aggiungi allenamento']};
 function updateFab(){ const b=$('#fab'); if(!b) return; const f=FAB[ui.view]; b.classList.toggle('hidden',!f); if(f){ b.dataset.action=f[0]; b.title=f[1]; b.setAttribute('aria-label',f[1]); } }
 function avRole(a,size){ const sx=sexOf?sexOf(a):''; return `<span class="avw">${avatarHTML(a,size)}${sx==='M'?'<i class="sx m">U</i>':sx==='F'?'<i class="sx f">D</i>':''}</span>`; }
-const ROLE_LEGEND=()=>`<div class="role-legend">${[['P','Palleggiatore'],['B','Banda'],['C','Centrale'],['O','Opposto'],['L','Libero']].map(([r,l])=>`<span><i style="background:${ROLE_COL[r]}"></i>${l}</span>`).join('')}</div>`;
+const ROLE_LEGEND=()=>`<div class="role-legend">${[['P','Palleggiatore'],['B','Banda'],['C','Centrale'],['O','Opposto'],['L','Libero']].map(([r,l])=>`<button data-action="at-rk" data-v="${r}" class="${ui.af.rk===r?'on':''}" title="Mostra solo: ${l}"><i style="background:${ROLE_COL[r]}"></i>${l}${ui.af.rk===r?' ×':''}</button>`).join('')}</div>`;
 /* tema */
 function themePref(){ try{ return localStorage.getItem('vs-theme')||'auto'; }catch(e){ return 'auto'; } }
 function applyTheme(){ const p=themePref(); const dark=p==='dark'||(p==='auto'&&window.matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.dataset.theme=dark?'dark':'light'; }
@@ -2164,7 +2297,7 @@ function viewSessione(){
       <button class="btn danger" data-action="del-sess" data-id="${s.id}">Elimina</button>
     </div>
   </div>
-  <div class="panel">
+  ${sSumHTML(s)}<div class="panel ${sFormOpen(s)?'':'hidden'}" id="s-form">
     <div class="grid g3">
       <label class="f">Titolo<input type="text" data-sf="titolo" value="${esc(s.titolo)}" placeholder="Es. Battuta e ricezione"></label>
       <div class="grid g2"><label class="f">Data<input type="date" data-sf="data" value="${esc(s.data)}"></label>
@@ -2173,6 +2306,7 @@ function viewSessione(){
       <label class="f" style="grid-column:span 2">Obiettivo<textarea data-sf="obiettivo" rows="2" placeholder="Cosa vuoi ottenere con questo allenamento">${esc(s.obiettivo)}</textarea></label>
       <label class="f">Note<textarea data-sf="note" rows="2" placeholder="Presenze, materiale da portare…">${esc(s.note)}</textarea></label>
     </div>
+    ${s.titolo?'<div class="actions" style="margin-top:10px"><button class="btn sm primary" data-action="s-edit">Fatto</button></div>':''}
   </div>
   <div class="sess-layout" style="margin-top:16px">
     <div>
@@ -2185,8 +2319,8 @@ function viewSessione(){
       </div>
       <div class="panel" id="sess-summary">${summaryHTML(s)}</div>
     </div>
-    <div class="panel picker">
-      <h2 style="margin-bottom:8px">Aggiungi esercizi</h2>
+    <div class="panel picker ${ui.pickOpen?'open':''}">
+      <div class="pk-head"><h2>Aggiungi esercizi</h2><button class="iconbtn pk-close" data-action="pick-close" title="Chiudi">✕</button></div>
       <input type="search" id="pick-q" placeholder="Cerca nello schedario…" value="${esc(ui.pick.q)}">
       <div class="chips" style="margin-top:8px">
         <button class="chip ${!ui.pick.fond?'on':''}" data-action="p-fond" data-v="">Tutti</button>
@@ -2249,12 +2383,14 @@ function summaryHTML(s){
 }
 function pickListHTML(s){
   const q=ui.pick.q, f=ui.pick.fond;
+  if(!q && !f) return pickIndexHTML();
+  const back=(!q && f)?`<div class="pk-back" style="--c:${fondColor(f==='Senza categoria'?'':f)}"><button class="btn sm" data-action="p-fond" data-v="">‹ Indice</button><span class="exi">${fondIcon(f)}</span>${esc(f)}</div>`:'';
   const list=db.exercises.filter(e=>matchEx(e,q)&&(!f||(e.fondamentale||'Senza categoria')===f));
   if(!list.length) return `<div class="muted" style="padding:16px 4px">Nessun esercizio trovato.</div>`;
   const order=fondOrder(list);
   list.sort((a,b)=>order.indexOf(a.fondamentale||'Senza categoria')-order.indexOf(b.fondamentale||'Senza categoria'));
-  return list.map(e=>{ const k=s.items.filter(i=>i.exId===e.id).length;
-    return `<div class="pitem"><div class="mini">${exVisual(e)}</div>
+  return back+list.map(e=>{ const k=s.items.filter(i=>i.exId===e.id).length;
+    return `<div class="pitem"><div class="mini ic" style="--c:${fondColor(e.fondamentale)}">${fondIcon(e.fondamentale)}</div>
       <div><div class="t" data-action="open-ex" data-id="${e.id}">${esc(e.titolo)}</div><div class="s">${esc([e.fondamentale,e.formazione].filter(Boolean).join(' · '))}${k?` · <b style="color:var(--green)">già inserito${k>1?' ×'+k:''}</b>`:''}</div></div>
       <button class="btn sm" data-action="add-ex" data-id="${e.id}" title="Aggiungi al programma">+</button></div>`; }).join('');
 }
@@ -2617,8 +2753,9 @@ function renderNavBadge(){
 function filteredAt(){
   const f=ui.af, q=f.q.toLowerCase().trim();
   return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento].join(' ').toLowerCase().includes(w)))
-      && (!f.ruolo || a.ruolo===f.ruolo || a.ruolo2===f.ruolo) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
-    .sort((x,y)=>(x.cognome||'').localeCompare(y.cognome||'','it') || (x.nome||'').localeCompare(y.nome||'','it'));
+      && (!f.ruolo || a.ruolo===f.ruolo || a.ruolo2===f.ruolo) && (!f.rk || rolesOf(a).includes(f.rk)) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
+    .sort((x,y)=>{ const byName=(x.cognome||'').localeCompare(y.cognome||'','it') || (x.nome||'').localeCompare(y.nome||'','it');
+      if(f.sort==='numero') return byNumber(x,y); if(f.sort==='presenze') return ((seasonPct(y.id)??-1)-(seasonPct(x.id)??-1)) || byName; return byName; });
 }
 const isPhone=()=>window.matchMedia('(max-width:760px)').matches;
 function atCards(l){
@@ -2673,6 +2810,7 @@ function viewAtleti(){
     <input type="search" id="at-q" placeholder="Cerca per nome, telefono, note…" value="${esc(ui.af.q)}">
     <select id="at-ruolo"><option value="">Tutti i ruoli</option>${ruoli.map(r=>`<option ${ui.af.ruolo===r?'selected':''}>${esc(r)}</option>`).join('')}</select>
     <select id="at-iscr"><option value="" ${ui.af.iscr===''?'selected':''}>Iscritti e non iscritti</option><option value="si" ${ui.af.iscr==='si'?'selected':''}>Solo iscritti</option><option value="no" ${ui.af.iscr==='no'?'selected':''}>Solo non iscritti</option></select>
+    <select id="at-sort" title="Ordina"><option value="" ${!ui.af.sort?'selected':''}>Ordina per cognome</option><option value="numero" ${ui.af.sort==='numero'?'selected':''}>Ordina per n° di maglia</option><option value="presenze" ${ui.af.sort==='presenze'?'selected':''}>Ordina per presenze</option></select>
   </div>
   ${db.athletes.length?ROLE_LEGEND():''}
   ${isPhone()?`<div class="panel at-cards" style="padding:0" id="at-rows">${atRows()}</div>`:`<div class="panel" style="padding:0;overflow:auto">
@@ -2687,24 +2825,30 @@ function openAtModal(id){
   const opt=(list,v)=>list.map(x=>`<option value="${esc(x[0])}" ${v===x[0]?'selected':''}>${esc(x[1])}</option>`).join('');
   openModal(`<div class="modal-box" style="max-width:780px"><form id="at-form" autocomplete="off" onsubmit="return false">
     <div class="modal-head"><div style="flex:1"><h2>${id?esc(fullName(a)):'Nuovo atleta'}</h2></div><button type="button" class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
-    <div class="modal-body">${avPickerHTML(a)}<div class="grid g3">
+    <div class="modal-body">${avPickerHTML(a)}
+    <div class="atf"><h3>Dati personali</h3><div class="atf-g">
       <label class="f">Nome<input type="text" name="nome" value="${esc(a.nome)}"></label>
       <label class="f">Cognome<input type="text" name="cognome" value="${esc(a.cognome)}"></label>
-      <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
-      <label class="f">Cellulare<input type="tel" name="cellulare" value="${esc(a.cellulare)}" placeholder="Es. 333 1234567"></label>
-      <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
-      <label class="f">Secondo ruolo (se può giocare anche lì)<input type="text" name="ruolo2" list="dl-ruoli" value="${esc(a.ruolo2||'')}" placeholder="Es. Banda"></label>
       <label class="f">Sesso<select name="sesso"><option value="">—</option>${opt([['M','Maschile'],['F','Femminile']],a.sesso)}</select></label>
-      <label class="f">Taglia maglia gara<select name="taglia"><option value="">—</option>${opt([...new Set([...TAGLIE, a.taglia].filter(Boolean))].map(t=>[t,t]),a.taglia)}</select></label>
       <label class="f">Data di nascita<input type="date" name="dataNascita" value="${esc(a.dataNascita)}"></label>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Età<input type="text" id="at-age" class="ro" value="${age===null?'':age+' anni'}" readonly tabindex="-1"></div>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Compleanno<div class="ro-box" id="at-bday">${bdayBadge(a)}</div></div>
+      <label class="f w2">Cellulare<input type="tel" name="cellulare" value="${esc(a.cellulare)}" placeholder="Es. 333 1234567"></label>
+    </div></div>
+    <div class="atf"><h3>Squadra</h3><div class="atf-g">
+      <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
+      <label class="f">Taglia maglia gara<select name="taglia"><option value="">—</option>${opt([...new Set([...TAGLIE, a.taglia].filter(Boolean))].map(t=>[t,t]),a.taglia)}</select></label>
+      <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>
+      <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
+      <label class="f w2">Secondo ruolo (se può giocare anche lì)<input type="text" name="ruolo2" list="dl-ruoli" value="${esc(a.ruolo2||'')}" placeholder="Es. Banda"></label>
+    </div></div>
+    <div class="atf"><h3>Visita medica e documento</h3><div class="atf-g">
       <label class="f">Scadenza visita medica<input type="date" name="scadenzaVisita" value="${esc(a.scadenzaVisita)}"></label>
       <label class="f">N° carta d'identità<input type="text" name="numeroDocumento" value="${esc(a.numeroDocumento)}" placeholder="Es. CA12345AB"></label>
-      <label class="f">Scadenza documento d'identità<input type="date" name="scadenzaDocumento" value="${esc(a.scadenzaDocumento)}"></label>
-      <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>
-      <label class="f span3">Note<textarea name="note" rows="3" placeholder="Allergie, infortuni, disponibilità…">${esc(a.note)}</textarea></label>
-    </div>${athleteGamesHTML(id)}</div>
+      <label class="f">Scadenza documento<input type="date" name="scadenzaDocumento" value="${esc(a.scadenzaDocumento)}"></label>
+    </div></div>
+    <div class="atf"><h3>Note</h3><textarea name="note" rows="3" placeholder="Allergie, infortuni, disponibilità…" style="width:100%">${esc(a.note)}</textarea></div>
+    </div>
     <div class="modal-foot">${id?`<button type="button" class="btn danger" data-action="del-at" data-id="${a.id}">Elimina</button>`:''}<span style="flex:1"></span>
       <button type="button" class="btn" data-action="close-modal">Annulla</button><button type="button" class="btn primary" data-action="save-at">Salva</button></div>
   </form></div>`);
@@ -3380,14 +3524,15 @@ function matchSub(m){ return [m.data?cap(fmtDate(m.data)):'Data da definire', m.
 function viewPartita(){
   const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
   const f=(k,l,type,ph,cls)=>`<label class="f ${cls||''}">${l}<input type="${type||'text'}" data-mf="${k}" value="${esc(m[k])}" placeholder="${esc(ph||'')}"></label>`;
-  return `<section>
+  return `<section class="mtabbed mt-${mTab(m)}">
   <div class="page-head">
     <div><a href="#" data-nav="partite" class="muted" style="font-size:13.5px;text-decoration:none">← Calendario partite</a>
       <h1 id="m-title" style="margin-top:4px">${esc(matchTitle(m))}</h1><p class="muted" id="m-sub">${esc(matchSub(m))}</p></div>
     <div class="actions"><span class="saved" id="m-saved"></span><button class="btn" data-action="dup-match">Duplica</button><button class="btn danger" data-action="del-match">Elimina</button></div>
   </div>
+  ${mTabsHTML(m)}
   <div class="sess-layout"><div>
-    <div class="panel"><h2>Dati della partita</h2><div class="grid g3">
+    ${mSumHTML(m)}<div class="panel ${mFormOpen(m)?'':'hidden'}" id="m-form" data-mt="dati"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px"><h2 style="margin:0">Dati della partita</h2><span style="flex:1"></span>${(m.data&&m.avversario)?'<button class="btn sm primary" data-action="m-edit">Fatto</button>':''}</div><div class="grid g3">
       ${f('data','Data','date')}${f('ora','Inizio gara','time')}${f('oraRitrovo','Ritrovo','time')}
       ${f('avversario','Avversario','text','Es. Polisportiva Esempio')}
       <label class="f">Campo<select data-mf="inCasa"><option value="1" ${m.inCasa?'selected':''}>In casa</option><option value="0" ${m.inCasa?'':'selected'}>In trasferta</option></select></label>
@@ -3400,15 +3545,15 @@ function viewPartita(){
       ${f('risultato','Risultato (set casa – ospiti)','text','Es. 3-1')}
       <label class="f span3">Note per i convocati<textarea data-mf="note" rows="2">${esc(m.note)}</textarea></label>
     </div></div>
-    <div class="panel" id="abs-panel">${absPanelHTML(m)}</div>
-    <div class="panel">
+    <div class="panel" id="abs-panel" data-mt="conv">${absPanelHTML(m)}</div>
+    <div class="panel" data-mt="conv">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Convocazioni</h2><span class="muted" id="conv-count">${convCountText(m)}</span><span style="flex:1"></span>
         <button class="btn sm primary" data-action="conv-suggest">✨ Suggerisci</button><button class="btn sm" data-action="conv-all">Tutti gli iscritti</button><button class="btn sm" data-action="conv-none">Nessuno</button></div>
       <div id="conv-box">${convTable(m)}</div>
     </div>
-    <div class="panel" id="form-panel">${formPanelHTML(m)}</div>
+    <div class="panel" id="form-panel" data-mt="form">${formPanelHTML(m)}</div>
   </div>
-  <div class="panel picker"><h2>Invia e stampa</h2>
+  <div class="panel picker" data-mt="invia"><h2>Invia e stampa</h2>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Il messaggio si aggiorna da solo con i dati e i convocati; puoi ritoccarlo qui prima di inviarlo.</p>
     <textarea id="wa-text" class="wa-text">${esc(waText(m))}</textarea>
     <div class="stack" style="margin-top:10px">
@@ -3425,6 +3570,7 @@ function refreshMatch(m, field){
   $('#wa-text').value=waText(m);
   if(field==='conv' && $('#form-panel')) $('#form-panel').innerHTML=formPanelHTML(m);
   if(field==='conv' || field==='data'){ $('#conv-box').innerHTML=convTable(m); $('#conv-count').textContent=convCountText(m); }
+  { const b=$('#mt-conv-n'), n=convocati(m).length; if(b){ b.textContent=n; b.hidden=!n; } }
 }
 function touchMatch(m){
   m.updatedAt=Date.now(); clearTimeout(touchMatch._t);
@@ -3525,12 +3671,107 @@ function regTable(){
   return `<div class="regwrap"><table class="reg"><thead><tr><th class="sticky">Atleta</th>${head}<th class="n">Presenze<br>stagione</th><th class="n">Assenze<br>ultimi 5</th></tr></thead>
     <tbody>${rows}</tbody><tfoot><tr><td class="sticky muted">Presenti</td>${foot}<td></td><td></td></tr></tfoot></table></div>`;
 }
+
+/* ===== Presenze: vista per allenamento ===== */
+function presMode(){ if(ui.pMode) return ui.pMode; let v=''; try{ v=localStorage.getItem('vs-presView')||''; }catch(e){} return ui.pMode=(v==='giorno'||v==='mese')?v:(isPhone()?'giorno':'mese'); }
+function setPresMode(v){ ui.pMode=v; try{ localStorage.setItem('vs-presView', v); }catch(e){} render(); }
+function dayTraining(){
+  const T=trainingsSorted(); if(!T.length) return null;
+  if(ui.pDay){ const t=getTr(ui.pDay); if(t) return t; }
+  const td=todayISO(); return T.find(t=>t.data===td && !t.annullato) || T.find(t=>t.data>=td && !t.annullato) || [...T].reverse().find(t=>t.data<td) || T[0];
+}
+function presDayHTML(){
+  if(!db.athletes.length) return `<div class="empty">Nessun atleta in anagrafica: aggiungili nella sezione «Atleti».</div>`;
+  const T=trainingsSorted(); if(!T.length) return `<div class="empty">Nessun allenamento in calendario. Imposta i giorni fissi qui sopra e premi «Genera calendario», oppure aggiungine uno con «+».</div>`;
+  const t=dayTraining(); ui.pDay=t.id; const i=T.indexOf(t), prev=T[i-1], next=T[i+1];
+  const td=todayISO(), dd=Math.round((parseISO(t.data)-parseISO(td))/864e5);
+  const rel=dd===0?'oggi':dd===1?'domani':dd===-1?'ieri':dd>0?'tra '+dd+' giorni':(-dd)+' giorni fa';
+  const isM=db.matches.some(m=>m.data===t.data);
+  const head=`<div class="pday-head"><button class="iconbtn" data-action="pd-go" data-id="${prev?prev.id:''}" ${prev?'':'disabled'} title="Allenamento precedente">‹</button>
+    <div class="pd-date"><b>${esc(fmtDate(t.data,{weekday:'long',day:'numeric',month:'long'}))}</b><span>${[t.ora?'ore '+esc(t.ora):'', rel, isM?'🏐 giorno di partita':'', t.note?'📝 '+esc(t.note):''].filter(Boolean).join(' · ')}</span></div>
+    <button class="iconbtn" data-action="pd-go" data-id="${next?next.id:''}" ${next?'':'disabled'} title="Allenamento successivo">›</button></div>`;
+  if(t.annullato) return head+`<div class="empty">Allenamento annullato.<br><button class="btn sm" style="margin-top:10px" data-action="edit-tr" data-id="${t.id}">Apri l'allenamento</button></div>`;
+  const A=regAthletes(), P=t.presenze||{}, n={P:0,A:0,G:0,'':0}; A.forEach(a=>n[P[a.id]||'']++);
+  return head+`<div class="pd-count"><span class="cP">✓ ${n.P} present${n.P===1?'e':'i'}</span><span class="cA">✗ ${n.A} assent${n.A===1?'e':'i'}</span><span class="cG">G ${n.G} giustificat${n.G===1?'o':'i'}</span>${n['']?`<span class="c0">${n['']} da segnare</span>`:''}</div>
+    <div class="pd-acts">${n['']?`<button class="btn sm primary" data-action="pd-allp" data-id="${t.id}">Segna presenti tutti gli altri</button>`:''}<button class="btn sm" data-action="edit-tr" data-id="${t.id}">Note e dettagli…</button></div>
+    <div class="pd-list">${A.map(a=>{ const s=P[a.id]||'', pct=seasonPct(a.id);
+      return `<div class="pd-row ${s?'s'+s:'s0'}">${avatarHTML(a,36)}<div class="nm"><b>${esc(fullName(a))}</b><small>${[roleText(a), pct===null?'':'presenze '+pct+'%'].filter(Boolean).map(esc).join(' · ')}</small></div>
+        <div class="pd-seg">${['P','A','G'].map(v=>`<button class="s${v} ${s===v?'on':''}" data-action="pd-set" data-tid="${t.id}" data-aid="${a.id}" data-v="${v}" title="${PTITLE[v]}">${PSTATE[v]}</button>`).join('')}</div></div>`; }).join('')}</div>`;
+}
+function refreshPDay(){ const b=$('#pday'); if(b) b.innerHTML=presDayHTML(); }
+/* ===== Partita a schede ===== */
+function mTab(m){ return ui.mTab || (!(m.data && m.avversario)?'dati':'conv'); }
+function mFormOpen(m){ return !!ui.mEdit || !(m.data && m.avversario); }
+function mSumHTML(m){
+  if(mFormOpen(m)) return '';
+  const it=(k,v,c)=>v?`<div class="it ${c||''}"><span>${k}</span><b>${esc(v)}</b></div>`:'';
+  return `<div class="panel msum" data-mt="dati">
+    ${it('Data', m.data?cap(fmtDate(m.data)):'')}${it('Inizio gara', m.ora)}${it('Ritrovo', m.oraRitrovo)}${it('Campo', m.inCasa?'In casa':'In trasferta')}
+    ${it('Avversario', m.avversario)}${it('Campionato', m.competizione)}${it('Giornata', m.giornata)}${it('N° gara', m.numeroGara)}
+    ${it('Palestra', [m.palestra, m.indirizzo].filter(Boolean).join(', '),'full')}${it('Divisa', m.divisa)}${it('Risultato', m.risultato)}
+    ${it('Note per i convocati', m.note,'full')}
+    <div class="ed"><button class="btn sm" data-action="m-edit">✎ Modifica i dati</button></div></div>`;
+}
+function mTabsHTML(m){ const n=convocati(m).length, f=formOk(getForm(m)), t=mTab(m);
+  return `<div class="mtabs">${[['dati','Dati',''],['conv','Convocati',n?String(n):''],['form','Formaz.',f?'✓':''],['invia','Invia','']].map(([k,l,b])=>`<button data-action="mtab" data-t="${k}" class="${t===k?'on':''}">${l}<span class="b" ${k==='conv'?'id="mt-conv-n"':''} ${b?'':'hidden'}>${b}</span></button>`).join('')}</div>`; }
+/* ===== Profilo atleta ===== */
+function waNumber(c){ let d=String(c||'').replace(/[^\d+]/g,''); if(d.startsWith('+')) return d.slice(1); if(d.startsWith('00')) return d.slice(2); if(/^3\d{8,9}$/.test(d)) return '39'+d; return d; }
+function openAtProfile(id){
+  const a=getAt(id); if(!a) return;
+  const pct=seasonPct(id), st=absStats(id,'9999-12-31'), g=athleteGames(id), age=ageOf(a), nb=nextBirthday(a);
+  const vd=a.scadenzaVisita?daysTo(a.scadenzaVisita):null;
+  const vis=!a.scadenzaVisita?['bad','mancante','da inserire']:vd<0?['bad',shortDate(a.scadenzaVisita),'scaduta']:vd<=SCAD_DAYS?['warn',shortDate(a.scadenzaVisita),'scade tra '+vd+' giorni']:['ok',shortDate(a.scadenzaVisita),'valida'];
+  const dd=a.scadenzaDocumento?daysTo(a.scadenzaDocumento):null;
+  const doc=!a.scadenzaDocumento&&!a.numeroDocumento?['','—','non inserito']:[dd!==null&&dd<0?'bad':dd!==null&&dd<=SCAD_DAYS?'warn':'', a.numeroDocumento||'—', a.scadenzaDocumento?(dd<0?'scaduto il ':'scade il ')+shortDate(a.scadenzaDocumento):''];
+  const tile=(cls,k,v,s,act)=>`<div class="atp-t ${cls} ${act?'go':''}" ${act||''}><div class="k">${k}</div><b>${v}</b>${s?`<small>${s}</small>`:''}</div>`;
+  const tags=[roleText(a), a.numeroMaglia?'n° '+a.numeroMaglia:'', isF(a)?'Donna':isM(a)?'Uomo':''].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join('')+(a.iscritto?'':'<span class="off">non iscritto</span>');
+  openModal(`<div class="modal-box" style="max-width:680px">
+    <div class="modal-head"><div class="atp-head" style="flex:1">${avRole(a,64)}<div style="min-width:0"><h2>${esc(fullName(a))}</h2><div class="atp-tags">${tags}</div></div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="atp-grid">
+        ${tile(pct===null?'':pct>=75?'ok':pct>=50?'warn':'bad','📅 Presenze', pct===null?'—':pct+'%', st.n?`assente a ${st.ass} degli ultimi ${st.n}`:'nessun allenamento segnato')}
+        ${tile('','🏐 Partite', `${g.conv} / ${g.played}`, g.onCourt?`in campo ${g.onCourt} · ${g.sets} set`:'convocato / giocate')}
+        ${tile(vis[0],'🩺 Visita medica', vis[1], vis[2], vis[0]==='bad'?`data-action="at-edit" data-id="${a.id}" title="Inserisci la data"`:'')}
+        ${tile('','🎂 Compleanno', a.dataNascita?shortDate(a.dataNascita).slice(0,5):'—', age===null?'':`${age} anni${nb?(nb.days===0?' · oggi!':' · tra '+nb.days+' gg'):''}`)}
+        ${tile(doc[0],'🪪 Documento', esc(doc[1]), doc[2])}
+        ${tile('','👕 Taglia', esc(a.taglia||'—'), '')}
+      </div>
+      ${a.cellulare?`<div class="atp-contact"><a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span></div>`:''}
+      ${a.note?`<div class="atp-note">📝 ${nl2br(a.note)}</div>`:''}
+      ${athleteGamesHTML(id)}
+    </div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Chiudi</button><button class="btn primary" data-action="at-edit" data-id="${a.id}">✎ Modifica</button></div></div>`);
+}
+/* ===== Sessione ===== */
+function sFormOpen(s){ return !!ui.sEdit || !s.titolo; }
+function sSumHTML(s){
+  if(sFormOpen(s)) return '';
+  const it=(k,v)=>v?`<div class="it"><span>${k}</span><b>${esc(v)}</b></div>`:'';
+  return `<div class="panel ssum">${it('Data', s.data?cap(fmtDate(s.data)):'')}${it('Ora', s.oraInizio)}${it('Luogo', s.luogo)}<span style="flex:1"></span><button class="btn sm" data-action="s-edit">✎ Modifica</button>${s.obiettivo?`<div class="ob">🎯 ${esc(s.obiettivo)}</div>`:''}${s.note?`<div class="ob">📝 ${esc(s.note)}</div>`:''}</div>`;
+}
+function pickIndexHTML(){
+  const cnt=f=>db.exercises.filter(e=>(e.fondamentale||'Senza categoria')===f).length;
+  return `<div class="pk-idx">${fondOrder(db.exercises).map(f=>`<button class="ftile" style="--c:${fondColor(f==='Senza categoria'?'':f)}" data-action="p-fond" data-v="${esc(f)}"><span class="exi">${fondIcon(f)}</span><span><b>${esc(f)}</b><small>${cnt(f)}</small></span></button>`).join('')}</div>`;
+}
+/* ===== Archivio a sezioni ===== */
+function accordionize(){
+  ui.accOpen=ui.accOpen||{}; const linked=!!Sync.config();
+  $$('#app > section > .panel').forEach(p=>{
+    const h=p.querySelector(':scope > h2'); if(!h) return;
+    const key=p.id||h.textContent.trim();
+    const d=document.createElement('details'); d.className=p.className+' acc'; if(p.id) d.id=p.id;
+    d.open = key in ui.accOpen ? ui.accOpen[key] : (p.id==='sync-panel' && !linked);
+    const s=document.createElement('summary'); s.appendChild(h); d.appendChild(s);
+    while(p.firstChild) d.appendChild(p.firstChild);
+    p.replaceWith(d); d.addEventListener('toggle', ()=>{ ui.accOpen[key]=d.open; });
+  });
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
   <div class="page-head">
     <div><h1>Presenze</h1><p class="muted">${db.trainings.length} allenament${db.trainings.length===1?'o':'i'} in calendario · ${rec} con presenze segnate</p></div>
-    <div class="actions"><button class="btn" data-action="print-reg">Stampa registro del mese</button><button class="btn primary" data-action="new-tr">+ Aggiungi allenamento</button></div>
+    <div class="actions"><div class="vseg" role="group" aria-label="Vista"><button data-action="p-mode" data-v="giorno" class="${presMode()==='giorno'?'on':''}"><span class="si">${ICO.presenze}</span><span class="sl">Allenamento</span></button><button data-action="p-mode" data-v="mese" class="${presMode()==='mese'?'on':''}"><span class="si">${ICO.grid}</span><span class="sl">Mese</span></button></div><button class="btn" data-action="print-reg">Stampa<span class="sl"> registro del mese</span></button><button class="btn primary" data-action="new-tr">+ Aggiungi allenamento</button></div>
   </div>
   <details class="panel" ${db.trainings.length?'':'open'}>
     <summary><h2 style="display:inline">Giorni fissi di allenamento</h2> <span class="muted" style="font-size:13.5px">· ${WEEKDAYS.filter(w=>c.giorni[w[0]]!==undefined).map(w=>w[1]+(c.giorni[w[0]]?' '+c.giorni[w[0]]:'')).join(', ')||'nessuno'}</span></summary>
@@ -3544,7 +3785,8 @@ function viewPresenze(){
     </div>
     <div class="actions" style="margin-top:12px"><button class="btn dark" data-action="gen-tr">Genera calendario</button></div>
   </details>
-  <div class="panel">
+  ${presMode()==='giorno'?`<div class="panel" id="pday">${presDayHTML()}</div>`:''}
+  <div class="panel ${presMode()==='giorno'?'hidden':''}">
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
       <div class="monthnav"><button class="iconbtn" data-action="pm-prev" title="Mese precedente">‹</button><h2>${esc(monthLabel(ui.pm))}</h2><button class="iconbtn" data-action="pm-next" title="Mese successivo">›</button></div>
       <button class="btn sm" data-action="pm-today">Oggi</button>
@@ -3717,6 +3959,17 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'p-mode': b=>setPresMode(b.dataset.v),
+  'pd-go': b=>{ if(b.dataset.id){ ui.pDay=b.dataset.id; refreshPDay(); } },
+  'pd-set': b=>{ const t=getTr(b.dataset.tid); if(!t) return; t.presenze=t.presenze||{}; const v=b.dataset.v, a=b.dataset.aid; if(t.presenze[a]===v) delete t.presenze[a]; else t.presenze[a]=v; touchTr(t); refreshPDay(); },
+  'pd-allp': b=>{ const t=getTr(b.dataset.id); if(!t) return; t.presenze=t.presenze||{}; let n=0; regAthletes().filter(a=>a.iscritto).forEach(a=>{ if(!t.presenze[a.id]){ t.presenze[a.id]='P'; n++; } }); touchTr(t); refreshPDay(); toast(`${n} segnat${n===1?'o':'i'} presenti`); },
+  'mtab': b=>{ ui.mTab=b.dataset.t; const sec=$('#app section.mtabbed'); if(sec) sec.className='mtabbed mt-'+ui.mTab; $$('.mtabs button').forEach(x=>x.classList.toggle('on', x.dataset.t===ui.mTab));
+    if(window.matchMedia('(max-width:1100px)').matches) window.scrollTo(0,0); else $(`[data-mt=${ui.mTab}]:not(.hidden)`)?.scrollIntoView({behavior:'smooth',block:'start'}); },
+  'm-edit': ()=>{ ui.mEdit=!ui.mEdit; render(); },
+  's-edit': ()=>{ ui.sEdit=!ui.sEdit; render(); },
+  'pick-open': ()=>{ ui.pickOpen=true; const p=$('.picker'); if(p) p.classList.add('open'); },
+  'pick-close': ()=>{ ui.pickOpen=false; const p=$('.picker'); if(p) p.classList.remove('open'); },
+  'at-rk': b=>{ ui.af.rk = ui.af.rk===b.dataset.v ? '' : b.dataset.v; render(); },
   'map': b=>window.open(b.href,'_blank','noopener'),
   'camp-sel': b=>{ ui.camp=b.dataset.v; ui.cmonth=null; render(); },
   'camp-new': ()=>{ const v=(prompt('Nome del nuovo campionato (es. Primaverile 2027):')||'').trim(); if(!v) return; if(v===CAMP_NONE||v==='__all'){ alert('Scegli un altro nome.'); return; }
@@ -3770,14 +4023,15 @@ const actions={
   'av-set': b=>{ ui.atDraft.avatar='emoji:'+b.dataset.e; refreshAvatar(); },
   'av-photo': ()=>pickAvatar(url=>{ ui.atDraft.avatar=url; $('#emogrid').classList.add('hidden'); refreshAvatar(); }),
   'av-clear': ()=>{ ui.atDraft.avatar=''; refreshAvatar(); },
-  'edit-at': b=>openAtModal(b.dataset.id),
+  'edit-at': b=>openAtProfile(b.dataset.id),
+  'at-edit': b=>openAtModal(b.dataset.id),
   'save-at': ()=>saveAt(),
   'del-at': b=>{ const a=getAt(b.dataset.id); if(!a || !confirm(`Eliminare «${fullName(a)}» dall'anagrafica?`)) return;
     api('DELETE','/api/atleti/'+encodeURIComponent(a.id)).then(()=>{ db.athletes=db.athletes.filter(x=>x.id!==a.id); closeModal(); render(); toast('Atleta eliminato'); }).catch(saveFail); },
   'print-at': ()=>printAthletes(),
   'new-match': ()=>{ const m=newMatch(); { const c=campSel(); if(c!=='__all' && c!==CAMP_NONE){ m.competizione=c; persist.match(m).catch(saveFail); } } go('partita',{matchId:m.id}); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
-  'open-match': b=>go('partita',{matchId:b.dataset.id}),
-  'dup-match': ()=>{ const m=newMatch(getMatch(ui.matchId)); go('partita',{matchId:m.id}); toast('Partita duplicata: giornata aumentata di 1, inserisci data, avversario e n° gara'); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
+  'open-match': b=>go('partita',{matchId:b.dataset.id, mTab:null, mEdit:false}),
+  'dup-match': ()=>{ const m=newMatch(getMatch(ui.matchId)); go('partita',{matchId:m.id, mTab:'dati', mEdit:true}); toast('Partita duplicata: giornata aumentata di 1, inserisci data, avversario e n° gara'); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
   'del-match': ()=>{ const m=getMatch(ui.matchId); if(!m || !confirm(`Eliminare la partita «${matchTitle(m)}»?`)) return; clearTimeout(touchMatch._t);
     api('DELETE','/api/partite/'+encodeURIComponent(m.id)).then(()=>{ db.matches=db.matches.filter(x=>x.id!==m.id); go('partite'); toast('Partita eliminata'); }).catch(saveFail); },
   'abs-toggle': b=>toggleAbsent(b.dataset.id),
@@ -3826,12 +4080,12 @@ const actions={
   'schema-upload': ()=>pickImage(url=>openFitDialog(url,useExImage)),
   'schema-fit': ()=>{ if(ui.draft.image) openFitDialog(ui.draft.image, url=>{ ui.draft.image=url; markDirty(); mountSchemaBox(); toast('Immagine ridimensionata'); }); },
   'schema-remove': ()=>{ if(!confirm('Rimuovere lo schema?')) return; ui.draft.image=null; ui.draft.schema=null; markDirty(); mountSchemaBox(); },
-  'new-sess': ()=>{ const s=newSession(); go('sessione',{sessId:s.id}); setTimeout(()=>$('[data-sf=titolo]')?.focus(),50); },
-  'open-sess': b=>go('sessione',{sessId:b.dataset.id}),
+  'new-sess': ()=>{ const s=newSession(); go('sessione',{sessId:s.id, sEdit:true, pickOpen:false}); setTimeout(()=>$('[data-sf=titolo]')?.focus(),50); },
+  'open-sess': b=>go('sessione',{sessId:b.dataset.id, sEdit:false, pickOpen:false}),
   'dup-sess': b=>{ const s=clone(getSess(b.dataset.id)); s.id=newId('se'); s.titolo=(s.titolo||'Sessione')+' (copia)'; s.data=todayISO(); s.items.forEach(i=>i.uid=newId('it')); s.createdAt=s.updatedAt=Date.now(); db.sessions.push(s); persist.sess(s).catch(saveFail); go('sessione',{sessId:s.id}); toast('Sessione duplicata'); },
   'del-sess': b=>{ const s=getSess(b.dataset.id); if(!confirm(`Eliminare la sessione «${s.titolo||'Senza titolo'}»?`)) return; pending.delete(s.id); db.sessions=db.sessions.filter(x=>x.id!==s.id); api('DELETE','/api/sessioni/'+encodeURIComponent(s.id)).catch(saveFail); go('sessioni'); toast('Sessione eliminata'); },
   'print-sess': b=>{ const s=getSess(b.dataset.id); if(!s.items.length){ alert('Il programma della sessione è vuoto.'); return; } doPrint(sessionPrintHTML(s), (s.titolo||'Allenamento')+(s.data?' '+s.data:'')); },
-  'add-ex': b=>{ const s=getSess(ui.sessId); addExToSession(s,b.dataset.id); touchSess(s,'items'); const last=$('#items').lastElementChild; last?.scrollIntoView({block:'nearest',behavior:'smooth'}); },
+  'add-ex': b=>{ const s=getSess(ui.sessId); addExToSession(s,b.dataset.id); touchSess(s,'items'); if(ui.pickOpen){ toast('Aggiunto: '+(getEx(b.dataset.id)||{}).titolo); $('#plist').innerHTML=pickListHTML(s); return; } const last=$('#items').lastElementChild; last?.scrollIntoView({block:'nearest',behavior:'smooth'}); },
   'add-free': b=>{ const s=getSess(ui.sessId); const p=PRESETS[+b.dataset.i]; s.items.push({uid:newId('it'),type:'free',titolo:p.titolo==='Voce libera'?'':p.titolo,durata:p.durata,fondamentale:p.fondamentale,descrizione:p.descrizione}); touchSess(s,'items'); },
   'it-dos-reset': b=>{ const s=getSess(ui.sessId), it=s.items.find(i=>i.uid===b.dataset.uid); if(!it) return; it.dosaggio=null;
     const e=getEx(it.exId); it.durata = e && e.durata!=='' && e.durata!=null ? +e.durata : (estimateMin(effDos(it))||it.durata); touchSess(s,'items'); },
@@ -3846,7 +4100,7 @@ const actions={
   'sync-now': ()=>{ flushPending(); Sync.run().then(()=>{ const st=Sync.status(); toast(st.status==='ok'?'Sincronizzato':(st.msg||SYNC_LBL[st.status])); }); },
   'sync-off': async ()=>{ if(!confirm('Scollegare questo dispositivo dall\'archivio online? I dati restano qui, ma non verranno più sincronizzati.')) return; await Sync.disconnect(); render(); toast('Dispositivo scollegato'); },
   'sync-token': async ()=>{ const c=Sync.config(); await Store.setMeta('syncLast',{owner:c.owner, repo:c.repo}); await Sync.disconnect(); render(); setTimeout(()=>{ const t=$('#sync-form [name=token]'); if(t){ t.focus(); $('#sync-msg').textContent='Inserisci il nuovo codice e premi «Collega»: i dati non vengono toccati.'; } },50); },
-  'w-sync': ()=>{ go('impostazioni'); setTimeout(()=>{ const p=$('#sync-panel'); if(p) p.scrollIntoView({behavior:'smooth'}); },60); },
+  'w-sync': ()=>{ ui.accOpen=Object.assign(ui.accOpen||{},{'sync-panel':true}); go('impostazioni'); setTimeout(()=>{ const p=$('#sync-panel'); if(p) p.scrollIntoView({behavior:'smooth'}); },60); },
   'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('home'); },
   'restore-seed': ()=>{
     const inp=$('#filepick'); inp.value=''; inp.accept='.json,application/json';
@@ -3899,6 +4153,7 @@ document.addEventListener('change', e=>{
   if(t.id==='ex-dist'){ ui.f.dist=t.value; refreshExList(); }
   if(t.id==='at-ruolo'){ ui.af.ruolo=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.id==='at-iscr'){ ui.af.iscr=t.value; $('#at-rows').innerHTML=atRows(); }
+  if(t.id==='at-sort'){ ui.af.sort=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.closest('#at-form') && t.name==='dataNascita') refreshAtDerived();
   if(t.dataset.conv){ const m=getMatch(ui.matchId); if(!m) return;
     if(t.checked){ const a0=getAt(t.dataset.conv); if(a0 && !visitaOk(a0,m) && !confirm(`${fullName(a0)}: ${visitaWhy(a0)}. Convocarlo comunque?`)){ t.checked=false; return; } } const s=new Set(m.convocati||[]); if(t.checked) s.add(t.dataset.conv); else s.delete(t.dataset.conv);

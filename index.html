@@ -721,6 +721,35 @@ a.btn{text-decoration:none;color:inherit}
   .page-head .seg button{padding:6px 10px;font-size:13px}
 }
 @media (min-width:761px){ .sess-row .m{display:contents} }
+.warn.med{align-items:flex-start}
+.warn.med .medtxt{display:flex;flex-direction:column;gap:6px;min-width:0}
+.warn.med .names{display:flex;flex-wrap:wrap;gap:5px}
+.warn.med .nm{background:#fff;border:1px solid #f2b8bf;border-radius:999px;padding:2px 9px;font-size:12.5px;font-weight:600;cursor:pointer;color:#7a1626}
+.warn.med .nm.miss{border-style:dashed}
+/* esercizi: vista compatta */
+.ex-rows{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.ex-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:12px;padding:6px 12px;border-top:1px solid var(--line);cursor:pointer}
+.ex-row:first-child{border-top:0}
+.ex-row:hover{background:var(--bg)}
+.ex-row .th{width:64px;height:44px;border-radius:6px;overflow:hidden;background:#f3ede2;display:grid;place-items:center}
+.ex-row .th svg,.ex-row .th img{width:100%;height:100%;object-fit:cover;display:block}
+.ex-row .th .noschema{font-size:9px;color:var(--muted);text-align:center;line-height:1.1}
+.ex-row .t{min-width:0}
+.ex-row .t b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-row .t small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ex-row .tags{display:flex;gap:4px;flex-wrap:nowrap;justify-content:flex-end}
+.ex-row .tags>*{flex:none;white-space:nowrap}
+@media (max-width:760px){
+  .ex-row{grid-template-columns:52px minmax(0,1fr);gap:10px;padding:6px 10px}
+  .ex-row .th{width:52px;height:38px}
+  .ex-row{align-items:start}
+  .ex-row .t{grid-row:1}
+  .ex-row .th{grid-row:1/span 2}
+  .ex-row .tags{grid-column:2;justify-content:flex-start;flex-wrap:nowrap;overflow:hidden;margin-top:-4px}
+  .ex-row .tags .ptag{font-size:11px;padding:1px 7px;white-space:nowrap}
+  .warn.med .nm{font-size:12px;padding:1px 8px}
+}
+.group-title+.ex-rows{margin-bottom:22px}
 
 #print-area{display:none}
 
@@ -1246,6 +1275,7 @@ function viewEsercizi(){
     <div class="page-head">
     <div><h1>Esercizi</h1><p class="muted">${db.exercises.length} schede nello schedario</p></div>
     <div class="actions">
+      ${segHTML('ex')}
       <button class="btn" data-action="print-catalog" title="Stampa le schede visualizzate">Stampa elenco</button>
       <button class="btn primary" data-action="new-ex">+ Nuovo esercizio</button>
     </div>
@@ -1279,7 +1309,7 @@ function exResults(){
   return groups.map(g=>{
     const items=list.filter(e=>(e.fondamentale||'Senza categoria')===g);
     return `<div class="group-title" style="--c:${fondColor(g)}"><span class="bar"></span><h2>${esc(g)}</h2><span class="muted">${items.length}</span></div>
-      <div class="cards">${items.map(exCard).join('')}</div>`;
+      ${viewMode('ex')==='compatta'?exRowsHTML(items):`<div class="cards">${items.map(exCard).join('')}</div>`}`;
   }).join('');
 }
 
@@ -1515,8 +1545,16 @@ function compBar(s){
 }
 
 const MEDX=`<svg class="medx" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="#d7263d"/><path d="M9.5 4.5h5v5h5v5h-5v5h-5v-5h-5v-5h5z" fill="#fff"/></svg>`;
-function sessView(){ if(ui.sessView) return ui.sessView; let v=''; try{ v=localStorage.getItem('vs-sessView')||''; }catch(e){} return ui.sessView=(v==='compatta'?'compatta':'schede'); }
-function setSessView(v){ ui.sessView=v; try{ localStorage.setItem('vs-sessView', v); }catch(e){} render(); }
+function viewMode(k){ ui.vmode=ui.vmode||{}; if(ui.vmode[k]) return ui.vmode[k]; let v=''; try{ v=localStorage.getItem('vs-'+k+'View')||''; }catch(e){} return ui.vmode[k]=(v==='compatta'?'compatta':'schede'); }
+function setViewMode(k,v){ ui.vmode=ui.vmode||{}; ui.vmode[k]=v; try{ localStorage.setItem('vs-'+k+'View', v); }catch(e){} render(); }
+const sessView=()=>viewMode('sess');
+const segHTML=k=>`<div class="seg" role="group" aria-label="Vista"><button data-action="view-mode" data-k="${k}" data-v="schede" class="${viewMode(k)==='schede'?'on':''}">▦ Schede</button><button data-action="view-mode" data-k="${k}" data-v="compatta" class="${viewMode(k)==='compatta'?'on':''}">☰ Compatta</button></div>`;
+function exRowsHTML(items){
+  return `<div class="ex-rows">${items.map(e=>{ const desc=e.svolgimento||e.organizzazione||'';
+    return `<div class="ex-row" data-action="open-ex" data-id="${e.id}"><div class="th">${exVisual(e)}</div>
+      <div class="t"><b>${esc(e.titolo)}</b>${desc?`<small>${esc(desc)}</small>`:''}</div>
+      <div class="tags">${ptag(e.formazione)}${dosShort(e.dosaggio)?ptag(dosShort(e.dosaggio)):''}${e.distretto?ptag(e.distretto):''}${e.durata?ptag(e.durata+' min'):''}</div></div>`; }).join('')}</div>`;
+}
 function sessRowsHTML(list){
   return `<div class="sess-rows">${list.map(s=>{
     const tl=sessTimeline(s), cb=compBar(s), nEx=s.items.filter(i=>i.type==='ex').length;
@@ -1532,7 +1570,7 @@ function viewSessioni(){
   return `<section>
   <div class="page-head">
     <div><h1>Sessioni di allenamento</h1><p class="muted">${list.length} session${list.length===1?'e':'i'}</p></div>
-    <div class="actions"><div class="seg" role="group" aria-label="Vista"><button data-action="sess-view" data-v="schede" class="${sessView()==='schede'?'on':''}">▦ Schede</button><button data-action="sess-view" data-v="compatta" class="${sessView()==='compatta'?'on':''}">☰ Compatta</button></div><button class="btn primary" data-action="new-sess">+ Nuova sessione</button></div>
+    <div class="actions">${segHTML('sess')}<button class="btn primary" data-action="new-sess">+ Nuova sessione</button></div>
   </div>
   ${list.length&&sessView()==='compatta'?sessRowsHTML(list):list.length?`<div class="sess-list">${list.map(s=>{
     const tl=sessTimeline(s), cb=compBar(s), nEx=s.items.filter(i=>i.type==='ex').length;
@@ -2062,7 +2100,11 @@ function viewAtleti(){
   </div>
   ${up.length?`<div class="bday-banner"><b>🎂 Compleanni nei prossimi ${BDAY_DAYS} giorni:</b> ${up.map(x=>{ const age=ageOf(x.a); const compie=age===null?'':(x.nb.days===0?age:age+1);
       return `<span class="bday ${x.nb.days===0?'today':'soon'}" data-action="edit-at" data-id="${x.a.id}">${esc(fullName(x.a))} · ${x.nb.days===0?'oggi':x.nb.date.toLocaleDateString('it-IT',{day:'numeric',month:'short'})+' (tra '+x.nb.days+' gg)'}${compie!==''?' · '+compie+' anni':''}</span>`; }).join('')}</div>`:''}
-  ${vis.length?`<div class="warn med">${MEDX}<b>Visite mediche: ${vis.length} ${vis.length===1?'scaduta o in scadenza':'scadute o in scadenza'} entro ${SCAD_DAYS} giorni.</b></div>`:''}
+  ${(()=>{ const miss=db.athletes.filter(a=>a.iscritto && !a.scadenzaVisita);
+     if(!vis.length && !miss.length) return '';
+     const parts=[vis.length?`${vis.length} ${vis.length===1?'scaduta o in scadenza':'scadute o in scadenza'} entro ${SCAD_DAYS} giorni`:'', miss.length?`${miss.length} mancant${miss.length===1?'e':'i'}`:''].filter(Boolean);
+     const nm=(a,m)=>`<span class="nm ${m?'miss':''}" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))} · ${m?'manca':(a.scadenzaVisita<todayISO()?'scaduta':'scade '+shortDate(a.scadenzaVisita))}</span>`;
+     return `<div class="warn med">${MEDX}<div class="medtxt"><b>Visite mediche: ${parts.join(' · ')}.</b><div class="names">${vis.map(a=>nm(a,false)).join('')}${miss.map(a=>nm(a,true)).join('')}</div></div></div>`; })()}
   ${doc.length?`<div class="warn doc"><span class="ico">🪪</span><b>Documenti d'identità: ${doc.length} ${doc.length===1?'scaduto o in scadenza':'scaduti o in scadenza'} entro ${SCAD_DAYS} giorni.</b></div>`:''}
   <div class="filters">
     <input type="search" id="at-q" placeholder="Cerca per nome, telefono, note…" value="${esc(ui.af.q)}">
@@ -2972,7 +3014,7 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
-  'sess-view': b=>setSessView(b.dataset.v),
+  'view-mode': b=>setViewMode(b.dataset.k, b.dataset.v),
   'f-fond': b=>{ ui.f.fond=b.dataset.v; $('#app').innerHTML=viewEsercizi(); },
   'open-ex': (b)=>{ if(b.dataset.id) openExModal(b.dataset.id, ui.view==='sessione'?ui.sessId:null); },
   'close-modal': ()=>closeModal(),

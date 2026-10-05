@@ -1452,6 +1452,93 @@ body.train-mode main{padding:0!important;max-width:none}
 .qm-conv input{display:none}
 .qm-conv .av{margin:0}
 
+
+.rf-wrap{max-width:760px;margin:0 auto}
+.rf-sets{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+.rf-sets button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:700;font-size:13px;color:var(--ink-2);cursor:pointer}
+.rf-sets button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+.rf-sets button small{font-weight:600;opacity:.75;margin-left:4px}
+.rf-score{background:var(--bar);color:#fff;border-radius:16px;padding:12px 16px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;box-shadow:var(--shadow)}
+.rf-score .t{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.rf-score .n{font-size:46px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.rf-score .r{text-align:right}
+.rf-score .mid{text-align:center;font-size:12.5px;opacity:.85}
+.rf-score .srv{display:inline-block;margin-top:4px;background:rgba(255,255,255,.16);border-radius:999px;padding:2px 9px;font-size:12.5px;font-weight:700}
+.rf-court{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin:10px 0;max-width:420px}
+.rf-court div{border:1px solid var(--line);border-radius:8px;padding:5px 6px;font-size:12.5px;font-weight:700;text-align:center;background:var(--surface);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rf-court div small{display:block;font-weight:600;color:var(--muted);font-size:10.5px}
+.rf-court div.sv{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+.rf-info{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;font-size:13.5px}
+.rf-info .rot{background:var(--surface-2);border:1px solid var(--line-2);border-radius:8px;padding:2px 9px;font-weight:800}
+.rf-big{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.rf-big button{border:0;border-radius:16px;padding:22px 10px;font-size:24px;font-weight:800;color:#fff;cursor:pointer;box-shadow:var(--shadow);touch-action:manipulation}
+.rf-big .n{background:#22a05a}.rf-big .l{background:#d64a5a}
+.rf-big button:active{transform:scale(.97)}
+.rf-big button:disabled{opacity:.35}
+.rf-small{display:flex;gap:6px;flex-wrap:wrap}
+.rf-small .btn{flex:1 1 auto;justify-content:center}
+.rf-over{border:2px solid var(--accent);border-radius:14px;padding:12px 14px;margin:12px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.rf-over b{font-size:17px}
+.rf-tl{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.rf-tl i{font-style:normal;min-width:22px;height:22px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:800;color:#fff;padding:0 3px}
+.rf-tl i.N{background:#22a05a}.rf-tl i.L{background:#d64a5a}.rf-tl i.T{background:#8a94a6}.rf-tl i.S{background:#2f6fb8}.rf-tl i.X{background:#333}
+.rf-lineup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rf-lineup label{font-size:12.5px;font-weight:700;color:var(--muted)}
+.rf-lineup select,.rf-lineup input{margin-top:3px}
+.rf-fs{display:flex;gap:6px}
+.rf-fs button{flex:1;border:1px solid var(--line-2);background:var(--surface);border-radius:10px;padding:9px;font-weight:800;cursor:pointer;color:var(--ink-2)}
+.rf-fs button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+.rf-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0 12px}
+.rf-kpi div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--surface)}
+.rf-kpi span{display:block;font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.rf-kpi b{font-size:21px}
+.rf-kpi small{color:var(--muted);font-size:12px;margin-left:4px}
+.rf-ins{margin:0 0 12px;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.rf-ins li{border-left:4px solid var(--accent);background:var(--surface-2);border-radius:6px;padding:6px 10px;font-size:13.5px}
+.rf-ins li.bad{border-left-color:#d64a5a}.rf-ins li.good{border-left-color:#22a05a}
+.rf-h{font-size:14.5px;margin:14px 0 6px}
+.rf-t{width:100%;border-collapse:collapse;font-size:13.5px}
+.rf-t th{text-align:left;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:4px 6px;border-bottom:1px solid var(--line)}
+.rf-t td{padding:6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.rf-t td.n,.rf-t th.n{text-align:right;white-space:nowrap}
+.rf-bar{display:flex;align-items:center;gap:6px;min-width:110px}
+.rf-bar .b{flex:1;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:40px}
+.rf-bar .b i{display:block;height:100%;border-radius:4px}
+.rf-bar b{min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+.rf-bar small{color:var(--muted);font-size:11.5px;min-width:34px}
+.rf-worm{margin:4px 0 10px}
+.rf-worms{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 18px}
+.rf-worm svg{width:100%;height:80px;display:block;color:var(--ink-2)}
+.rf-worm .c{font-size:12.5px;font-weight:700;margin-bottom:2px}
+.rf-note{font-size:12px;color:var(--muted);margin:8px 0 0}
+@media (max-width:760px){
+  .rf-score .n{font-size:40px}
+  .rf-big button{padding:20px 8px;font-size:22px}
+  .rf-t{font-size:12.5px}
+  .rf-t .hs{display:none}
+  .mtabs button{font-size:12px;padding:8px 3px;gap:3px}
+}
+@media (max-width:1100px){
+  .mtabbed.mt-ref [data-mt=ref]{display:block!important}
+}
+
+
+.guide{max-width:820px;margin:0 auto}
+.guide .gsearch{margin:4px 0 12px}
+.guide details{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;box-shadow:var(--shadow)}
+.guide summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;font-weight:800;font-size:15.5px}
+.guide summary::-webkit-details-marker{display:none}
+.guide summary .gi{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;font-size:18px;background:var(--surface-2);flex:none}
+.guide summary::after{content:'›';margin-left:auto;font-size:22px;color:var(--muted);transition:transform .15s}
+.guide details[open] summary::after{transform:rotate(90deg)}
+.guide .gb{padding:0 16px 14px;font-size:14.5px;line-height:1.55}
+.guide .gb h4{margin:12px 0 4px;font-size:14.5px}
+.guide .gb ol,.guide .gb ul{margin:4px 0 8px;padding-left:22px}
+.guide .gb li{margin:3px 0}
+.guide .gb .tip{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-left:4px solid var(--accent);border-radius:6px;padding:7px 10px;margin:8px 0;font-size:13.5px}
+.guide .gb code{background:var(--surface-2);border-radius:4px;padding:0 4px;font-size:13px}
+.guide .gnone{text-align:center;color:var(--muted);padding:20px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1929,7 +2016,7 @@ function go(view, params={}){
 window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault(); e.returnValue=''; } });
 
 function render(){
-  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live') && b.dataset.nav==='partite')));
+  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto') && b.dataset.nav==='partite')));
   refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); if(ui.view!=='allena') keepAwake(false);
   const app=$('#app');
   if(ui.view==='esercizi') app.innerHTML = viewEsercizi();
@@ -1946,6 +2033,8 @@ function render(){
   else if(ui.view==='presenze') app.innerHTML = viewPresenze();
   else if(ui.view==='benvenuto') app.innerHTML = viewBenvenuto();
   else if(ui.view==='live') app.innerHTML = viewLive();
+  else if(ui.view==='referto') app.innerHTML = viewReferto();
+  else if(ui.view==='guida') app.innerHTML = viewGuida();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
   document.body.classList.toggle('live-land', ui.view==='live' && isLand());
   renderNavBadge();
@@ -2418,7 +2507,7 @@ function viewHome(){
     ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
     ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
   </div>`:''}
-  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button>${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button><button data-action="guide-open">📖 Guida</button>${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
   <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
   </section>`;
 }
@@ -2591,12 +2680,12 @@ function newSession(){
 function viewImpostazioni(){
   const st=db.settings;
   return `<section>
-  <div class="page-head"><div><h1>Archivio e impostazioni</h1></div></div>
+  <div class="page-head"><div><h1>Archivio e impostazioni</h1></div><div class="actions"><button class="btn" data-action="guide-open">📖 Come si fa</button></div></div>
 ${syncPanelHTML()}
 ${lookPanelHTML()}
   <div class="panel">
     <h2>Copie e scambio con altri allenatori</h2>
-    <p style="margin-top:0">Scarica tutto in un file JSON (da tenere come copia o da passare a un altro allenatore), oppure importa un file ricevuto. Qui si importa anche il file esportato dal vecchio programma per il computer.</p>
+    <p style="margin-top:0">Scarica una copia di sicurezza o un file da passare a un altro allenatore, scegliendo tu cosa includere. Con «Importa» carichi un file ricevuto: una tua copia oppure gli esercizi di un collega.</p>
     <div class="actions">
       <button class="btn" data-action="export">Scarica una copia (.json)…</button>
       <button class="btn" data-action="import">Importa…</button>
@@ -2614,7 +2703,7 @@ ${lookPanelHTML()}
   </div>
   <div class="panel">
     <h2>Esercizi del catalogo</h2>
-    <p style="margin-top:0">Se hai eliminato per errore uno degli esercizi del catalogo, puoi reinserirlo scegliendo il file <b>esercizi_iniziali.json</b> (nella cartella dello schedario sul computer, sottocartella «app»). Gli esercizi già presenti con lo stesso titolo non vengono toccati.</p>
+    <p style="margin-top:0">Se hai eliminato per errore un esercizio ricevuto con un catalogo, puoi reinserirlo scegliendo di nuovo il file del catalogo (.json) che avevi importato. Gli esercizi già presenti con lo stesso titolo non vengono toccati.</p>
     <button class="btn" data-action="restore-seed">Reinserisci gli esercizi mancanti da un file…</button>
   </div>
   </section>`;
@@ -2639,7 +2728,7 @@ function syncStatusHTML(){
 function syncPanelHTML(){
   const c=Sync.config();
   if(c) return `<div class="panel" id="sync-panel">
-    <h2>Sincronizzazione tra computer e telefono</h2>
+    <h2>Sincronizzazione online</h2>
     <p style="margin-top:0">I dati sono salvati su questo dispositivo e copiati nel tuo archivio privato su GitHub <b class="mono">${esc(c.owner)}/${esc(c.repo)}</b>. Le modifiche partono da sole qualche secondo dopo il salvataggio, e quelle fatte sull'altro dispositivo arrivano all'apertura dell'app e poi ogni minuto.</p>
     <div class="sync-box" id="sync-status">${syncStatusHTML()}</div>
     <div class="actions" style="margin-top:12px"><button class="btn primary" data-action="sync-now">Sincronizza adesso</button>
@@ -2650,19 +2739,19 @@ function syncPanelHTML(){
   </div>`;
   const last=Store.getMeta('syncLast')||{};
   return `<div class="panel" id="sync-panel">
-    <h2>Sincronizzazione tra computer e telefono</h2>
-    <p style="margin-top:0">Per ora i dati sono solo su questo dispositivo. Collega il tuo archivio privato su GitHub per avere gli stessi dati sul computer e sul telefono.</p>
+    <h2>Sincronizzazione online</h2>
+    <p style="margin-top:0">Per ora i dati sono solo su questo dispositivo. Collega un tuo archivio privato su GitHub (gratuito) per avere gli stessi dati su telefono, tablet e computer. I passi completi sono nella <a href="#" data-action="guide-sync">guida</a>.</p>
     <details ${last.owner?'':'open'}><summary style="cursor:pointer;font-weight:700">Come preparare l'archivio (una volta sola, dal computer)</summary>
     <ol class="steps">
-      <li>Su GitHub crea un archivio nuovo: <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>. Nome: <code>schedario-dati</code>, scegli <b>Private</b>, poi «Create repository».</li>
+      <li>Su GitHub crea un archivio nuovo: <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>. Nome: <code>volleysched-dati</code>, scegli <b>Private</b>, poi «Create repository».</li>
       <li>Crea il codice di accesso: <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>.
-        Nome: <code>Volleysched</code> · Expiration: la durata più lunga disponibile · Repository access: <b>Only select repositories</b> → <code>schedario-dati</code> ·
+        Nome: <code>Volleysched</code> · Expiration: la durata più lunga disponibile · Repository access: <b>Only select repositories</b> → <code>volleysched-dati</code> ·
         Permissions → Repository permissions → <b>Contents: Read and write</b>. Poi «Generate token» e copia il codice (inizia con <code>github_pat_</code>).</li>
-      <li>Inserisci qui sotto i dati e premi «Collega». Sul telefono fai lo stesso con lo stesso codice (te lo puoi mandare per email o salvarlo nelle note).</li>
+      <li>Inserisci qui sotto i dati e premi «Collega». Sugli altri dispositivi fai lo stesso con lo stesso codice: conservalo in un posto sicuro (per esempio il gestore delle password) e non condividerlo con nessuno.</li>
     </ol></details>
     <div class="grid g3" id="sync-form">
-      <label class="f">Nome utente GitHub<input type="text" name="owner" autocomplete="username" autocapitalize="off" spellcheck="false" value="${esc(last.owner||'')}" placeholder="es. stefano-rossi"></label>
-      <label class="f">Nome dell'archivio dati<input type="text" name="repo" autocapitalize="off" spellcheck="false" value="${esc(last.repo||'schedario-dati')}"></label>
+      <label class="f">Nome utente GitHub<input type="text" name="owner" autocomplete="username" autocapitalize="off" spellcheck="false" value="${esc(last.owner||'')}" placeholder="es. mario-rossi"></label>
+      <label class="f">Nome dell'archivio dati<input type="text" name="repo" autocapitalize="off" spellcheck="false" value="${esc(last.repo||'volleysched-dati')}"></label>
       <label class="f">Codice di accesso<input type="password" name="token" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
     </div>
     <div class="actions" style="margin-top:12px"><button class="btn primary" data-action="sync-connect">Collega</button><span class="muted" id="sync-msg" style="font-size:13.5px"></span></div>
@@ -2718,8 +2807,9 @@ function refreshFromRemote(){
 function viewBenvenuto(){
   return `<section class="welcome"><h1>Benvenuto in Volleysched</h1>
   <p class="muted">Su questo dispositivo non ci sono ancora dati. Da dove vuoi partire?</p>
-  <button type="button" class="choice" data-action="w-sync"><span class="ic">☁️</span><span><b>Collego il mio archivio online</b><span class="muted" style="font-size:13.5px">Se hai già usato l'app su un altro dispositivo, o vuoi tenere computer e telefono allineati.</span></span></button>
-  <button type="button" class="choice" data-action="import"><span class="ic">📥</span><span><b>Importo il file esportato dal vecchio programma</b><span class="muted" style="font-size:13.5px">Il file .json con esercizi, sessioni, atleti, partite e presenze.</span></span></button>
+  <button type="button" class="choice" data-action="w-sync"><span class="ic">☁️</span><span><b>Collego il mio archivio online</b><span class="muted" style="font-size:13.5px">Se hai già usato l'app su un altro dispositivo, o vuoi gli stessi dati su telefono, tablet e computer.</span></span></button>
+  <button type="button" class="choice" data-action="import"><span class="ic">📥</span><span><b>Importo un file</b><span class="muted" style="font-size:13.5px">Una copia dei tuoi dati, o gli esercizi ricevuti da un altro allenatore (.json).</span></span></button>
+  <button type="button" class="choice" data-action="guide-open"><span class="ic">📖</span><span><b>Prima leggo la guida</b><span class="muted" style="font-size:13.5px">Come funziona l'app, passo per passo.</span></span></button>
   <button type="button" class="choice" data-action="w-empty"><span class="ic">✏️</span><span><b>Parto da zero</b><span class="muted" style="font-size:13.5px">Schedario vuoto: gli esercizi li inserisci tu, o li importi più avanti.</span></span></button>
   </section>`;
 }
@@ -2756,7 +2846,7 @@ function exportSelected(){
   if(sel.sessions){ const have=new Set(out.exercises.map(e=>e.id)), need=new Set(out.sessions.flatMap(s=>s.items.filter(i=>i.type==='ex').map(i=>i.exId)));
     st.exercises.forEach(e=>{ if(need.has(e.id) && !have.has(e.id)) out.exercises.push(e); }); }
   if(sel.athletes) out.athletes=st.athletes;
-  if(sel.matches) out.matches=sel.athletes?st.matches:st.matches.map(m=>Object.assign({}, m, {convocati:[], assenti:[], formazione:null, stats:null}));
+  if(sel.matches) out.matches=sel.athletes?st.matches:st.matches.map(m=>Object.assign({}, m, {convocati:[], assenti:[], disponibili:[], formazione:null, stats:null, referto:null}));
   if(sel.trainings) out.trainings=sel.athletes?st.trainings:st.trainings.map(t=>Object.assign({}, t, {presenze:{}}));
   if(sel.notes) out.notes=st.notes||[];
   if(sel.settings){ const s=Object.assign({}, st.settings); delete s.preferiti; out.settings=s; }
@@ -3167,7 +3257,7 @@ const campScope=()=>{ const c=campSel(); return c==='__all'?db.matches:db.matche
 /* risultato: set "casa-ospiti"; con le statistiche in partita si usano i set registrati */
 function matchSets(m){
   const S=m.stats&&m.stats.sets; if(S && S.length){ const w=S.filter(s=>s.noi>s.loro).length; return {noi:w, loro:S.length-w, src:'stats'}; }
-  const r=(m.risultato||'').match(/(\d)\s*[-–:\/]\s*(\d)/); if(!r) return null;
+  const r=(m.risultato||'').match(/(\d)\s*[-–:\/]\s*(\d)/); if(!r){ const W=refScores(m); if(!W.length) return null; const w=W.filter(x=>x.noi>x.loro).length; return {noi:w, loro:W.length-w, src:'ref'}; }
   const h=+r[1], a=+r[2]; return m.inCasa?{noi:h, loro:a}:{noi:a, loro:h};
 }
 function matchOutcome(m){ const s=matchSets(m); if(!s || (s.noi!==3 && s.loro!==3)) return null;
@@ -3246,7 +3336,7 @@ function viewPartite(){
   ${!db.matches.length&&!camps.length?`<div class="empty">Nessuna partita in calendario. Crea il campionato con «＋ Campionato» (es. «Invernale 2026/27») e poi aggiungi le partite con «+ Nuova partita».<br><span style="font-size:13px">Dopo la prima partita, usa «Duplica» per le successive.</span></div>`:''}
   ${hero && vm!=='mese'?heroHTML(hero):''}
   ${vm==='mese'?monthHTML(scope):(rest.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>${hero?'Dopo':'Prossime partite'}</h2><span class="muted">${rest.length}</span></div>${vm==='compatta'?matchRowsHTML(rest):`<div class="match-list">${rest.map(m=>matchCard(m,false)).join('')}</div>`}`:'')}
-  ${past.length?`<div style="margin-top:22px">${recordHTML(past)}</div>`:''}
+  ${past.length?`<div style="margin-top:22px">${recordHTML(past)}</div>`:''}${refSeasonHTML(past)}
   ${scope.length?convSummaryHTML():''}
   ${seasonStatsHTML()}
   </section>`;
@@ -3257,7 +3347,7 @@ function viewPartite(){
    ============================================================ */
 const ROLE_QUOTA_DEF={'Palleggiatore':2,'Banda':4,'Centrale':4,'Opposto':2,'Libero':0};
 const ROLE_LBL_NOTE='';
-const isPlayed=m=>!!m.data && (m.data<todayISO() || !!(m.risultato||'').trim());
+const isPlayed=m=>!!m.data && (m.data<todayISO() || !!(m.risultato||'').trim() || refMatchOver(m));
 function convCount(aid, beforeISO, exceptId){   // partite giocate in cui l'atleta era convocato
   const cm=exceptId&&getMatch(exceptId);
   return db.matches.filter(m=>m.id!==exceptId && isPlayed(m) && (!cm || campOf(m)===campOf(cm)) && (!beforeISO || m.data<beforeISO) && (m.convocati||[]).includes(aid)).length;
@@ -3762,6 +3852,7 @@ function viewPartita(){
       <div id="conv-box">${convTable(m)}</div>
     </div>
     <div class="panel" id="form-panel" data-mt="form">${formPanelHTML(m)}</div>
+    <div class="panel" id="ref-panel" data-mt="ref">${refPanelHTML(m)}</div>
   </div>
   <div class="panel picker" data-mt="invia"><h2>Invia e stampa</h2>
     <p class="muted" style="margin:0 0 8px;font-size:13px">Il messaggio si aggiorna da solo con i dati e i convocati; puoi ritoccarlo qui prima di inviarlo.</p>
@@ -3923,7 +4014,7 @@ function mSumHTML(m){
     <div class="ed"><button class="btn sm" data-action="m-edit">✎ Modifica i dati</button></div></div>`;
 }
 function mTabsHTML(m){ const n=convocati(m).length, f=formOk(getForm(m)), t=mTab(m);
-  return `<div class="mtabs">${[['dati','Dati',''],['conv','Convocati',n?String(n):''],['form','Formaz.',f?'✓':''],['invia','Invia','']].map(([k,l,b])=>`<button data-action="mtab" data-t="${k}" class="${t===k?'on':''}">${l}<span class="b" ${k==='conv'?'id="mt-conv-n"':''} ${b?'':'hidden'}>${b}</span></button>`).join('')}</div>`; }
+  return `<div class="mtabs">${[['dati','Dati',''],['conv','Convocati',n?String(n):''],['form','Formaz.',f?'✓':''],['ref','Referto',refHas(m)?'✓':''],['invia','Invia','']].map(([k,l,b])=>`<button data-action="mtab" data-t="${k}" class="${t===k?'on':''}">${l}<span class="b" ${k==='conv'?'id="mt-conv-n"':''} ${b?'':'hidden'}>${b}</span></button>`).join('')}</div>`; }
 /* ===== Profilo atleta ===== */
 function waNumber(c){ let d=String(c||'').replace(/[^\d+]/g,''); if(d.startsWith('+')) return d.slice(1); if(d.startsWith('00')) return d.slice(2); if(/^3\d{8,9}$/.test(d)) return '39'+d; return d; }
 function openAtProfile(id){
@@ -4113,6 +4204,7 @@ function dispSet(id,v){
 /* ===================== RESOCONTO PARTITA ===================== */
 function matchReport(m){
   const S=m.stats||{}, ev=S.ev||[], sets=(S.sets||[]).slice();
+  if(!sets.length) refScores(m).forEach(x=>sets.push(x));
   if(S.live && (S.live.noi||S.live.loro) && !sets.some(x=>x.set===S.live.set)) sets.push({noi:S.live.noi, loro:S.live.loro});
   const ms=matchSets(m), L=[];
   L.push(`🏐 *${matchTitle(m)}*`);
@@ -4122,6 +4214,7 @@ function matchReport(m){
   const best=(f,min)=>{ let w=null; for(const [id,b] of Object.entries(by)){ const v=f(b); if(v!=null && v>=min && (!w || v>w.v)) w={id,v,b}; } return w; };
   const nm=id=>{ const a=getAt(id); return a?fullName(a):'?'; };
   const B=[], ba=best(b=>b.ace,1), br=best(b=>b.ricT>=4?b.ricP/b.ricT:null,0), bt=best(b=>b.att,1), bm=best(b=>b.mur,1), bd=best(b=>b.dif,2);
+  { const rs=refBestServer(m); if(rs) B.push(`• In battuta: ${nm(rs[0])} (${rs[1].pts} punti in ${rs[1].turns} turni)`); }
   if(ba) B.push(`• Battuta: ${nm(ba.id)} (${ba.v} ace)`);
   if(br) B.push(`• Ricezione: ${nm(br.id)} (${br.b.ricP}/${br.b.ricT} positive)`);
   if(bt) B.push(`• Attacco: ${nm(bt.id)} (${bt.v} punti)`);
@@ -4266,6 +4359,296 @@ function quickMatchGo(){
   persist.match(m).catch(saveFail); closeModal(); ui.matchId=m.id;
   if(ids.length>=6) autoForm(m);
   actions['live-open'](); toast('Partita creata: buon divertimento!');
+}
+
+/* ===== Referto gara ===== */
+function refSets(m){ return (m.referto && Array.isArray(m.referto.sets)) ? m.referto.sets : []; }
+function refGet(m){ if(!m.referto || !Array.isArray(m.referto.sets)) m.referto={sets:[]}; return m.referto; }
+function refHas(m){ return refSets(m).some(s=>(s.ev||[]).some(e=>e==='N'||e==='L')); }
+function refTarget(i){ return i>=4?15:25; }
+function refReplay(s){
+  const our=[...(s.our||[])], opp=s.opp?[...s.opp]:null; let k=0, kl=0, srv=s.firstServe||'noi', noi=0, loro=0, closed=false;
+  const si=s.pal?our.indexOf(s.pal):-1;
+  const lab=()=>si>=0?'P'+(((si-k)%6+6)%6+1):'R'+(k+1);
+  const rl=[], to=[], subs=[];
+  for(const e of s.ev||[]){
+    if(e==='N'||e==='L'){
+      const r={w:e, srv, rot:lab(), k, kl, sv: srv==='noi'?our[0]:(opp?opp[0]:null)};
+      if(e==='N'){ noi++; if(srv==='loro'){ our.push(our.shift()); k=(k+1)%6; srv='noi'; } }
+      else { loro++; if(srv==='noi'){ if(opp) opp.push(opp.shift()); kl=(kl+1)%6; srv='loro'; } }
+      r.noi=noi; r.loro=loro; rl.push(r);
+    } else if(e==='TN'||e==='TL') to.push({who:e==='TN'?'noi':'loro', at:rl.length, noi, loro});
+    else if(e==='X') closed=true;
+    else if(/^S[NL]\|/.test(e)){ const [t,o,n]=e.split('|'), arr=t==='SN'?our:opp; if(arr){ const j=arr.indexOf(o); if(j>=0) arr[j]=n; } subs.push({who:t==='SN'?'noi':'loro', out:o, in:n, noi, loro}); }
+  }
+  return {rl, to, subs, our, opp, k, kl, srv, noi, loro, rot:lab(), closed};
+}
+function refOver(R,i){ if(R.closed) return true; const t=refTarget(i); return (R.noi>=t||R.loro>=t) && Math.abs(R.noi-R.loro)>=2; }
+function refScores(m){ return refSets(m).map((s,i)=>{ const R=refReplay(s); return refOver(R,i)?{noi:R.noi, loro:R.loro}:null; }).filter(Boolean); }
+function refWins(m){ const S=refScores(m); const w=S.filter(x=>x.noi>x.loro).length; return {noi:w, loro:S.length-w}; }
+function refMatchOver(m){ const w=refWins(m); return w.noi>=3||w.loro>=3; }
+function refName(id){ const a=getAt(id); if(!a) return '?'; return (a.numeroMaglia?a.numeroMaglia+' ':'')+athShort(id); }
+function refPool(m){ const c=convocati(m); const ids=new Set(c.map(a=>a.id)); return [...c, ...db.athletes.filter(a=>a.iscritto && !ids.has(a.id)).sort((a,b)=>fullName(a).localeCompare(fullName(b)))]; }
+function refDefaultLineup(m, i){
+  const S=refSets(m), prev=S[i-1]||S[S.length-1];
+  if(prev && prev.our) return {our:[...prev.our], pal:prev.pal||'', opp:prev.opp?[...prev.opp]:null, firstServe: i>0&&i<4&&prev.firstServe ? (prev.firstServe==='noi'?'loro':'noi') : 'noi'};
+  const f=getForm(m); let our=['','','','','',''], pal='';
+  if(formOk(f)){ const z=rotAt(f.start||0); our=z.map(sl=>f[sl]||''); pal=f.P||''; }
+  return {our, pal, opp:null, firstServe:'noi'};
+}
+function refAutoPal(our){ const P=our.filter(id=>{ const a=getAt(id); return a && roleKey(a.ruolo)==='P'; }); return P.length===1?P[0]:''; }
+
+/* --- vista di inserimento --- */
+function viewReferto(){
+  const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
+  const S=refSets(m); let i=ui.refSet; if(i==null || i>S.length) i=Math.max(0,S.length-1); ui.refSet=i;
+  const s=S[i], editForm=!s || ui.refForm;
+  const chips=S.map((x,j)=>{ const R=refReplay(x); return `<button data-action="rf-set" data-i="${j}" class="${j===i?'on':''}">Set ${j+1}<small>${R.noi}–${R.loro}</small></button>`; }).join('')
+    + (!s?`<button class="on">Set ${i+1}</button>`:'')
+    + (s && i===S.length-1 && refOver(refReplay(s),i) && !refMatchOver(m) ? `<button data-action="rf-newset">＋ Set ${S.length+1}</button>`:'');
+  const head=`<div class="page-head" style="margin-bottom:6px"><div><a href="#" data-action="rf-back" class="muted" style="font-size:13.5px;text-decoration:none">← Torna alla partita</a>
+    <h1 style="margin-top:4px;font-size:20px">Referto · ${esc(matchTitle(m))}</h1></div></div><div class="rf-sets">${chips}</div>`;
+  return `<section class="rf-wrap">${head}${editForm?refLineupHTML(m,i):refEntryHTML(m,i)}</section>`;
+}
+function refLineupHTML(m,i){
+  if(!ui.refDraft || ui.refDraft.i!==i){ const s=refSets(m)[i]; ui.refDraft=Object.assign({i}, s?{our:[...s.our], pal:s.pal||'', opp:s.opp?[...s.opp]:null, firstServe:s.firstServe||'noi'}:refDefaultLineup(m,i)); if(!ui.refDraft.pal) ui.refDraft.pal=refAutoPal(ui.refDraft.our); }
+  const d=ui.refDraft, pool=refPool(m), conv=new Set(convocati(m).map(a=>a.id)), R=['I','II','III','IV','V','VI'];
+  const opt=(sel)=>`<option value="">—</option>`+pool.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' ':'')+athShort(a.id))}${conv.has(a.id)?'':' (non conv.)'}</option>`).join('');
+  const has=refSets(m)[i] && (refSets(m)[i].ev||[]).length;
+  return `<div class="panel"><h2 style="margin-bottom:4px">Formazione di partenza · set ${i+1}</h2>
+    <p class="muted" style="margin:0 0 10px;font-size:13px">Ricopiala dal referto: la posizione I è chi batte per primo, poi II, III… nell'ordine di rotazione.${i===0&&formOk(getForm(m))?' Ho già messo quella preparata per la partita.':''}</p>
+    <div class="rf-lineup">${R.map((r,j)=>`<label>${r}${j===0?' · batte':''}<select data-rf="our" data-i="${j}">${opt(d.our[j])}</select></label>`).join('')}</div>
+    <label class="f" style="margin-top:10px">Palleggiatore (serve a dare il nome alle rotazioni P1…P6)<select data-rf="pal"><option value="">— nessuno / non so —</option>${d.our.filter(Boolean).map(id=>`<option value="${id}" ${id===d.pal?'selected':''}>${esc(refName(id))}</option>`).join('')}</select></label>
+    <div style="margin-top:12px"><div style="font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px">Chi batte per primo in questo set?</div>
+      <div class="rf-fs"><button data-action="rf-fs" data-v="noi" class="${d.firstServe==='noi'?'on':''}">Noi</button><button data-action="rf-fs" data-v="loro" class="${d.firstServe==='loro'?'on':''}">Loro</button></div></div>
+    <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-weight:700;cursor:pointer"><input type="checkbox" data-rf="oppOn" ${d.opp?'checked':''} style="width:auto;flex:none"><span>Inserisci anche la formazione avversaria <span class="muted" style="font-weight:600">(facoltativo)</span></span></label>
+    ${d.opp?`<div class="rf-lineup" style="margin-top:8px">${R.map((r,j)=>`<label>${r}<input type="text" inputmode="numeric" data-rf="opp" data-i="${j}" value="${esc(d.opp[j]||'')}" placeholder="n°"></label>`).join('')}</div>
+      <p class="muted" style="font-size:12px;margin:6px 0 0">Solo i numeri di maglia: servono a vedere quali loro battitori vi mettono più in difficoltà.</p>`:''}
+    <div class="actions" style="margin-top:14px">${refSets(m)[i]?'<button class="btn" data-action="rf-form-cancel">Annulla</button>':''}<button class="btn primary" data-action="rf-start">${has?'Salva la formazione':'Inizia a inserire i punti'}</button></div>
+    ${has?'<p class="rf-note">I punti già inseriti restano: rotazioni e battute vengono ricalcolate con la nuova formazione.</p>':''}</div>`;
+}
+function refEntryHTML(m,i){
+  const s=refSets(m)[i], R=refReplay(s), over=refOver(R,i), mo=refMatchOver(m), w=refWins(m);
+  const z=R.our, cell=j=>`<div class="${j===0&&R.srv==='noi'?'sv':''}"><small>${['I','II','III','IV','V','VI'][j]}</small>${esc(refName(z[j]))}</div>`;
+  const srvTxt=R.srv==='noi'?`🏐 Batte: ${esc(refName(z[0]))}`:`Battono loro${R.opp&&R.opp[0]?' · n° '+esc(R.opp[0]):''}`;
+  const tl=(s.ev||[]).slice(-40).map(e=>e==='N'||e==='L'?`<i class="${e}">${e==='N'?'N':'L'}</i>`:e==='TN'||e==='TL'?`<i class="T">TO</i>`:e==='X'?`<i class="X">■</i>`:`<i class="S">⇄</i>`).join('');
+  const toN=R.to.filter(t=>t.who==='noi').length, toL=R.to.length-toN;
+  return `<div class="rf-score"><div><div class="t">Noi</div><div class="n">${R.noi}</div></div>
+      <div class="mid">Set ${i+1}<br>al ${refTarget(i)}<br><span class="srv">${R.srv==='noi'?'🏐 noi':'🏐 loro'}</span></div>
+      <div class="r"><div class="t">Loro</div><div class="n">${R.loro}</div></div></div>
+    <div class="rf-info"><span class="rot">${R.rot}</span><span>${srvTxt}</span><span class="muted">· T.O. ${toN}–${toL}${w.noi||w.loro?` · set ${w.noi}–${w.loro}`:''}</span></div>
+    <div class="rf-court">${cell(3)}${cell(2)}${cell(1)}${cell(4)}${cell(5)}${cell(0)}</div>
+    ${over?`<div class="rf-over"><div style="flex:1"><b>${mo?'Partita finita':'Set finito'} · ${R.noi}–${R.loro}</b><div class="muted" style="font-size:12.5px">${mo?`Risultato ${w.noi}–${w.loro}. Trovi l'analisi nella scheda Referto della partita.`:'Se il punteggio è giusto passa al set successivo.'}</div></div>
+      ${mo?'<button class="btn primary" data-action="rf-back">Vedi l\'analisi</button>':`<button class="btn primary" data-action="rf-newset">Set ${i+2} →</button>`}</div>`:''}
+    <div class="rf-big"><button class="n" data-action="rf-pt" data-v="N" ${over?'disabled':''}>+1 Noi</button><button class="l" data-action="rf-pt" data-v="L" ${over?'disabled':''}>+1 Loro</button></div>
+    <div class="rf-small">
+      <button class="btn" data-action="rf-to" data-v="TN" ${over?'disabled':''}>T.O. noi</button><button class="btn" data-action="rf-to" data-v="TL" ${over?'disabled':''}>T.O. loro</button>
+      <button class="btn" data-action="rf-sub" data-v="N" ${over?'disabled':''}>⇄ Cambio noi</button>${R.opp?`<button class="btn" data-action="rf-sub" data-v="L" ${over?'disabled':''}>⇄ Cambio loro</button>`:''}
+      <button class="btn" data-action="rf-undo" ${(s.ev||[]).length?'':'disabled'}>↶ Annulla</button>
+    </div>
+    <div class="panel" style="margin-top:12px;padding:10px 12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="font-size:13.5px">Sequenza</b><span class="muted" style="font-size:12px">${(s.ev||[]).length>40?'ultimi 40 · ':''}N noi · L loro · TO time-out · ⇄ cambio</span><span style="flex:1"></span>
+      <button class="btn sm" data-action="rf-form">✎ Formazione</button>${over?'':'<button class="btn sm" data-action="rf-close" title="Per set con un punteggio diverso dal 25 (o dal 15)">■ Chiudi il set qui</button>'}${i===refSets(m).length-1?'<button class="btn sm danger" data-action="rf-delset">Elimina set</button>':''}</div>
+      <div class="rf-tl">${tl||'<span class="muted" style="font-size:12.5px">Ancora nessun punto. Segui il referto: a ogni punto premi +1 della squadra che l\'ha fatto.</span>'}</div></div>
+    <p class="rf-note">Consiglio: nel referto, nelle caselle dei turni di battuta c'è il punteggio a cui ogni battitore ha perso la battuta; seguendole in ordine ricostruisci la sequenza dei punti. Rotazione e battitore li calcola l'app.</p>`;
+}
+function refFormChange(t){
+  const d=ui.refDraft; if(!d) return; const k=t.dataset.rf, j=+t.dataset.i;
+  if(k==='our'){ const prev=d.our.indexOf(t.value); if(t.value && prev>=0 && prev!==j) d.our[prev]=d.our[j]; d.our[j]=t.value; if(!d.our.includes(d.pal)) d.pal=refAutoPal(d.our); render(); }
+  else if(k==='pal') d.pal=t.value;
+  else if(k==='oppOn'){ d.opp=t.checked?(d.opp||['','','','','','']):null; render(); }
+  else if(k==='opp'){ d.opp[j]=t.value.trim(); }
+}
+function refSave(m){ touchMatch(m); }
+function openRefSub(who){
+  const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet], R=refReplay(s);
+  let body;
+  if(who==='N'){ const on=new Set(R.our); const pool=refPool(m).filter(a=>!on.has(a.id));
+    body=`<label class="f">Esce<select id="rs-out">${R.our.map(id=>`<option value="${id}">${esc(refName(id))}</option>`).join('')}</select></label>
+      <label class="f" style="margin-top:8px">Entra<select id="rs-in">${pool.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}</option>`).join('')}</select></label>`; }
+  else body=`<label class="f">Esce il n°<select id="rs-out">${R.opp.map(n=>`<option value="${esc(n)}">${esc(n||'?')}</option>`).join('')}</select></label>
+      <label class="f" style="margin-top:8px">Entra il n°<input id="rs-in" type="text" inputmode="numeric"></label>`;
+  openModal(`<div class="modal-box" style="max-width:420px"><div class="modal-head"><h2 style="flex:1">Cambio ${who==='N'?'nostro':'avversario'} · ${R.noi}–${R.loro}</h2><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    <div class="modal-body">${body}<div class="actions" style="margin-top:14px"><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="rf-sub-ok" data-v="${who}">Conferma</button></div></div></div>`);
+}
+
+/* --- analisi --- */
+function refCollect(ms){ const L=[]; ms.forEach(m=>refSets(m).forEach((s,i)=>{ const R=refReplay(s); if(R.rl.length) L.push({m,s,i,R}); })); return L; }
+function refAnalyze(L){
+  const rot={}, srv={}, osrv={}; let so=[0,0], br=[0,0], pf=0, ps=0, runN=0, runL=0, big=0; const tos=[];
+  const rk=k=>rot[k]=rot[k]||{rcv:0,rcvW:0,sv:0,svW:0,pf:0,ps:0};
+  L.forEach(({s,i,R,m})=>{
+    let cur=null, curN=0, curL=0;
+    const flush=()=>{ if(!cur) return; const T=cur.t==='noi'?srv:osrv; const x=T[cur.id]=T[cur.id]||{turns:0,pts:0,max:0}; x.turns++; x.pts+=cur.p; x.max=Math.max(x.max,cur.p); cur=null; };
+    R.rl.forEach((r,j)=>{
+      const o=rk(r.rot), won=r.w==='N';
+      if(won){ pf++; o.pf++; } else { ps++; o.ps++; }
+      if(r.srv==='loro'){ so[1]++; o.rcv++; if(won){ so[0]++; o.rcvW++; } } else { br[1]++; o.sv++; if(won){ br[0]++; o.svW++; } }
+      // turni di battuta
+      const id=r.sv; if(id!=null && id!==''){ if(!cur || cur.t!==r.srv || cur.id!==id){ flush(); cur={t:r.srv,id,p:0}; } if((r.srv==='noi')===won) cur.p++; } else flush();
+      // parziali
+      if(won){ curN++; if(curL>=4) big++; curL=0; runN=Math.max(runN,curN); } else { curL++; curN=0; runL=Math.max(runL,curL); }
+    });
+    flush(); if(curL>=4) big++;
+    R.to.forEach(t=>{ const nx=R.rl.slice(t.at,t.at+3); if(!nx.length) return; tos.push({m,set:i+1,who:t.who,noi:t.noi,loro:t.loro,w:nx.filter(r=>r.w==='N').length,n:nx.length}); });
+  });
+  return {rot, srv, osrv, so, br, pf, ps, runN, runL, big, tos, n:L.length};
+}
+const pc=(a,b)=>b?Math.round(a*100/b):null;
+function refBar(a,b,good){ const p=pc(a,b); if(p===null) return '<span class="muted">—</span>';
+  const col=p>=good?'#22a05a':p>=good-15?'#e0a422':'#d64a5a';
+  return `<div class="rf-bar"><div class="b"><i style="width:${p}%;background:${col}"></i></div><b>${p}%</b><small>${a}/${b}</small></div>`; }
+function refRotOrder(keys){ const P=['P1','P6','P5','P4','P3','P2'].filter(k=>keys.includes(k)); return [...P, ...keys.filter(k=>!P.includes(k)).sort()]; }
+function refInsights(A, withOpp){
+  const I=[], rows=Object.entries(A.rot);
+  const rc=rows.filter(([k,o])=>o.rcv>=4).map(([k,o])=>[k,o.rcvW/o.rcv,o]).sort((a,b)=>a[1]-b[1]);
+  if(rc.length>=2){ const [k,p,o]=rc[0]; I.push(['bad',`Rotazione più difficile in ricezione: <b>${k}</b> — cambio palla ${Math.round(p*100)}% (${o.rcvW} su ${o.rcv}).`]);
+    const [k2,p2,o2]=rc[rc.length-1]; I.push(['good',`In ricezione rendete meglio in <b>${k2}</b>: ${Math.round(p2*100)}% (${o2.rcvW} su ${o2.rcv}).`]); }
+  const bk=rows.filter(([k,o])=>o.sv>=4).map(([k,o])=>[k,o.svW/o.sv,o]).sort((a,b)=>b[1]-a[1]);
+  if(bk.length>=2){ const [k,p,o]=bk[0]; I.push(['good',`Più punti in battuta (break) in <b>${k}</b>: ${Math.round(p*100)}% (${o.svW} su ${o.sv}).`]); }
+  const sv=Object.entries(A.srv).filter(([id,x])=>x.turns>=2).map(([id,x])=>[id,x.pts/x.turns,x]).sort((a,b)=>b[1]-a[1]);
+  if(sv.length) I.push(['good',`Battitore più efficace: <b>${esc(refName(sv[0][0]))}</b> — ${sv[0][2].pts} punti in ${sv[0][2].turns} turni (serie massima ${sv[0][2].max}).`]);
+  const os=Object.entries(A.osrv).filter(([n,x])=>x.turns>=2).map(([n,x])=>[n,x.pts/x.turns,x]).sort((a,b)=>b[1]-a[1]);
+  if(withOpp && os.length && os[0][2].pts>=3) I.push(['bad',`Il loro battitore più pericoloso: <b>n° ${esc(os[0][0])}</b> — ${os[0][2].pts} punti in ${os[0][2].turns} turni.`]);
+  const tn=A.tos.filter(t=>t.who==='noi'); if(tn.length){ const w=tn.reduce((s,t)=>s+t.w,0), n=tn.reduce((s,t)=>s+t.n,0); I.push([w*2>=n?'good':'bad',`Dopo i vostri time-out: ${w} punti su ${n} nei 3 scambi successivi.`]); }
+  if(A.big) I.push(['bad',`Parziali subiti di 4 o più punti di fila: <b>${A.big}</b> (il più lungo: ${A.runL}).`]);
+  return I;
+}
+function refAnalysisHTML(L, opt={}){
+  const A=refAnalyze(L); if(!A.n) return '';
+  const keys=refRotOrder(Object.keys(A.rot)), I=refInsights(A);
+  const rotT=`<table class="rf-t"><thead><tr><th>Rot.</th><th>Cambio palla<span class="hs"> (in ricezione)</span></th><th>Break<span class="hs"> (in battuta)</span></th><th class="n">Saldo</th></tr></thead><tbody>
+    ${keys.map(k=>{ const o=A.rot[k], d=o.pf-o.ps; return `<tr><td><b>${k}</b></td><td>${refBar(o.rcvW,o.rcv,55)}</td><td>${refBar(o.svW,o.sv,40)}</td><td class="n"><b style="color:${d>0?'#22a05a':d<0?'#d64a5a':'inherit'}">${d>0?'+':''}${d}</b></td></tr>`; }).join('')}</tbody></table>`;
+  const sv=Object.entries(A.srv).sort((a,b)=>b[1].pts/b[1].turns-a[1].pts/a[1].turns);
+  const svT=sv.length?`<table class="rf-t"><thead><tr><th>Battitore</th><th class="n">Turni</th><th class="n">Punti</th><th class="n">Media</th><th class="n hs">Serie max</th></tr></thead><tbody>
+    ${sv.map(([id,x])=>`<tr><td>${esc(refName(id))}</td><td class="n">${x.turns}</td><td class="n">${x.pts}</td><td class="n"><b>${(x.pts/x.turns).toFixed(1)}</b></td><td class="n hs">${x.max}</td></tr>`).join('')}</tbody></table>`:'';
+  const os=!opt.match?[]:Object.entries(A.osrv).sort((a,b)=>b[1].pts-a[1].pts).slice(0,6);
+  const osT=os.length?`<h3 class="rf-h">I loro battitori</h3><table class="rf-t"><thead><tr><th>N°</th><th class="n">Turni</th><th class="n">Punti fatti</th><th class="n">Serie max</th></tr></thead><tbody>
+    ${os.map(([n,x])=>`<tr><td><b>${esc(n)}</b></td><td class="n">${x.turns}</td><td class="n">${x.pts}</td><td class="n">${x.max}</td></tr>`).join('')}</tbody></table>`:'';
+  const toT=opt.match && A.tos.length?`<h3 class="rf-h">Time-out</h3><table class="rf-t"><thead><tr><th>Set</th><th>Chi</th><th class="n">Sul</th><th class="n">3 scambi dopo</th></tr></thead><tbody>
+    ${A.tos.map(t=>`<tr><td>${t.set}</td><td>${t.who==='noi'?'Noi':'Loro'}</td><td class="n">${t.noi}–${t.loro}</td><td class="n"><b style="color:${t.w*2>t.n?'#22a05a':t.w*2<t.n?'#d64a5a':'inherit'}">${t.w}–${t.n-t.w}</b></td></tr>`).join('')}</tbody></table>`:'';
+  const worm=opt.match?L.map(x=>refWormHTML(x)).join(''):'';
+  return `${I.length?`<ul class="rf-ins">${I.map(([c,t])=>`<li class="${c}">${t}</li>`).join('')}</ul>`:''}
+    <div class="rf-kpi"><div><span>Punti</span><b>${A.pf}–${A.ps}</b></div><div><span>Cambio palla</span><b>${pc(A.so[0],A.so[1])??'—'}%</b><small>${A.so[0]}/${A.so[1]}</small></div><div><span>Break</span><b>${pc(A.br[0],A.br[1])??'—'}%</b><small>${A.br[0]}/${A.br[1]}</small></div><div><span>Serie max</span><b>${A.runN} / ${A.runL}</b><small>noi / loro</small></div></div>
+    <h3 class="rf-h">Rotazioni</h3>${rotT}
+    ${svT?`<h3 class="rf-h">Battitori</h3>${svT}`:''}${osT}${toT}
+    ${worm?`<h3 class="rf-h">Andamento dei set</h3><div class="muted" style="font-size:12px;margin-bottom:4px">Verde sopra la linea: siete avanti · rosso sotto: sono avanti loro · TO: time-out</div><div class="rf-worms">${worm}</div>`:''}
+    <p class="rf-note">Cambio palla: punti vinti quando ricevete (obiettivo indicativo 55% o più). Break: punti vinti quando battete voi (40% o più è buono). P1…P6 indicano la zona del palleggiatore.</p>`;
+}
+function refWormHTML({s,i,R}){
+  const n=R.rl.length; if(!n) return ''; const W=320, H=84, mid=H/2, mx=Math.max(4,...R.rl.map(r=>Math.abs(r.noi-r.loro))), sx=W/n, sy=(mid-6)/mx;
+  const pts=[[0,mid],...R.rl.map((r,j)=>[(j+1)*sx, mid-(r.noi-r.loro)*sy])];
+  const line=pts.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area=`0,${mid} ${line} ${W},${mid}`;
+  const to=R.to.map(t=>`<line x1="${(t.at*sx).toFixed(1)}" x2="${(t.at*sx).toFixed(1)}" y1="2" y2="${H-2}" stroke="${t.who==='noi'?'#2f6fb8':'#8a94a6'}" stroke-dasharray="3 3"/><text x="${(t.at*sx+2).toFixed(1)}" y="10" font-size="8" fill="currentColor">TO</text>`).join('');
+  return `<div class="rf-worm"><div class="c">Set ${i+1} · ${R.noi}–${R.loro}</div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Andamento del set ${i+1}">
+    <defs><clipPath id="up${i}"><rect x="0" y="0" width="${W}" height="${mid}"/></clipPath><clipPath id="dn${i}"><rect x="0" y="${mid}" width="${W}" height="${mid}"/></clipPath></defs>
+    <polygon points="${area}" fill="#22a05a" opacity=".25" clip-path="url(#up${i})"/><polygon points="${area}" fill="#d64a5a" opacity=".25" clip-path="url(#dn${i})"/>
+    <line x1="0" x2="${W}" y1="${mid}" y2="${mid}" stroke="currentColor" opacity=".25"/>${to}
+    <polyline points="${line}" fill="none" stroke="currentColor" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg></div>`;
+}
+function refPanelHTML(m){
+  const has=refHas(m), sc=refScores(m);
+  return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Referto</h2>${sc.length?`<span class="muted">${sc.map(x=>x.noi+'-'+x.loro).join(', ')}</span>`:''}<span style="flex:1"></span>
+    <button class="btn sm ${has?'':'primary'}" data-action="ref-open">📝 ${has?'Modifica il referto':'Inserisci il referto'}</button></div>
+    ${has?refAnalysisHTML(refCollect([m]),{match:true}):`<p class="muted" style="margin:0;font-size:13.5px">Nei giorni dopo la partita ricopi dal referto la formazione di partenza e la sequenza dei punti (basta premere +1 noi / +1 loro). L'app ricostruisce rotazioni e turni di battuta e ti mostra in quali rotazioni fate o subite punti, chi batte meglio, l'effetto dei time-out e i parziali. La formazione avversaria è facoltativa.</p>`}`;
+}
+function refBestServer(m){ const A=refAnalyze(refCollect([m])); const sv=Object.entries(A.srv).filter(([id,x])=>x.turns>=2 && x.pts>=2).sort((a,b)=>b[1].pts-a[1].pts); return sv[0]||null; }
+function refSeasonHTML(ms){
+  const L=refCollect(ms); if(!L.length) return ''; const nm=new Set(L.map(x=>x.m.id)).size;
+  return `<div style="margin-top:22px"><div class="group-title" style="--c:#7b5cc4"><span class="bar"></span><h2>Analisi dei referti</h2><span class="muted">${nm} partit${nm===1?'a':'e'} · ${L.length} set</span></div>
+    <div class="panel">${refAnalysisHTML(L)}</div></div>`;
+}
+
+/* ===== Guida «Come si fa» ===== */
+const GUIDE=[
+['🚀','Primi passi',`
+<h4>Installare l'app</h4>
+<ul><li><b>Android (Chrome):</b> apri il link dell'app, menu ⋮ → «Aggiungi a schermata Home» (o «Installa app»).</li>
+<li><b>iPhone/iPad (Safari):</b> pulsante Condividi → «Aggiungi alla schermata Home».</li>
+<li><b>Computer (Chrome o Edge):</b> icona di installazione a destra nella barra dell'indirizzo, oppure usala direttamente dal browser.</li></ul>
+<p>Una volta aperta, l'app funziona anche senza internet.</p>
+<h4>Personalizzare</h4>
+<p>In <b>Archivio</b> imposti il nome della squadra e dell'allenatore (escono nelle stampe e nei messaggi), i colori, il logo e il tema chiaro o scuro.</p>
+<div class="tip">I dati restano sul dispositivo che stai usando. Per averli anche su un altro telefono, tablet o computer, leggi «Sincronizzare i dati online».</div>`],
+['👥','Atleti',`
+<ol><li><b>+ Nuovo atleta</b>: nome, ruolo (e secondo ruolo), sesso, data di nascita, cellulare, numero di maglia.</li>
+<li>Inserisci la <b>scadenza della visita medica</b>: se manca o è scaduta l'atleta viene segnalato con la croce rossa e <b>non viene convocato</b>.</li>
+<li>Toccando un atleta apri il suo <b>profilo</b>: presenze, partite giocate, scadenze e andamento.</li></ol>
+<p>Puoi filtrare per ruolo, ordinare l'elenco e stampare l'elenco della squadra. Chi non fa più parte della squadra si toglie da «iscritto» senza cancellarlo.</p>`],
+['🏐','Esercizi',`
+<p>L'indice a riquadri divide gli esercizi per fondamentale; dentro trovi le schede con lo schema del campo.</p>
+<ul><li><b>Cerca</b> per parola e usa i <b>Filtri</b>: formazione, distretto, intensità, durata, preferiti, mai usati.</li>
+<li><b>★ Preferiti</b>: tocca la stella per ritrovarli subito.</li>
+<li><b>+ Nuovo esercizio</b>: titolo, descrizione, durata, fondamentale e lo schema disegnato (o un'immagine).</li>
+<li>Dalla scheda di un esercizio puoi <b>aggiungerlo a una sessione</b>.</li></ul>
+<div class="tip">Se un collega ti manda un file di esercizi (.json), lo carichi da <b>Archivio → Importa</b>.</div>`],
+['📋','Sessioni di allenamento',`
+<ol><li><b>+ Nuova sessione</b>, oppure <b>✨ Genera</b> per avere una proposta già pronta (scegli durata e tema, poi «Crea la sessione»).</li>
+<li>Aggiungi esercizi dal catalogo o blocchi liberi (riscaldamento, pausa acqua, partita…); sposti l'ordine con ↑ ↓.</li>
+<li><b>Stampa</b> il programma, oppure in palestra premi <b>▶ Avvia allenamento</b>: l'app mostra un esercizio alla volta con il timer e un segnale sonoro, e tiene lo schermo acceso.</li></ol>`],
+['✅','Presenze',`
+<ol><li>Con <b>Genera calendario</b> crei tutti gli allenamenti della stagione nei giorni fissi; con <b>+ Aggiungi allenamento</b> quelli singoli.</li>
+<li>Per ogni allenamento segni ✓ presente, ✗ assente o G giustificato. «Segna presenti tutti gli altri» velocizza.</li></ol>
+<p>La percentuale di presenza di ogni atleta viene usata anche per suggerire le convocazioni.</p>`],
+['📅','Partite e campionati',`
+<ol><li>Crea il <b>campionato</b> (pulsante ＋ accanto ai campionati) e poi <b>+ Nuova partita</b>: data, orari, avversario, palestra, casa o trasferta.</li>
+<li><b>Assenti</b>: segna chi ha avvisato che non ci sarà.</li>
+<li><b>📨 Disponibilità</b>: manda su WhatsApp la richiesta «chi c'è?» e segna le risposte.</li>
+<li><b>Convocati</b>: <b>✨ Suggerisci</b> propone i convocati (disponibili, presenze, equilibrio tra uomini e donne, visita valida), oppure li scegli tu.</li>
+<li><b>Formazione</b>: <b>✨ Proponi formazione</b> e la rotazione di partenza; puoi stamparla per la panchina.</li>
+<li><b>Invia</b>: messaggio di convocazione per WhatsApp, stampa della convocazione e dell'elenco per l'arbitro.</li></ol>
+<p>Dopo la partita scrivi il risultato (set casa – ospiti, es. 3-1): in <b>Partite</b> trovi l'andamento della stagione.</p>`],
+['📊','Statistiche durante la partita',`
+<ol><li>Dalla partita (o dalla home il giorno della gara) premi <b>📊 Statistiche</b>: l'app controlla che convocati e formazione siano pronti.</li>
+<li>Tocchi l'atleta, poi il gesto e il giudizio: <b>++</b> perfetto, <b>+</b> buono, <b>0</b> neutro, <b>−</b> errore.</li>
+<li>+1 noi / +1 loro aggiornano punteggio, rotazione e battuta; <b>Cambio</b> per le sostituzioni, <b>Fine set</b> a fine set, <b>↶</b> per annullare.</li></ol>
+<p>Girando il telefono in orizzontale hai una vista più comoda. <b>⚡ Partita veloce</b> crea al volo un'amichevole e parte subito.</p>`],
+['📝','Referto e analisi',`
+<p>Nei giorni dopo la partita puoi ricopiare il referto ufficiale: nella partita apri la scheda <b>Referto</b> → <b>Inserisci il referto</b>.</p>
+<ol><li>Formazione di partenza nelle posizioni I–VI (I è chi batte per primo), il palleggiatore e chi batte per primo nel set.</li>
+<li>La <b>formazione avversaria è facoltativa</b>: bastano i numeri di maglia.</li>
+<li>Segui la sequenza dei punti con <b>+1 Noi</b> / <b>+1 Loro</b>; aggiungi time-out e cambi. Rotazioni e battitori li calcola l'app.</li></ol>
+<div class="tip">Nel referto, nelle caselle dei turni di battuta è scritto il punteggio a cui ogni battitore ha perso la battuta: seguendole in ordine ricostruisci la sequenza dei punti.</div>
+<p>L'analisi mostra cambio palla e break per rotazione (P1…P6), i battitori, l'effetto dei time-out, i parziali subiti e l'andamento di ogni set. In <b>Partite</b> c'è l'analisi di tutta la stagione.</p>`],
+['🗒️','Note',`<p>Appunti liberi con titolo, colore ed etichetta; 📌 fissa in cima quelli importanti. Ogni nota si può copiare o mandare su WhatsApp. Sul telefono le trovi dalla home.</p>`],
+['☁️','Sincronizzare i dati online',`
+<p>Per avere gli stessi dati su telefono, tablet e computer si usa un <b>archivio privato su GitHub</b> (gratuito). Solo tu puoi leggerlo. Si prepara una volta sola, meglio dal computer.</p>
+<h4>1. Crea l'account e l'archivio</h4>
+<ol><li>Registrati su <a href="https://github.com/signup" target="_blank" rel="noopener">github.com</a> (se non hai già un account).</li>
+<li>Vai su <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a>: nome <code>volleysched-dati</code>, scegli <b>Private</b>, poi «Create repository».</li></ol>
+<h4>2. Crea il codice di accesso</h4>
+<ol><li>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a>.</li>
+<li>Token name: <code>Volleysched</code>. Expiration: la durata più lunga disponibile.</li>
+<li>Repository access: <b>Only select repositories</b> → scegli <code>volleysched-dati</code>.</li>
+<li>Permissions → Repository permissions → <b>Contents: Read and write</b>.</li>
+<li>«Generate token» e copia il codice (inizia con <code>github_pat_</code>). GitHub lo mostra una volta sola: conservalo in un posto sicuro, per esempio il gestore delle password.</li></ol>
+<h4>3. Collega ogni dispositivo</h4>
+<ol><li>Nell'app: <b>Archivio → Sincronizzazione</b>.</li>
+<li>Scrivi il tuo nome utente GitHub, il nome dell'archivio e il codice, poi <b>Collega</b>.</li>
+<li>Ripeti sugli altri dispositivi con gli stessi dati: se il dispositivo è vuoto prende i dati online; se ci sono già dati ti chiede se usare quelli online o unirli.</li></ol>
+<h4>Come funziona poi</h4>
+<ul><li>Le modifiche partono da sole pochi secondi dopo il salvataggio; quelle degli altri dispositivi arrivano all'apertura e poi ogni minuto. In alto vedi lo stato (Sincronizzato, Da inviare, Offline…).</li>
+<li>Senza rete lavori lo stesso: i dati partono quando torna la connessione.</li>
+<li>GitHub tiene tutte le versioni: se qualcosa va storto si può tornare indietro.</li>
+<li>Quando il codice scade: crea un nuovo codice e usa <b>Cambia codice di accesso</b>.</li></ul>
+<div class="tip">Il codice di accesso resta solo sul dispositivo in cui lo inserisci: non finisce nei file esportati né nei messaggi. Non condividerlo con nessuno; l'archivio dei dati deve restare <b>privato</b>.</div>`],
+['💾','Copie di sicurezza e scambio con altri allenatori',`
+<ol><li><b>Archivio → Scarica una copia</b>: scegli cosa includere (esercizi, sessioni, atleti, partite, presenze, note, impostazioni). «Tutto» è la copia di sicurezza completa.</li>
+<li>Per passare esercizi a un collega scegli solo <b>Esercizi</b> (tutti, i preferiti o solo quelli creati da te): i dati degli atleti non vengono inclusi.</li>
+<li>Chi riceve il file lo carica con <b>Archivio → Importa</b> e sceglie se aggiungerlo ai suoi dati o sostituirli.</li></ol>
+<div class="tip">Fai una copia completa ogni tanto, anche se usi la sincronizzazione, e tienila in un posto sicuro: contiene dati personali degli atleti.</div>`],
+['🔄','Aggiornamenti e problemi',`
+<ul><li>Quando c'è una nuova versione compare la barra «È disponibile una nuova versione» con il pulsante <b>Aggiorna</b>.</li>
+<li>Se qualcosa non si vede bene, chiudi e riapri l'app.</li>
+<li>Non cancellare i dati del browser o del sito dell'app: se non usi la sincronizzazione, lì ci sono i tuoi dati. Prima, scarica una copia.</li></ul>`],
+['🔒','Dove sono i dati',`<p>L'app non ha un server: i dati sono nel dispositivo (nell'archivio del browser) e, se la colleghi, nel <b>tuo</b> archivio privato su GitHub. Chi ti ha passato l'app non può vedere i tuoi dati.</p>`],
+];
+function viewGuida(){
+  const q=(ui.gq||'').trim().toLowerCase(), strip=h=>h.replace(/<[^>]+>/g,' ').toLowerCase();
+  const L=GUIDE.map((g,i)=>[g,i]).filter(([g])=>!q || g[1].toLowerCase().includes(q) || strip(g[2]).includes(q));
+  return `<section class="guide"><div class="page-head"><div><a href="#" data-nav="${ui.gBack||'home'}" class="muted" style="font-size:13.5px;text-decoration:none">← Indietro</a><h1 style="margin-top:4px">Come si fa</h1><p class="muted">Guida rapida a Volleysched. Tocca un argomento per aprirlo.</p></div></div>
+    <input type="search" class="gsearch" id="g-q" placeholder="Cerca nella guida (es. convocazioni, sincronizzare…)" value="${esc(ui.gq||'')}">
+    <div id="g-list">${L.map(([g,i])=>`<details ${q||ui.gOpen===i?'open':''}><summary><span class="gi">${g[0]}</span>${g[1]}</summary><div class="gb">${g[2]}</div></details>`).join('')||'<div class="gnone">Nessun argomento trovato.</div>'}</div></section>`;
 }
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
@@ -4460,6 +4843,28 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'guide-open': ()=>go('guida',{gBack: ui.view==='benvenuto'?'benvenuto':(ui.view==='impostazioni'?'impostazioni':'home'), gq:'', gOpen:null}),
+  'guide-sync': ()=>go('guida',{gBack:'impostazioni', gq:'', gOpen:GUIDE.findIndex(g=>g[1].startsWith('Sincronizzare'))}),
+  'ref-open': ()=>{ const S=refSets(getMatch(ui.matchId)); go('referto',{refSet:Math.max(0,S.length-1), refForm:false, refDraft:null}); },
+  'rf-back': ()=>go('partita',{matchId:ui.matchId, mTab:'ref'}),
+  'rf-set': b=>{ ui.refSet=+b.dataset.i; ui.refForm=false; ui.refDraft=null; render(); },
+  'rf-newset': ()=>{ const S=refSets(getMatch(ui.matchId)); ui.refSet=S.length; ui.refForm=true; ui.refDraft=null; render(); window.scrollTo(0,0); },
+  'rf-form': ()=>{ ui.refForm=true; ui.refDraft=null; render(); },
+  'rf-form-cancel': ()=>{ ui.refForm=false; ui.refDraft=null; render(); },
+  'rf-fs': b=>{ if(ui.refDraft){ ui.refDraft.firstServe=b.dataset.v; render(); } },
+  'rf-start': ()=>{ const m=getMatch(ui.matchId), d=ui.refDraft; if(!d) return;
+    if(d.our.some(x=>!x) || new Set(d.our).size!==6){ toast('Inserisci 6 giocatori diversi, dalla I alla VI'); return; }
+    const R=refGet(m), old=R.sets[d.i]; const s={our:[...d.our], pal:d.our.includes(d.pal)?d.pal:'', opp:d.opp&&d.opp.some(Boolean)?d.opp.map(x=>x||'?'):null, firstServe:d.firstServe||'noi', ev:old?old.ev:[]};
+    R.sets[d.i]=s; ui.refForm=false; ui.refDraft=null; refSave(m); render(); },
+  'rf-pt': b=>{ const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet]; if(!s) return; s.ev=s.ev||[]; s.ev.push(b.dataset.v); refSave(m); render();
+    const R=refReplay(s); if(refOver(R,ui.refSet)) toast(refMatchOver(m)?'Partita finita':'Set finito '+R.noi+'–'+R.loro); },
+  'rf-to': b=>{ const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet]; if(!s) return; s.ev.push(b.dataset.v); refSave(m); render(); },
+  'rf-close': ()=>{ const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet]; if(!s || !confirm('Chiudere il set con questo punteggio?')) return; s.ev.push('X'); refSave(m); render(); },
+  'rf-undo': ()=>{ const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet]; if(!s||!s.ev.length) return; s.ev.pop(); refSave(m); render(); },
+  'rf-delset': ()=>{ const m=getMatch(ui.matchId), R=refGet(m); if(!confirm('Eliminare il set '+(ui.refSet+1)+' con tutti i suoi punti?')) return; R.sets.splice(ui.refSet,1); ui.refSet=Math.max(0,R.sets.length-1); ui.refForm=!R.sets.length; ui.refDraft=null; refSave(m); render(); },
+  'rf-sub': b=>openRefSub(b.dataset.v),
+  'rf-sub-ok': b=>{ const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet]; const o=$('#rs-out').value, n=($('#rs-in').value||'').trim(); if(!o||!n){ toast('Scegli chi esce e chi entra'); return; }
+    s.ev.push((b.dataset.v==='N'?'SN|':'SL|')+o+'|'+n); refSave(m); closeModal(); render(); },
   'quick-stats': b=>openReady(b.dataset.id),
   'rd-conv': ()=>{ const m=getMatch(ui.matchId); const A=new Set(m.assenti||[]); m.convocati=db.athletes.filter(a=>a.iscritto && !A.has(a.id) && visitaOk(a,m)).map(a=>a.id); touchMatch(m); openReady(m.id); },
   'rd-form': ()=>{ const m=getMatch(ui.matchId); autoForm(m); openReady(m.id); },
@@ -4680,7 +5085,9 @@ document.addEventListener('input', e=>{
     touchSess(s, t.dataset.if==='durata'?'times':null); autoGrow(t); return; }
   if(t.dataset.set){ db.settings[t.dataset.set]=t.value; if(t.dataset.set==='colore'||t.dataset.set==='accento') applyBrand(); clearTimeout(window._setT); window._setT=setTimeout(()=>{ persist.settings().then(()=>{ const i=$('#set-saved'); if(i){ i.textContent='✓ Salvato'; setTimeout(()=>i.textContent='',1500);} }).catch(saveFail); },400); }
 });
+document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.rf!==undefined){ refFormChange(e.target); return; }
   if(e.target.dataset.qm!==undefined){ qmCount(); return; }
   if(e.target.dataset.exp){ ui.exp.sel[e.target.dataset.exp]=e.target.checked; return; }
   if(e.target.name==='exp-ex'){ ui.exp.exMode=e.target.value; return; }

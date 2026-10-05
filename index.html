@@ -1556,6 +1556,8 @@ body.train-mode main{padding:0!important;max-width:none}
   .rf-entry .rf-tl{flex-wrap:nowrap;overflow-x:auto;margin-top:5px;padding-bottom:2px;scrollbar-width:thin}
   .rf-entry .rf-tl i{flex:none}
   .rf-entry .rf-note{display:none}
+  .rf-lineup{gap:6px}
+  .rf-lineup select{padding:7px 4px;font-size:14px}
 }
 @media (orientation: landscape) and (max-height:520px){
   .rf-wrap{max-width:none}
@@ -2258,11 +2260,14 @@ let ui = {view:'home', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, dr
 function go(view, params={}){
   if(ui.dirty && !confirm('Ci sono modifiche non salvate. Vuoi uscire senza salvare?')) return;
   ui.dirty=false; activeEditor=null;
+  if(!NAV.back && ui.view && view!==ui.view && !['esercizio','benvenuto'].includes(ui.view)){ NAV.stack.push(navSnap()); if(NAV.stack.length>30) NAV.stack.shift(); }
+  if(view==='home') NAV.stack=[];
   Object.assign(ui, {view}, params);
   closeModal();
   if(ui.remotePending){ ui.remotePending=false; clearTimeout(remoteTimer); loadState().then(render); }
   render();
   window.scrollTo(0,0);
+  navSync();
 }
 window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault(); e.returnValue=''; } });
 
@@ -2472,7 +2477,7 @@ function exFieldsHTML(e){
   const f=[['Carico di lavoro',dosFull(e.dosaggio)],['Distretto',e.distretto],['Organizzazione',e.organizzazione],['Svolgimento',e.svolgimento],['Punto chiave',e.puntoChiave],['Variante',e.variante],['Materiale',e.materiale],['Note',e.note]].filter(x=>x[1]&&String(x[1]).trim());
   return f.length ? `<dl class="fields">${f.map(([k,v])=>`<dt>${k}</dt><dd>${nl2br(v)}</dd>`).join('')}</dl>` : `<p class="muted">Nessuna descrizione.</p>`;
 }
-function openModal(html){ const m=$('#modal'); m.innerHTML=html; m.classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function openModal(html){ const m=$('#modal'); m.innerHTML=html; m.classList.remove('hidden'); document.body.style.overflow='hidden'; if(typeof navSync==='function') navSync(); }
 function closeModal(){ const m=$('#modal'); m.classList.add('hidden'); m.innerHTML=''; document.body.style.overflow=''; }
 $('#modal').addEventListener('mousedown', e => { if(e.target.id==='modal') closeModal(); });
 
@@ -4641,6 +4646,7 @@ function refOver(R,i){ if(R.closed) return true; const t=refTarget(i); return (R
 function refScores(m){ return refSets(m).map((s,i)=>{ const R=refReplay(s); return refOver(R,i)?{noi:R.noi, loro:R.loro}:null; }).filter(Boolean); }
 function refWins(m){ const S=refScores(m); const w=S.filter(x=>x.noi>x.loro).length; return {noi:w, loro:S.length-w}; }
 function refMatchOver(m){ const w=refWins(m); return w.noi>=3||w.loro>=3; }
+function refRole(a){ const k=a&&roleKey(a.ruolo); return k?' ('+k+')':''; }
 function refName(id){ const a=getAt(id); if(!a) return '?'; return (a.numeroMaglia?a.numeroMaglia+' ':'')+athShort(id); }
 function refPool(m){ const c=convocati(m); const ids=new Set(c.map(a=>a.id)); return [...c, ...db.athletes.filter(a=>a.iscritto && !ids.has(a.id)).sort((a,b)=>fullName(a).localeCompare(fullName(b)))]; }
 function refDefaultLineup(m, i){
@@ -4667,12 +4673,12 @@ function viewReferto(){
 function refLineupHTML(m,i){
   if(!ui.refDraft || ui.refDraft.i!==i){ const s=refSets(m)[i]; ui.refDraft=Object.assign({i}, s?{our:[...s.our], pal:s.pal||'', opp:s.opp?[...s.opp]:null, firstServe:s.firstServe||'noi'}:refDefaultLineup(m,i)); if(!ui.refDraft.pal) ui.refDraft.pal=refAutoPal(ui.refDraft.our); }
   const d=ui.refDraft, pool=refPool(m), conv=new Set(convocati(m).map(a=>a.id)), R=['I','II','III','IV','V','VI'];
-  const opt=(sel)=>`<option value="">—</option>`+pool.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' ':'')+athShort(a.id))}${conv.has(a.id)?'':' (non conv.)'}</option>`).join('');
+  const opt=(sel)=>`<option value="">—</option>`+pool.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' ':'')+(refRole(a)?refRole(a).trim()+' ':'')+athShort(a.id))}${conv.has(a.id)?'':' (non conv.)'}</option>`).join('');
   const has=refSets(m)[i] && (refSets(m)[i].ev||[]).length;
   return `<div class="panel"><h2 style="margin-bottom:4px">Formazione di partenza · set ${i+1}</h2>
     <p class="muted" style="margin:0 0 10px;font-size:13px">Ricopiala dal referto: la posizione I è chi batte per primo, poi II, III… nell'ordine di rotazione.${i===0&&formOk(getForm(m))?' Ho già messo quella preparata per la partita.':''}</p>
     <div class="rf-lineup">${R.map((r,j)=>`<label>${r}${j===0?' · batte':''}<select data-rf="our" data-i="${j}">${opt(d.our[j])}</select></label>`).join('')}</div>
-    <label class="f" style="margin-top:10px">Palleggiatore (serve a dare il nome alle rotazioni P1…P6)<select data-rf="pal"><option value="">— nessuno / non so —</option>${d.our.filter(Boolean).map(id=>`<option value="${id}" ${id===d.pal?'selected':''}>${esc(refName(id))}</option>`).join('')}</select></label>
+    <label class="f" style="margin-top:10px">Palleggiatore (serve a dare il nome alle rotazioni P1…P6)<select data-rf="pal"><option value="">— nessuno / non so —</option>${d.our.filter(Boolean).map(id=>`<option value="${id}" ${id===d.pal?'selected':''}>${esc(refName(id)+refRole(getAt(id)))}</option>`).join('')}</select></label>
     <div style="margin-top:12px"><div style="font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:4px">Chi batte per primo in questo set?</div>
       <div class="rf-fs"><button data-action="rf-fs" data-v="noi" class="${d.firstServe==='noi'?'on':''}">Noi</button><button data-action="rf-fs" data-v="loro" class="${d.firstServe==='loro'?'on':''}">Loro</button></div></div>
     <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-weight:700;cursor:pointer"><input type="checkbox" data-rf="oppOn" ${d.opp?'checked':''} style="width:auto;flex:none"><span>Inserisci anche la formazione avversaria <span class="muted" style="font-weight:600">(facoltativo)</span></span></label>
@@ -4717,8 +4723,8 @@ function openRefSub(who){
   const m=getMatch(ui.matchId), s=refSets(m)[ui.refSet], R=refReplay(s);
   let body;
   if(who==='N'){ const on=new Set(R.our); const pool=refPool(m).filter(a=>!on.has(a.id));
-    body=`<label class="f">Esce<select id="rs-out">${R.our.map(id=>`<option value="${id}">${esc(refName(id))}</option>`).join('')}</select></label>
-      <label class="f" style="margin-top:8px">Entra<select id="rs-in">${pool.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))}</option>`).join('')}</select></label>`; }
+    body=`<label class="f">Esce<select id="rs-out">${R.our.map(id=>`<option value="${id}">${esc(refName(id)+refRole(getAt(id)))}</option>`).join('')}</select></label>
+      <label class="f" style="margin-top:8px">Entra<select id="rs-in">${pool.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a)+refRole(a))}</option>`).join('')}</select></label>`; }
   else body=`<label class="f">Esce il n°<select id="rs-out">${R.opp.map(n=>`<option value="${esc(n)}">${esc(n||'?')}</option>`).join('')}</select></label>
       <label class="f" style="margin-top:8px">Entra il n°<input id="rs-in" type="text" inputmode="numeric"></label>`;
   openModal(`<div class="modal-box" style="max-width:420px"><div class="modal-head"><h2 style="flex:1">Cambio ${who==='N'?'nostro':'avversario'} · ${R.noi}–${R.loro}</h2><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
@@ -4956,6 +4962,25 @@ function licPanelHTML(){ const i=licInfo();
     <textarea id="lic-key" placeholder="VS1-…" spellcheck="false" autocapitalize="off" style="width:100%;min-height:70px;font-family:ui-monospace,monospace;font-size:13px"></textarea>
     <div class="actions" style="margin-top:8px"><button class="btn primary" data-action="lic-activate">Attiva la chiave</button></div></div>`; }
 function licBadge(){ const i=licInfo(); return i.st==='prova'&&i.left<=7?`<button class="red" data-action="lic-go">🔑 Prova: ${i.left} giorn${i.left===1?'o':'i'}</button>`:''; }
+
+/* ===== Tasto indietro ===== */
+const NAV={stack:[], guard:false, back:false};
+const NAV_KEYS=['matchId','sessId','mTab','refSet','pDay','gBack','gq','gOpen','noteId'];
+function navSnap(){ const o={view:ui.view}; NAV_KEYS.forEach(k=>{ if(ui[k]!==undefined) o[k]=ui[k]; }); return o; }
+function navNeedsGuard(){ return (ui.view!=='home' && ui.view!=='benvenuto') || !$('#modal').classList.contains('hidden') || !!$('.picker.open'); }
+function navSync(){ try{ if(navNeedsGuard() && !NAV.guard){ history.pushState({vs:Date.now()}, ''); NAV.guard=true; } }catch(e){} }
+window.addEventListener('popstate', ()=>{
+  NAV.guard=false;
+  if(document.body.classList.contains('locked')) return;
+  if(!$('#modal').classList.contains('hidden')){ closeModal(); navSync(); return; }
+  if($('.picker.open')){ actions['pick-close'](); navSync(); return; }
+  if(ui.view==='home' || ui.view==='benvenuto'){ history.back(); return; }
+  let prev=NAV.stack.pop();
+  while(prev && prev.view===ui.view && prev.matchId===ui.matchId && prev.sessId===ui.sessId) prev=NAV.stack.pop();
+  const p=prev||{view:'home'}, {view, ...rest}=p;
+  NAV.back=true; go(view, rest); NAV.back=false;
+  navSync();
+});
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -5461,7 +5486,7 @@ $('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
     await loadState();
     if(Store.isEmpty() && !Sync.config() && !Store.getMeta('avviato')) ui.view='benvenuto';
     await licInit();
-    render();
+    render(); navSync();
   }catch(e){
     console.error(e);
     $('#app').innerHTML=`<div class="empty" style="text-align:left;max-width:640px;margin:40px auto"><h2 style="margin-bottom:8px">Volleysched non si è aperto</h2>

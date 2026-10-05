@@ -12,7 +12,7 @@
 const Store = (() => {
   const DBNAME = 'schedario-pallavolo', VERSION = 2;
   const COLS = ['exercises', 'sessions', 'athletes', 'matches', 'trainings', 'notes'];
-  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo', 'campionati', 'preferiti'];
+  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo', 'campionati', 'preferiti', 'licenza', 'provaDal'];
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^\d{1,2}:\d{2}$/;
   let idb = null;
   const mem = { exercises: new Map(), sessions: new Map(), athletes: new Map(), matches: new Map(), trainings: new Map(), notes: new Map() };
@@ -182,7 +182,7 @@ const Store = (() => {
     const v = settings.values || {};
     return { squadra: v.squadra || '', allenatore: v.allenatore || '',
       noteGenerali: v.noteGenerali ?? (typeof DEFAULT_NOTE !== 'undefined' ? DEFAULT_NOTE : DEFAULT_NOTE_FALLBACK),
-      calendarioAllenamenti: v.calendarioAllenamenti || '', colore: v.colore || '', accento: v.accento || '', logo: v.logo || '', campionati: v.campionati || '', preferiti: v.preferiti || '' };
+      calendarioAllenamenti: v.calendarioAllenamenti || '', colore: v.colore || '', accento: v.accento || '', logo: v.logo || '', campionati: v.campionati || '', preferiti: v.preferiti || '', licenza: v.licenza || '', provaDal: v.provaDal || '' };
   }
   async function saveSettings(st) {
     const t = now(); let changed = false;

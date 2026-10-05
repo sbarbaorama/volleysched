@@ -1539,6 +1539,17 @@ body.train-mode main{padding:0!important;max-width:none}
 .guide .gb code{background:var(--surface-2);border-radius:4px;padding:0 4px;font-size:13px}
 .guide .gnone{text-align:center;color:var(--muted);padding:20px}
 
+
+body.locked #nav, body.locked .fab, body.locked .sync-pill{display:none!important}
+.lock{max-width:520px;margin:30px auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.lock .ic{font-size:40px}
+.lock h1{font-size:22px;margin:6px 0}
+.lock textarea{width:100%;min-height:90px;font-family:ui-monospace,monospace;font-size:13px;margin-top:8px}
+.lic-st{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.lic-st b{font-size:15px}
+.lic-st .pill{border-radius:999px;padding:2px 10px;font-weight:800;font-size:12.5px}
+.lic-st .ok{background:#dff3e6;color:#145c32}.lic-st .warn{background:#fff3d6;color:#7a5200}.lic-st .bad{background:#fdecee;color:#7a1626}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2016,6 +2027,7 @@ function go(view, params={}){
 window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault(); e.returnValue=''; } });
 
 function render(){
+  if(licLocked()){ document.body.classList.add('locked'); $('#app').innerHTML=viewLock(); return; } document.body.classList.remove('locked');
   $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto') && b.dataset.nav==='partite')));
   refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); if(ui.view!=='allena') keepAwake(false);
   const app=$('#app');
@@ -2507,7 +2519,7 @@ function viewHome(){
     ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
     ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
   </div>`:''}
-  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button><button data-action="guide-open">📖 Guida</button>${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button><button data-action="guide-open">📖 Guida</button>${licBadge()}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
   <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
   </section>`;
 }
@@ -2682,6 +2694,7 @@ function viewImpostazioni(){
   return `<section>
   <div class="page-head"><div><h1>Archivio e impostazioni</h1></div><div class="actions"><button class="btn" data-action="guide-open">📖 Come si fa</button></div></div>
 ${syncPanelHTML()}
+${licPanelHTML()}
 ${lookPanelHTML()}
   <div class="panel">
     <h2>Copie e scambio con altri allenatori</h2>
@@ -2849,7 +2862,7 @@ function exportSelected(){
   if(sel.matches) out.matches=sel.athletes?st.matches:st.matches.map(m=>Object.assign({}, m, {convocati:[], assenti:[], disponibili:[], formazione:null, stats:null, referto:null}));
   if(sel.trainings) out.trainings=sel.athletes?st.trainings:st.trainings.map(t=>Object.assign({}, t, {presenze:{}}));
   if(sel.notes) out.notes=st.notes||[];
-  if(sel.settings){ const s=Object.assign({}, st.settings); delete s.preferiti; out.settings=s; }
+  if(sel.settings){ const s=Object.assign({}, st.settings); delete s.preferiti; delete s.licenza; delete s.provaDal; out.settings=s; }
   if(!out.exercises.length && !out.sessions.length && !out.athletes && !out.matches && !out.trainings && !out.settings){ alert('Con queste scelte il file sarebbe vuoto (per esempio non hai esercizi preferiti).'); return; }
   const all=EXP_ITEMS.every(([k])=>sel[k]) && o.exMode==='all';
   const name=all?'volleysched-completo-':(Object.keys(sel).filter(k=>sel[k]).length===1&&sel.exercises?'volleysched-esercizi-':'volleysched-');
@@ -2861,7 +2874,7 @@ function exportSelected(){
   toast('Scaricato: '+(parts.join(', ')||'impostazioni'));
 }
 function exportBackup(){
-  const st=Store.fullState(); delete st.info;
+  const st=Store.fullState(); delete st.info; if(st.settings){ delete st.settings.licenza; delete st.settings.provaDal; }
   const blob=new Blob([JSON.stringify({app:'schedario-pallavolo', exportedAt:new Date().toISOString(), data:st}, null, 1)], {type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='volleysched-'+todayISO()+'.json';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
@@ -4641,6 +4654,12 @@ const GUIDE=[
 <ul><li>Quando c'è una nuova versione compare la barra «È disponibile una nuova versione» con il pulsante <b>Aggiorna</b>.</li>
 <li>Se qualcosa non si vede bene, chiudi e riapri l'app.</li>
 <li>Non cancellare i dati del browser o del sito dell'app: se non usi la sincronizzazione, lì ci sono i tuoi dati. Prima, scarica una copia.</li></ul>`],
+['🔑','Periodo di prova e chiave',`
+<p>Volleysched si può usare gratis per <b>30 giorni</b> dal primo avvio. In <b>Archivio → Chiave di attivazione</b> vedi quanti giorni mancano; negli ultimi 7 giorni compare anche un avviso nella home.</p>
+<ol><li>Chiedi la chiave a chi ti ha passato l'app: è un testo che inizia con <code>VS1-</code>.</li>
+<li>Incollala in <b>Archivio → Chiave di attivazione</b> e premi <b>Attiva la chiave</b>.</li>
+<li>Se usi la sincronizzazione, la chiave arriva da sola anche sugli altri dispositivi.</li></ol>
+<div class="tip">Se la prova finisce prima di avere la chiave i dati non si perdono: restano sul dispositivo e tornano visibili appena inserisci la chiave. Dalla schermata di blocco puoi comunque scaricarne una copia.</div>`],
 ['🔒','Dove sono i dati',`<p>L'app non ha un server: i dati sono nel dispositivo (nell'archivio del browser) e, se la colleghi, nel <b>tuo</b> archivio privato su GitHub. Chi ti ha passato l'app non può vedere i tuoi dati.</p>`],
 ];
 function viewGuida(){
@@ -4650,6 +4669,51 @@ function viewGuida(){
     <input type="search" class="gsearch" id="g-q" placeholder="Cerca nella guida (es. convocazioni, sincronizzare…)" value="${esc(ui.gq||'')}">
     <div id="g-list">${L.map(([g,i])=>`<details ${q||ui.gOpen===i?'open':''}><summary><span class="gi">${g[0]}</span>${g[1]}</summary><div class="gb">${g[2]}</div></details>`).join('')||'<div class="gnone">Nessun argomento trovato.</div>'}</div></section>`;
 }
+
+/* ===== Periodo di prova e chiave ===== */
+const PROVA_GG=30, LIC_PUB={"key_ops":["verify"],"ext":true,"kty":"EC","x":"Anp9zTls15uqGWEbbqrfDcO-Eu-jivNXKo2ws2QL-Y4","y":"c8xFsu9O3C-hq8zOKLtpNetISUv1lHqHt25fcXmi2jE","crv":"P-256"};
+const LIC={ready:false, raw:null, key:null};
+function licToday(){ const t=todayISO(); let s=null; try{ s=localStorage.getItem('vs-visto'); }catch(e){}
+  const lim=(()=>{ const d=parseISO(t); d.setDate(d.getDate()+60); return toISO(d); })();
+  const m=(s && s>t && s<=lim)?s:t; try{ localStorage.setItem('vs-visto', m); }catch(e){} return m; }
+function licAddDays(iso,n){ const d=parseISO(iso); d.setDate(d.getDate()+n); return toISO(d); }
+const b64u=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'==='.slice((s.length+3)%4)), c=>c.charCodeAt(0));
+async function licVerify(k){
+  try{ const m=String(k).trim().replace(/\s+/g,'').match(/^VS1-([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/); if(!m) return {ok:false, err:'La chiave non è scritta correttamente.'};
+    const pub=await crypto.subtle.importKey('jwk', LIC_PUB, {name:'ECDSA', namedCurve:'P-256'}, false, ['verify']);
+    const data=b64u(m[1]), ok=await crypto.subtle.verify({name:'ECDSA', hash:'SHA-256'}, pub, b64u(m[2]), data);
+    if(!ok) return {ok:false, err:'La chiave non è valida.'};
+    const p=JSON.parse(new TextDecoder().decode(data)); return {ok:true, n:p.n||'', s:p.s||''};
+  }catch(e){ return {ok:false, err:'La chiave non è valida.'}; } }
+async function licRefresh(){ const k=(db.settings.licenza||'').trim(); LIC.raw=k; LIC.key=k?await licVerify(k):null; LIC.ready=true; }
+async function licInit(){ if(!db.settings.provaDal){ db.settings.provaDal=todayISO(); await persist.settings().catch(()=>{}); } await licRefresh(); }
+function licInfo(){
+  const t=licToday(), K=LIC.key;
+  if(K && K.ok && (!K.s || K.s>=t)) return {st:'chiave', n:K.n, s:K.s, left:K.s?daysUntil(K.s):null};
+  const end=licAddDays(db.settings.provaDal||t, PROVA_GG-1), left=Math.round((parseISO(end)-parseISO(t))/864e5)+1;
+  if(K && K.ok && K.s && K.s<t) return {st:'scaduta', s:K.s};
+  return left>0?{st:'prova', end, left}:{st:'finita', end};
+}
+function licLocked(){
+  if(!LIC.ready) return false;
+  if((db.settings.licenza||'').trim()!==LIC.raw){ licRefresh().then(render); return false; }
+  const i=licInfo(); return i.st==='finita'||i.st==='scaduta';
+}
+function viewLock(){ const i=licInfo();
+  return `<div class="lock"><div class="ic">🔑</div><h1>${i.st==='scaduta'?'La chiave è scaduta':'Il periodo di prova è terminato'}</h1>
+    <p class="muted" style="margin-top:0">${i.st==='scaduta'?`La chiave valeva fino al ${esc(shortDate(i.s))}.`:`I ${PROVA_GG} giorni di prova sono finiti il ${esc(shortDate(i.end))}.`} Per continuare a usare Volleysched inserisci la chiave che ti ha dato chi ti ha passato l'app.</p>
+    <p class="muted" style="font-size:13.5px">I tuoi dati sono al sicuro su questo dispositivo: torneranno visibili appena inserisci la chiave.</p>
+    <textarea id="lic-key" placeholder="VS1-…" spellcheck="false" autocapitalize="off"></textarea>
+    <div class="actions" style="margin-top:10px"><button class="btn primary" data-action="lic-activate">Attiva</button><button class="btn" data-action="lic-export">Scarica una copia dei miei dati</button></div></div>`; }
+function licPanelHTML(){ const i=licInfo();
+  const st=i.st==='chiave'?`<span class="pill ok">Attivata</span><b>${i.n?esc(i.n)+' · ':''}${i.s?'valida fino al '+esc(shortDate(i.s)):'senza scadenza'}</b>`
+    :i.st==='prova'?`<span class="pill ${i.left<=7?'bad':'warn'}">Prova</span><b>mancan${i.left===1?'e':'o'} ${i.left} giorn${i.left===1?'o':'i'} (fino al ${esc(shortDate(i.end))})</b>`
+    :`<span class="pill bad">Scaduta</span>`;
+  return `<div class="panel" id="lic-panel"><h2>Chiave di attivazione</h2><div class="lic-st">${st}</div>
+    <p style="margin-top:0;font-size:14px">${i.st==='chiave'?'Puoi sostituirla con una nuova chiave qui sotto.':`Puoi usare l'app gratis per ${PROVA_GG} giorni. Per continuare dopo, inserisci la chiave che ti ha dato chi ti ha passato l'app.`}</p>
+    <textarea id="lic-key" placeholder="VS1-…" spellcheck="false" autocapitalize="off" style="width:100%;min-height:70px;font-family:ui-monospace,monospace;font-size:13px"></textarea>
+    <div class="actions" style="margin-top:8px"><button class="btn primary" data-action="lic-activate">Attiva la chiave</button></div></div>`; }
+function licBadge(){ const i=licInfo(); return i.st==='prova'&&i.left<=7?`<button class="red" data-action="lic-go">🔑 Prova: ${i.left} giorn${i.left===1?'o':'i'}</button>`:''; }
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -4843,6 +4907,12 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'lic-activate': async ()=>{ const k=($('#lic-key').value||'').trim(); if(!k){ toast('Incolla la chiave'); return; }
+    const r=await licVerify(k); if(!r.ok){ toast(r.err); return; }
+    if(r.s && r.s<licToday()){ toast('Questa chiave è scaduta il '+shortDate(r.s)); return; }
+    db.settings.licenza=k.replace(/\s+/g,''); await persist.settings().catch(saveFail); await licRefresh(); render(); toast('Chiave attivata'+(r.s?' fino al '+shortDate(r.s):'')); },
+  'lic-export': ()=>exportBackup(),
+  'lic-go': ()=>{ ui.accOpen=Object.assign(ui.accOpen||{},{'lic-panel':true}); go('impostazioni'); setTimeout(()=>{ $('#lic-panel')?.scrollIntoView({behavior:'smooth'}); },60); },
   'guide-open': ()=>go('guida',{gBack: ui.view==='benvenuto'?'benvenuto':(ui.view==='impostazioni'?'impostazioni':'home'), gq:'', gOpen:null}),
   'guide-sync': ()=>go('guida',{gBack:'impostazioni', gq:'', gOpen:GUIDE.findIndex(g=>g[1].startsWith('Sincronizzare'))}),
   'ref-open': ()=>{ const S=refSets(getMatch(ui.matchId)); go('referto',{refSet:Math.max(0,S.length-1), refForm:false, refDraft:null}); },
@@ -5144,6 +5214,7 @@ $('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
     await Sync.init();
     await loadState();
     if(Store.isEmpty() && !Sync.config() && !Store.getMeta('avviato')) ui.view='benvenuto';
+    await licInit();
     render();
   }catch(e){
     console.error(e);

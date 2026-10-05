@@ -737,11 +737,11 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
     <div>Volleysched<small>Esercizi, sessioni, presenze, partite e atleti</small></div>
   </div>
   <nav class="nav" id="nav">
-    <button data-nav="esercizi"><span class="ni">🏐</span><span class="nl">Esercizi</span></button>
+    <button data-nav="atleti" id="nav-atleti"><span class="ni">👥</span><span class="nl">Atleti</span></button>
     <button data-nav="sessioni"><span class="ni">📋</span><span class="nl">Sessioni</span></button>
     <button data-nav="presenze"><span class="ni">✅</span><span class="nl">Presenze</span></button>
     <button data-nav="partite"><span class="ni">📅</span><span class="nl">Partite</span></button>
-    <button data-nav="atleti" id="nav-atleti"><span class="ni">👥</span><span class="nl">Atleti</span></button>
+    <button data-nav="esercizi"><span class="ni">🏐</span><span class="nl">Esercizi</span></button>
     <button data-nav="impostazioni"><span class="ni">⚙️</span><span class="nl">Archivio<span class="nl-x"> e impostazioni</span></span></button>
   </nav>
   <div class="spacer"></div>
@@ -1145,7 +1145,7 @@ document.addEventListener('keydown', e => {
 /* ============================================================
    Navigazione
    ============================================================ */
-let ui = {view:'esercizi', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{compatto:true, scaletta:true, schemi:true, note:true}};
+let ui = {view:'atleti', f:{q:'',fond:'',form:'',dist:''}, pick:{q:'',fond:''}, draft:null, dirty:false, sessId:null, back:null, printOpts:{compatto:true, scaletta:true, schemi:true, note:true}};
 
 function go(view, params={}){
   if(ui.dirty && !confirm('Ci sono modifiche non salvate. Vuoi uscire senza salvare?')) return;
@@ -1748,7 +1748,7 @@ async function syncConnect(tokenOnly){
     msg.textContent='Sincronizzo… (la prima volta può volerci qualche minuto)';
     await Sync.connect(p.cfg, replace);
     await Store.setMeta('avviato', true);
-    await loadState(); ui.view = ui.view==='benvenuto' ? 'esercizi' : ui.view; render();
+    await loadState(); ui.view = ui.view==='benvenuto' ? 'atleti' : ui.view; render();
     const st=Sync.status();
     toast(st.status==='error' ? 'Collegato, ma la sincronizzazione ha dato un errore' : 'Archivio collegato: dati sincronizzati');
   }catch(e){ console.error(e); msg.textContent=''; alert('Collegamento non riuscito.\n\n'+(e.message||e)); }
@@ -1793,7 +1793,7 @@ function importBackup(){
         <div class="modal-body"><p><b>Unisci</b>: aggiunge allo schedario ciò che manca e aggiorna le schede modificate più di recente nel file.</p><p><b>Sostituisci</b>: cancella esercizi e sessioni attuali e li rimpiazza con il contenuto del file.</p><p class="muted" style="font-size:13.5px">Se l'archivio online è collegato, la versione precedente resta comunque recuperabile dalla cronologia di GitHub.</p></div>
         <div class="modal-foot"><button class="btn" data-action="close-modal">Annulla</button><span style="flex:1"></span><button class="btn danger" id="imp-replace">Sostituisci tutto</button><button class="btn primary" id="imp-merge">Unisci</button></div></div>`);
       const run = mode => api('POST','/api/importa',{mode, data:d}).then(async res=>{
-        await Store.setMeta('avviato', true); if(ui.view==='benvenuto') ui.view='esercizi';
+        await Store.setMeta('avviato', true); if(ui.view==='benvenuto') ui.view='atleti';
         await loadState(); closeModal(); render();
         toast(mode==='merge' ? `Importati: ${res.aggiunti} nuovi, ${res.aggiornati} aggiornati` : 'Archivio sostituito');
       }).catch(e=>alert('Importazione non riuscita: '+(e.message||'')));
@@ -3024,7 +3024,7 @@ const actions={
   'sync-off': async ()=>{ if(!confirm('Scollegare questo dispositivo dall\'archivio online? I dati restano qui, ma non verranno più sincronizzati.')) return; await Sync.disconnect(); render(); toast('Dispositivo scollegato'); },
   'sync-token': async ()=>{ const c=Sync.config(); await Store.setMeta('syncLast',{owner:c.owner, repo:c.repo}); await Sync.disconnect(); render(); setTimeout(()=>{ const t=$('#sync-form [name=token]'); if(t){ t.focus(); $('#sync-msg').textContent='Inserisci il nuovo codice e premi «Collega»: i dati non vengono toccati.'; } },50); },
   'w-sync': ()=>{ go('impostazioni'); setTimeout(()=>{ const p=$('#sync-panel'); if(p) p.scrollIntoView({behavior:'smooth'}); },60); },
-  'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('esercizi'); },
+  'w-empty': async ()=>{ await Store.setMeta('avviato', true); go('atleti'); },
   'restore-seed': ()=>{
     const inp=$('#filepick'); inp.value=''; inp.accept='.json,application/json';
     inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader();

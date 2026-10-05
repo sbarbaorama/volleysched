@@ -12,7 +12,7 @@
 const Store = (() => {
   const DBNAME = 'schedario-pallavolo', VERSION = 1;
   const COLS = ['exercises', 'sessions', 'athletes', 'matches', 'trainings'];
-  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti'];
+  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo'];
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^\d{1,2}:\d{2}$/;
   let idb = null;
   const mem = { exercises: new Map(), sessions: new Map(), athletes: new Map(), matches: new Map(), trainings: new Map() };
@@ -172,7 +172,7 @@ const Store = (() => {
     const v = settings.values || {};
     return { squadra: v.squadra || '', allenatore: v.allenatore || '',
       noteGenerali: v.noteGenerali ?? (typeof DEFAULT_NOTE !== 'undefined' ? DEFAULT_NOTE : DEFAULT_NOTE_FALLBACK),
-      calendarioAllenamenti: v.calendarioAllenamenti || '' };
+      calendarioAllenamenti: v.calendarioAllenamenti || '', colore: v.colore || '', accento: v.accento || '', logo: v.logo || '' };
   }
   async function saveSettings(st) {
     const t = now(); let changed = false;

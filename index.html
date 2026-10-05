@@ -1555,6 +1555,15 @@ body.locked #nav, body.locked .fab, body.locked .sync-pill{display:none!importan
 .lic-st .pill{border-radius:999px;padding:2px 10px;font-weight:800;font-size:12.5px}
 .lic-st .ok{background:#dff3e6;color:#145c32}.lic-st .warn{background:#fff3d6;color:#7a5200}.lic-st .bad{background:#fdecee;color:#7a1626}
 
+
+.tool[hidden]{display:none!important}
+.sed-switch{display:flex;justify-content:flex-end;margin-top:6px}
+.fig-poses{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:4px 0 8px}
+.fig-poses button{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:3px 2px;cursor:pointer;font-size:11px;font-weight:700;color:var(--ink-2);display:flex;flex-direction:column;align-items:center;gap:1px}
+.fig-poses button svg{width:100%;height:38px;display:block}
+.fig-poses button:hover{border-color:var(--accent)}
+.sed-props textarea{width:100%;min-height:56px;font-size:13px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1752,6 +1761,7 @@ function lineMarkup(el){
 }
 function elMarkup(el, interactive){
   const id = interactive ? ` data-id="${el.id}" class="el"` : '';
+  if(typeof FIGM!=='undefined' && FIGM[el.t]) return FIGM[el.t](el, id, interactive);
   const {x,y} = el;
   switch(el.t){
     case 'p1': case 'p2': {
@@ -1779,6 +1789,7 @@ function elMarkup(el, interactive){
   return '';
 }
 function selMarkup(el){
+  if(FIGS[el.t]) return FIGS[el.t](el);
   const ring='fill="none" stroke="#e07b22" stroke-width="2" stroke-dasharray="5 4" pointer-events="none"';
   const hnd=(x,y,h,fill)=>`<circle data-h="${h}" cx="${f1(x)}" cy="${f1(y)}" r="9" fill="${fill||'#fff'}" stroke="#e07b22" stroke-width="2.5"/>`;
   switch(el.t){
@@ -1787,14 +1798,14 @@ function selMarkup(el){
     case 'bench': { const v=el.rot===90, w=v?24:90, h=v?90:24; return `<rect x="${el.x-w/2-7}" y="${el.y-h/2-7}" width="${w+14}" height="${h+14}" rx="5" ${ring}/>`; }
     case 'text': { const w=Math.max(30,String(el.label||'').length*12)+16; return `<rect x="${el.x-w/2}" y="${el.y-17}" width="${w}" height="34" rx="5" ${ring}/>`; }
     case 'zone': return `<rect x="${el.x-5}" y="${el.y-5}" width="${el.w+10}" height="${el.h+10}" rx="5" ${ring}/>`+hnd(el.x+el.w,el.y+el.h,'resize');
-    case 'ballpath': case 'move': { const g=lineGeom(el); return hnd(el.x1,el.y1,'p1')+hnd(el.x2,el.y2,'p2')+hnd(g.hx,g.hy,'mid','#e07b22'); }
+    case 'ballpath': case 'move': case 'farrow': case 'band': { const g=lineGeom(el); return hnd(el.x1,el.y1,'p1')+hnd(el.x2,el.y2,'p2')+hnd(g.hx,g.hy,'mid','#e07b22'); }
   }
   return '';
 }
 function sortedEls(els){ return els.map((e,i)=>[e,i]).sort((a,b)=>(LAYER[a[0].t]-LAYER[b[0].t])||(a[1]-b[1])).map(p=>p[0]); }
 function schemaSVG(schema, cls){
   const els = sortedEls(schema?.els||[]).map(e=>elMarkup(e,false)).join('');
-  return `<svg viewBox="0 0 ${SW} ${SH}" xmlns="http://www.w3.org/2000/svg" class="${cls||''}" preserveAspectRatio="xMidYMid meet">${courtMarkup(schema?.zones)}${els}</svg>`;
+  return `<svg viewBox="0 0 ${SW} ${SH}" xmlns="http://www.w3.org/2000/svg" class="${cls||''}" preserveAspectRatio="xMidYMid meet">${schemaBg(schema)}${els}${figCap(schema)}</svg>`;
 }
 function hasSchema(ex){ return !!(ex && ((ex.schema && ex.schema.els) || ex.image)); }
 function exVisual(ex){
@@ -1833,6 +1844,7 @@ const TOOLS=[
 function toolIcon(k){
   const m={
     select:`<path d="M12 3 L12 21 L16.5 16.5 L19.5 23 L22 22 L19 15.5 L25 15.5 Z" fill="#1f2a44"/>`,
+    ...FIG_ICONS,
     p1:`<circle cx="17" cy="12" r="9" fill="#2f6fb8" stroke="#fff" stroke-width="1.5"/><text x="17" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Arial">A</text>`,
     p2:`<circle cx="17" cy="12" r="9" fill="#d64a5a" stroke="#fff" stroke-width="1.5"/><text x="17" y="16" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Arial">A</text>`,
     coach:`<rect x="5" y="4" width="24" height="16" rx="2" fill="#333"/><text x="17" y="15.5" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" font-family="Arial">All.</text>`,
@@ -1854,17 +1866,172 @@ const HINTS={
 
 let activeEditor = null;
 
+
+/* ===== Omini stilizzati (esercizi fisici) ===== */
+const FIS_FONDS=['Preparazione fisica','Rapidità e salti','Recupero infortuni','Riscaldamento','Defaticamento'];
+const FU=SW/18.43, FFLOOR=SH-2.6*FU, FINK='#111111', FFAR='#7d7d7d', FBAND='#2f74d0', FARROW='#e8692f', FPOST='#b9b6ab', FLW=10.8;
+const FSEG={T:2.35, NECK:0.8, UA:1.25, FA:1.15, TH:1.75, SH:1.75, FOOT:0.5};
+Object.assign(LAYER,{wall:0, mat:1, box:1, post:1, man:5, band:6, dumbbell:6, farrow:7, note:8});
+Object.assign(TYPE_NAME,{man:'Omino', farrow:'Freccia', band:'Elastico', box:'Gradino / rialzo', mat:'Tappetino', post:'Palo / spalliera', wall:'Muro', note:'Nota', dumbbell:'Manubrio / peso'});
+const FIG_TOOLS=[{k:'select',n:'Seleziona'},{sep:1},{k:'man',n:'Omino'},{k:'ball',n:'Pallone'},{k:'dumbbell',n:'Peso'},{k:'cone',n:'Cinesino'},
+  {k:'box',n:'Gradino'},{k:'mat',n:'Tappetino'},{k:'post',n:'Palo'},{k:'wall',n:'Muro'},{k:'note',n:'Nota'},{sep:1},{k:'farrow',n:'Freccia'},{k:'band',n:'Elastico'}];
+const FIG_POSES={
+  piedi:{l:'In piedi', p:{torso:90,head:0,an:[265,265],af:[275,275],ln:[270,270],lf:[270,270],fn:0,ff:0}},
+  alto:{l:'Braccia su', p:{torso:90,head:0,an:[72,78],af:[108,102],ln:[270,270],lf:[270,270],fn:0,ff:0}},
+  avanti:{l:'Braccia avanti', p:{torso:90,head:0,an:[0,0],af:[4,4],ln:[270,270],lf:[270,270],fn:0,ff:0}},
+  squat:{l:'Squat', p:{torso:62,head:0,an:[0,0],af:[5,5],ln:[330,245],lf:[332,247],fn:0,ff:0}},
+  affondo:{l:'Affondo', p:{torso:90,head:0,an:[265,265],af:[275,275],ln:[0,270],lf:[238,192],fn:0,ff:265}},
+  seduto:{l:'Seduto a terra', p:{torso:100,head:0,an:[320,345],af:[325,350],ln:[0,0],lf:[2,2],fn:90,ff:90}},
+  plank:{l:'Plank', p:{torso:8,head:0,an:[270,0],af:[272,2],ln:[188,188],lf:[189,189],fn:262,ff:262}},
+  piegamento:{l:'Piegamento', p:{torso:10,head:0,an:[268,268],af:[270,270],ln:[190,190],lf:[191,191],fn:262,ff:262}},
+  supino:{l:'Supino', p:{torso:180,head:0,an:[355,355],af:[0,0],ln:[0,0],lf:[1,1],fn:90,ff:90}},
+  ponte:{l:'Ponte', p:{torso:200,head:-20,an:[185,180],af:[185,180],ln:[35,272],lf:[37,272],fn:0,ff:0}},
+  corsa:{l:'Corsa', p:{torso:80,head:0,an:[235,300],af:[300,20],ln:[320,250],lf:[245,200],fn:0,ff:250}},
+  salto:{l:'Salto', p:{torso:90,head:0,an:[62,72],af:[68,78],ln:[280,262],lf:[276,260],fn:-40,ff:-40}, air:1}
+};
+function fP(p,L,deg,s){ const r=deg*Math.PI/180; return [p[0]+L*FU*s*Math.cos(r), p[1]-L*FU*s*Math.sin(r)]; }
+function figDefault(){ return {torso:90,head:0,an:[265,265],af:[275,275],ln:[270,270],lf:[270,270],fn:0,ff:0}; }
+function figJoints(el){
+  const q=Object.assign(figDefault(), el.pose||{}), s=el.s||1, hip=[el.x,el.y], tor=q.torso;
+  const neck=fP(hip,FSEG.T,tor,s), head=fP(neck,FSEG.NECK-0.05,tor+(q.head||0),s);
+  let shn=neck, shf=neck, hpn=hip, hpf=hip;
+  if(el.front){ shn=fP(neck,0.55,tor-90,s); shf=fP(neck,0.55,tor+90,s); hpn=fP(hip,0.32,tor-90,s); hpf=fP(hip,0.32,tor+90,s); }
+  const J={hip,neck,head,shn,shf,hpn,hpf};
+  for(const [k,sh,a] of [['n',shn,q.an],['f',shf,q.af]]){ J['el'+k]=fP(sh,FSEG.UA,a[0],s); J['ha'+k]=fP(J['el'+k],FSEG.FA,a[1],s); }
+  for(const [k,hp,l,fd] of [['n',hpn,q.ln,q.fn],['f',hpf,q.lf,q.ff]]){ J['kn'+k]=fP(hp,FSEG.TH,l[0],s); J['an'+k]=fP(J['kn'+k],FSEG.SH,l[1],s); J['ft'+k]=fP(J['an'+k],FSEG.FOOT,fd,s); }
+  return {J,q,s};
+}
+const fpts=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+function figManMarkup(el, id){
+  const {J,s}=figJoints(el), w=(FLW*s).toFixed(1), far=el.front?FINK:FFAR;
+  const pl=(pts,c)=>`<polyline points="${fpts(pts)}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+  let o=pl([J.shf,J.elf,J.haf],far)+pl([J.hpf,J.knf,J.anf,J.ftf],far);
+  if(el.front) o+=pl([J.shn,J.shf],FINK)+pl([J.hpn,J.hpf],FINK);
+  o+=pl([J.hip,J.neck],FINK)+pl([J.shn,J.eln,J.han],FINK)+pl([J.hpn,J.knn,J.ann,J.ftn],FINK);
+  o+=`<circle cx="${J.head[0].toFixed(1)}" cy="${J.head[1].toFixed(1)}" r="${(0.5*FU*s).toFixed(1)}" fill="${FINK}"/>`;
+  return `<g${id}>${o}</g>`;
+}
+function figBBox(el){ const {J,s}=figJoints(el); const P=Object.values(J); const r=0.5*FU*s+8;
+  return [Math.min(...P.map(p=>p[0]))-r, Math.min(...P.map(p=>p[1]))-r, Math.max(...P.map(p=>p[0]))+r, Math.max(...P.map(p=>p[1]))+r]; }
+function figSel(el){
+  const [x1,y1,x2,y2]=figBBox(el), {J}=figJoints(el);
+  let o=`<rect x="${x1.toFixed(1)}" y="${y1.toFixed(1)}" width="${(x2-x1).toFixed(1)}" height="${(y2-y1).toFixed(1)}" rx="8" fill="none" stroke="#e07b22" stroke-width="2" stroke-dasharray="5 4" pointer-events="none"/>`;
+  const H=[['elf',1],['haf',1],['knf',1],['anf',1],['ftf',1],['neck',0],['head',0],['eln',0],['han',0],['knn',0],['ann',0],['ftn',0]];
+  for(const [k,f] of H){ const p=J[k]; o+=`<g data-h="j:${k}"><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="20" fill="transparent"/><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="${f?'#f3d9c2':'#fff'}" stroke="#e07b22" stroke-width="2.5"/></g>`; }
+  return o;
+}
+const fang=(a,p)=>Math.round(Math.atan2(-(p.y-a[1]), p.x-a[0])*180/Math.PI/5)*5;
+function figDragJoint(el, k, p){
+  const {J,q}=figJoints(el); const pose=el.pose=Object.assign(figDefault(), el.pose||{});
+  if(k==='neck') pose.torso=fang(J.hip,p);
+  else if(k==='head') pose.head=Math.max(-60,Math.min(60,((fang(J.neck,p)-pose.torso+540)%360)-180));
+  else if(k==='eln') pose.an=[fang(J.shn,p),pose.an[1]]; else if(k==='han') pose.an=[pose.an[0],fang(J.eln,p)];
+  else if(k==='elf') pose.af=[fang(J.shf,p),pose.af[1]]; else if(k==='haf') pose.af=[pose.af[0],fang(J.elf,p)];
+  else if(k==='knn') pose.ln=[fang(J.hpn,p),pose.ln[1]]; else if(k==='ann') pose.ln=[pose.ln[0],fang(J.knn,p)];
+  else if(k==='knf') pose.lf=[fang(J.hpf,p),pose.lf[1]]; else if(k==='anf') pose.lf=[pose.lf[0],fang(J.knf,p)];
+  else if(k==='ftn') pose.fn=fang(J.ann,p); else if(k==='ftf') pose.ff=fang(J.anf,p);
+}
+function figGround(el){ const b=figBBox(el), r=0.5*FU*(el.s||1)+8; let low=-1e9; const {J}=figJoints(el); for(const v of Object.values(J)) low=Math.max(low,v[1]);
+  const hd=J.head[1]+0.5*FU*(el.s||1); low=Math.max(low,hd); el.y=Math.round(el.y+(FFLOOR-FLW*(el.s||1)/2-low)); }
+function figTop(el){ const {J,s}=figJoints(el); return Math.min(...Object.values(J).map(p=>p[1]), J.head[1]-0.5*FU*s)-FLW*s/2; }
+function figFit(el){ const top=figTop(el); if(top<6){ const {J}=figJoints(el); const low=Math.max(...Object.values(J).map(p=>p[1])); const k=(low-6)/(low-top); el.s=Math.round((el.s||1)*k*100)/100; const air=FFLOOR-low; figGround(el); el.y-=Math.round(air*k*0.9); } }
+const mir=a=>((180-a)%360+360)%360;
+function figAction(el, v){
+  if(v.startsWith('pose:')){ const P=FIG_POSES[v.slice(5)]; const flip=!!el.flip; el.pose=clone(P.p); el.flip=false; if(flip) figAction(el,'flip'); figGround(el); if(P.air) el.y-=Math.round(0.6*FU*(el.s||1)); figFit(el); return; }
+  if(v==='flip'){ const q=el.pose=Object.assign(figDefault(), el.pose||{}); q.torso=mir(q.torso); q.head=-(q.head||0); q.an=q.an.map(mir); q.af=q.af.map(mir); q.ln=q.ln.map(mir); q.lf=q.lf.map(mir); q.fn=mir(q.fn); q.ff=mir(q.ff); el.flip=!el.flip; return; }
+  if(v==='front'){ el.front=!el.front; return; }
+  if(v==='bigger'||v==='smaller'){ const s0=el.s||1, s1=Math.max(0.5,Math.min(1.6,Math.round((s0+(v==='bigger'?0.1:-0.1))*10)/10)); el.s=s1; figGround(el); return; }
+  if(v==='ground') figGround(el);
+}
+function figPoseIcon(k){ const el={t:'man', x:60, y:0, s:0.2, pose:clone(FIG_POSES[k].p)}; figGround(el); el.y-=FFLOOR-76; if(FIG_POSES[k].air) el.y-=6;
+  const m=figManMarkup(el,'').replace(/stroke-width="[\d.]+"/g,'stroke-width="4"');
+  return `<svg viewBox="0 0 120 80"><line x1="4" y1="78" x2="116" y2="78" stroke="#d9d9d9" stroke-width="2"/>${m}</svg>`; }
+function figRect(el, id, fill, stroke, rx){ return `<g${id}><rect x="${el.x}" y="${el.y}" width="${el.w}" height="${el.h}" rx="${rx}" fill="${fill}" stroke="${stroke}" stroke-width="2"/></g>`; }
+function figLine(el, id, interactive){
+  const g=lineGeom(el), band=el.t==='band', col=band?FBAND:FARROW, sw=band?6:5.3;
+  let ux=el.x2-g.cx, uy=el.y2-g.cy, ul=Math.hypot(ux,uy)||1; ux/=ul; uy/=ul;
+  const hl=24, hw=10, ex=band?el.x2:el.x2-ux*hl*0.7, ey=band?el.y2:el.y2-uy*hl*0.7, bx=el.x2-ux*hl, by=el.y2-uy*hl;
+  const d=`M${f1(el.x1)} ${f1(el.y1)} Q${f1(g.cx)} ${f1(g.cy)} ${f1(ex)} ${f1(ey)}`;
+  let s=`<path d="${d}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round"/>`;
+  if(!band) s+=`<polygon points="${f1(el.x2)},${f1(el.y2)} ${f1(bx-uy*hw)},${f1(by+ux*hw)} ${f1(bx+uy*hw)},${f1(by-ux*hw)}" fill="${col}"/>`;
+  return interactive?`<g${id}><path d="${d}" fill="none" stroke="transparent" stroke-width="20" pointer-events="stroke"/>${s}</g>`:s;
+}
+function figNote(el, id){ const L=String(el.label||'').split('\n'); const y0=el.y-(L.length-1)*11;
+  return `<g${id}><text x="${el.x}" y="${y0}" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-style="italic" fill="#666" stroke="#fff" stroke-width="4" paint-order="stroke">${L.map((t,i)=>`<tspan x="${el.x}" dy="${i?22:6}">${esc(t)}</tspan>`).join('')}</text></g>`; }
+const FIGM={
+  man:(el,id)=>figManMarkup(el,id),
+  farrow:(el,id,i)=>figLine(el,id,i), band:(el,id,i)=>figLine(el,id,i),
+  box:(el,id)=>figRect(el,id,'#dcdcdc','#9a9a9a',2),
+  mat:(el,id)=>figRect(el,id,'#9fb8d6','#6f8fb5',6),
+  post:(el,id)=>figRect(el,id,FPOST,FPOST,2),
+  wall:(el,id)=>`<g${id}><rect x="${el.x}" y="${el.y}" width="${el.w}" height="${el.h}" fill="#e7e4dc"/><line x1="${el.x}" y1="${el.y}" x2="${el.x}" y2="${el.y+el.h}" stroke="${FPOST}" stroke-width="4"/></g>`,
+  note:(el,id)=>figNote(el,id),
+  dumbbell:(el,id)=>`<g${id}><rect x="${el.x-20}" y="${el.y-3}" width="40" height="6" rx="2" fill="#444"/><rect x="${el.x-26}" y="${el.y-12}" width="10" height="24" rx="2" fill="#222"/><rect x="${el.x+16}" y="${el.y-12}" width="10" height="24" rx="2" fill="#222"/></g>`
+};
+const RING='fill="none" stroke="#e07b22" stroke-width="2" stroke-dasharray="5 4" pointer-events="none"';
+const FIGS={
+  man:el=>figSel(el),
+  box:el=>`<rect x="${el.x-5}" y="${el.y-5}" width="${el.w+10}" height="${el.h+10}" rx="5" ${RING}/><circle data-h="resize" cx="${el.x+el.w}" cy="${el.y+el.h}" r="9" fill="#fff" stroke="#e07b22" stroke-width="2.5"/>`,
+  note:el=>{ const L=String(el.label||'').split('\n'), w=Math.max(40,...L.map(t=>t.length*10))+16, h=L.length*22+12; return `<rect x="${el.x-w/2}" y="${el.y-12-(L.length-1)*11}" width="${w}" height="${h}" rx="5" ${RING}/>`; },
+  dumbbell:el=>`<rect x="${el.x-32}" y="${el.y-18}" width="64" height="36" rx="6" ${RING}/>`
+};
+FIGS.mat=FIGS.post=FIGS.wall=FIGS.box;
+const FRMIN={box:[30,20],mat:[60,8],post:[6,40],wall:[10,40],zone:[24,24]};
+function figInit(el,p){
+  if(el.t==='man'){ el.s=1; el.pose=figDefault(); figGround(el); }
+  else if(el.t==='box'){ el.w=130; el.h=90; el.x=p.x-65; el.y=Math.round(FFLOOR-90); }
+  else if(el.t==='mat'){ el.w=300; el.h=12; el.x=p.x-150; el.y=Math.round(FFLOOR-12); }
+  else if(el.t==='post'){ el.w=8; el.h=Math.round(FFLOOR-60); el.x=p.x-4; el.y=60; }
+  else if(el.t==='wall'){ el.w=20; el.h=Math.round(FFLOOR-40); el.x=p.x; el.y=40; }
+  else if(el.t==='note') el.label='Nota';
+}
+function figBg(sc){ return `<rect width="${SW}" height="${SH}" fill="#fff"/><line x1="${(0.8*FU).toFixed(1)}" y1="${FFLOOR.toFixed(1)}" x2="${(17.6*FU).toFixed(1)}" y2="${FFLOOR.toFixed(1)}" stroke="#d9d9d9" stroke-width="3.7"/>`; }
+function figCap(sc){ if(!sc || sc.kind!=='fig') return ''; let o='';
+  if(sc.l1) o+=`<text x="${(0.9*FU).toFixed(1)}" y="${(SH-1.55*FU+8).toFixed(1)}" font-family="Arial,sans-serif" font-size="24" fill="#1f2a44">${esc(sc.l1)}</text>`;
+  if(sc.l2) o+=`<text x="${(0.9*FU).toFixed(1)}" y="${(SH-0.75*FU+7).toFixed(1)}" font-family="Arial,sans-serif" font-size="21.5" fill="#6b7280">${esc(sc.l2)}</text>`;
+  return o; }
+function schemaBg(sc){ return sc && sc.kind==='fig' ? figBg(sc) : courtMarkup(sc?.zones); }
+const FIG_HINT={select:'Tocca un omino e trascina i <b>pallini arancioni</b> per muovere busto, testa, braccia e gambe (i pallini chiari sono il braccio e la gamba dietro). Trascina il corpo per spostarlo. Le pose pronte compaiono quando selezioni l'omino.',
+  line:'Tieni premuto e trascina dal punto di partenza a quello di arrivo; poi, con «Seleziona», trascina il punto centrale per curvare.',
+  place:'Tocca il disegno per inserire l\'elemento. Premi <span class="kbd">Esc</span> per tornare a «Seleziona».'};
+function figHint(ed){ return ed.tool==='select'?FIG_HINT.select:(ed.tool==='farrow'||ed.tool==='band')?FIG_HINT.line:FIG_HINT.place; }
+function figPropsHTML(ed, s){
+  if(!s) return `<h4>Didascalia</h4><label class="f">Riga 1<input type="text" data-cap="l1" value="${esc(ed.schema.l1||'')}" maxlength="70" placeholder="Es. Elastico ancorato dietro"></label>
+    <label class="f">Riga 2<input type="text" data-cap="l2" value="${esc(ed.schema.l2||'')}" maxlength="70" placeholder="Es. Spingi in avanti, ritorno lento"></label>
+    <h4 style="margin-top:8px">Come si usa</h4><div class="muted" style="font-size:12.5px">1. «Omino» e tocca il disegno.<br>2. Scegli una posa pronta, poi ritocca trascinando i pallini.<br>3. Aggiungi frecce, elastici e attrezzi.</div>`;
+  let h=`<h4>${esc(TYPE_NAME[s.t]||'')}</h4>`;
+  if(s.t==='man'){
+    h+=`<div class="fig-poses">${Object.keys(FIG_POSES).map(k=>`<button type="button" data-sact="fig" data-v="pose:${k}" title="${FIG_POSES[k].l}">${figPoseIcon(k)}${FIG_POSES[k].l}</button>`).join('')}</div>
+      <div class="row"><button type="button" class="btn sm" data-sact="fig" data-v="flip">⇆ Gira</button><button type="button" class="btn sm" data-sact="fig" data-v="front">${s.front?'Di lato':'Di fronte'}</button><button type="button" class="btn sm" data-sact="fig" data-v="ground">Appoggia a terra</button></div>
+      <div class="row"><button type="button" class="btn sm" data-sact="fig" data-v="smaller">− Più piccolo</button><button type="button" class="btn sm" data-sact="fig" data-v="bigger">+ Più grande</button></div>`;
+  }
+  if(s.t==='note') h+=`<label class="f">Testo (va a capo con Invio)<textarea data-prop="label" maxlength="80">${esc(s.label||'')}</textarea></label>`;
+  if(s.t==='farrow'||s.t==='band') h+=`<div class="row"><button type="button" class="btn sm" data-sact="straight">Raddrizza</button>${s.t==='farrow'?'<button type="button" class="btn sm" data-sact="reverse">Inverti verso</button>':''}</div>`;
+  h+=`<div class="row"><button type="button" class="btn sm" data-sact="dup">Duplica</button><button type="button" class="btn sm danger" data-sact="del">Elimina</button></div>`;
+  return h;
+}
+const FIG_ICONS={
+  man:`<circle cx="17" cy="4.5" r="3" fill="#111"/><path d="M17 8 V15 M17 10 L12 14 M17 10 L22 13 M17 15 L13 22 M17 15 L21 22" stroke="#111" stroke-width="2.2" stroke-linecap="round" fill="none"/>`,
+  farrow:`<path d="M3 12 L25 12" stroke="#e8692f" stroke-width="3"/><polygon points="32,12 24,7 24,17" fill="#e8692f"/>`,
+  band:`<path d="M4 18 Q17 4 30 18" fill="none" stroke="#2f74d0" stroke-width="3" stroke-linecap="round"/>`,
+  box:`<rect x="6" y="9" width="22" height="12" fill="#dcdcdc" stroke="#9a9a9a" stroke-width="1.3"/>`,
+  mat:`<rect x="3" y="15" width="28" height="5" rx="2" fill="#9fb8d6" stroke="#6f8fb5"/>`,
+  post:`<rect x="15" y="2" width="4" height="20" fill="#b9b6ab"/>`,
+  wall:`<rect x="14" y="2" width="12" height="20" fill="#e7e4dc"/><line x1="14" y1="2" x2="14" y2="22" stroke="#b9b6ab" stroke-width="2"/>`,
+  note:`<text x="17" y="17" text-anchor="middle" font-size="13" font-style="italic" fill="#666" font-family="Arial">abc</text>`,
+  dumbbell:`<rect x="8" y="10.5" width="18" height="3" fill="#444"/><rect x="5" y="6" width="5" height="12" rx="1" fill="#222"/><rect x="24" y="6" width="5" height="12" rx="1" fill="#222"/>`
+};
 function createSchemaEditor(box, schema, onChange){
   box.innerHTML=''; const host=document.createElement('div'); box.appendChild(host);
   const ed = {host, schema, onChange, tool:'select', sel:null, drag:null, undo:[], redo:[], labelSnap:false};
   activeEditor = ed;
   host.innerHTML = `<div class="sed">
     <div class="sed-tools">
-      ${TOOLS.map(t=> t.sep ? `<div class="tool-sep"></div>` : `<button type="button" class="tool" data-tool="${t.k}" title="${t.n}">${toolIcon(t.k)}${t.n}</button>`).join('')}
+      ${(schema.kind==='fig'?FIG_TOOLS:TOOLS).map(t=> t.sep ? `<div class="tool-sep"></div>` : `<button type="button" class="tool" data-tool="${t.k}" title="${t.n}">${toolIcon(t.k)}${t.n}</button>`).join('')}
       <div class="tool-sep"></div>
       <button type="button" class="tool" data-sact="undo" title="Annulla (Ctrl+Z)"><svg viewBox="0 0 34 24"><path d="M10 9 H21 a6 6 0 0 1 0 12 H13" fill="none" stroke="#1f2a44" stroke-width="2.2"/><polygon points="4,9 11,3 11,15" fill="#1f2a44"/></svg>Annulla</button>
       <button type="button" class="tool" data-sact="redo" title="Ripeti (Ctrl+Y)"><svg viewBox="0 0 34 24"><path d="M24 9 H13 a6 6 0 0 0 0 12 H21" fill="none" stroke="#1f2a44" stroke-width="2.2"/><polygon points="30,9 23,3 23,15" fill="#1f2a44"/></svg>Ripeti</button>
-      <button type="button" class="tool" data-sact="zones" title="Mostra o nascondi i numeri delle zone"><svg viewBox="0 0 34 24"><rect x="3" y="3" width="28" height="18" fill="#f4d3a1"/><line x1="17" y1="1" x2="17" y2="23" stroke="#262626" stroke-width="2"/><text x="10" y="16" font-size="10" font-weight="700" text-anchor="middle" fill="#1f2a44" font-family="Arial">4</text><text x="24" y="16" font-size="10" font-weight="700" text-anchor="middle" fill="#1f2a44" font-family="Arial">2</text></svg>Zone</button>
+      <button type="button" class="tool" ${schema.kind==='fig'?'hidden':''} data-sact="zones" title="Mostra o nascondi i numeri delle zone"><svg viewBox="0 0 34 24"><rect x="3" y="3" width="28" height="18" fill="#f4d3a1"/><line x1="17" y1="1" x2="17" y2="23" stroke="#262626" stroke-width="2"/><text x="10" y="16" font-size="10" font-weight="700" text-anchor="middle" fill="#1f2a44" font-family="Arial">4</text><text x="24" y="16" font-size="10" font-weight="700" text-anchor="middle" fill="#1f2a44" font-family="Arial">2</text></svg>Zone</button>
       <button type="button" class="tool" data-sact="clear" title="Svuota il campo"><svg viewBox="0 0 34 24"><path d="M10 6 H24 L22.5 22 H11.5 Z M8 6 H26 M14 3 H20" fill="none" stroke="#b3263a" stroke-width="2"/></svg>Svuota</button>
     </div>
     <div class="sed-main">
@@ -1879,16 +2046,17 @@ function createSchemaEditor(box, schema, onChange){
   ed.render = () => {
     const els = sortedEls(ed.schema.els);
     const s = ed.sel && ed.schema.els.find(e=>e.id===ed.sel);
-    ed.svg.innerHTML = courtMarkup(ed.schema.zones) + els.map(e=>elMarkup(e,true)).join('') + (s?selMarkup(s):'');
+    ed.svg.innerHTML = schemaBg(ed.schema) + els.map(e=>elMarkup(e,true)).join('') + figCap(ed.schema) + (s?selMarkup(s):'');
     ed.svg.classList.toggle('placing', ed.tool!=='select');
     $$('.tool[data-tool]', host).forEach(b=>b.classList.toggle('on', b.dataset.tool===ed.tool));
     $('.tool[data-sact=zones]', host).classList.toggle('on', !!ed.schema.zones);
     $('.tool[data-sact=undo]', host).disabled = !ed.undo.length;
     $('.tool[data-sact=redo]', host).disabled = !ed.redo.length;
-    $('.sed-hint', host).innerHTML = ed.tool==='select' ? HINTS.select : (ed.tool==='ballpath'||ed.tool==='move') ? HINTS.line : HINTS.place;
+    $('.sed-hint', host).innerHTML = ed.schema.kind==='fig' ? figHint(ed) : ed.tool==='select' ? HINTS.select : (ed.tool==='ballpath'||ed.tool==='move') ? HINTS.line : HINTS.place;
   };
   ed.renderProps = () => {
     const s = ed.sel && ed.schema.els.find(e=>e.id===ed.sel);
+    if(ed.schema.kind==='fig'){ ed.props.innerHTML=figPropsHTML(ed, s); return; }
     if(!s){
       ed.props.innerHTML = `<h4>Elemento</h4><div class="muted">Nessun elemento selezionato.</div>
         <h4 style="margin-top:6px">Come si usa</h4>
@@ -1907,7 +2075,7 @@ function createSchemaEditor(box, schema, onChange){
   };
   ed.changed = (props=true) => { ed.render(); if(props) ed.renderProps(); ed.onChange && ed.onChange(); };
   ed.snap = () => { ed.undo.push(clone(ed.schema)); if(ed.undo.length>80) ed.undo.shift(); ed.redo=[]; };
-  ed.restore = (from,to) => { if(!from.length) return; to.push(clone(ed.schema)); const st=from.pop(); ed.schema.els=st.els; ed.schema.zones=st.zones; if(ed.sel && !ed.schema.els.find(e=>e.id===ed.sel)) ed.sel=null; ed.changed(); };
+  ed.restore = (from,to) => { if(!from.length) return; to.push(clone(ed.schema)); const st=from.pop(); ed.schema.els=st.els; ed.schema.zones=st.zones; ed.schema.l1=st.l1; ed.schema.l2=st.l2; if(ed.sel && !ed.schema.els.find(e=>e.id===ed.sel)) ed.sel=null; ed.changed(); };
   ed.setTool = t => { ed.tool=t; if(t!=='select') {} ed.render(); };
   ed.pt = e => { const p=ed.svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; const r=p.matrixTransform(ed.svg.getScreenCTM().inverse()); return {x:Math.max(0,Math.min(SW,Math.round(r.x))), y:Math.max(0,Math.min(SH,Math.round(r.y)))}; };
   ed.nextLabel = () => { const used=new Set(ed.schema.els.filter(e=>e.t==='p1'||e.t==='p2').map(e=>String(e.label))); for(const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') if(!used.has(c)) return c; return '?'; };
@@ -1919,7 +2087,7 @@ function createSchemaEditor(box, schema, onChange){
     const p = ed.pt(e);
     const hEl = e.target.closest('[data-h]'), elG = e.target.closest('[data-id]');
     ed.svg.setPointerCapture(e.pointerId);
-    const isLine = ed.tool==='ballpath'||ed.tool==='move';
+    const isLine = ['ballpath','move','farrow','band'].includes(ed.tool);
     if(hEl && ed.sel){
       ed.snap(); ed.drag={type:'handle', h:hEl.dataset.h, moved:false}; return;
     }
@@ -1944,8 +2112,9 @@ function createSchemaEditor(box, schema, onChange){
     if(el.t==='text') el.label='Testo';
     if(el.t==='bench') el.rot=0;
     if(el.t==='zone'){ el.w=110; el.h=90; el.x=p.x-55; el.y=p.y-45; }
+    figInit(el,p);
     ed.schema.els.push(el); ed.sel=el.id; ed.changed();
-    if(el.t==='text'){ const i=$('[data-prop=label]',ed.props); if(i){ i.focus(); i.select(); } }
+    if(el.t==='text'||el.t==='note'){ const i=$('[data-prop=label]',ed.props); if(i){ i.focus(); i.select(); } }
   });
   ed.svg.addEventListener('pointermove', e => {
     if(!ed.drag) return;
@@ -1959,7 +2128,8 @@ function createSchemaEditor(box, schema, onChange){
       if(d.h==='p1'){ el.x1=p.x; el.y1=p.y; }
       else if(d.h==='p2'){ el.x2=p.x; el.y2=p.y; }
       else if(d.h==='mid'){ const g=lineGeom(el); el.b=Math.round((p.x-g.mx)*g.nx+(p.y-g.my)*g.ny); if(Math.abs(el.b)<6) el.b=0; }
-      else if(d.h==='resize'){ el.w=Math.max(24,p.x-el.x); el.h=Math.max(24,p.y-el.y); }
+      else if(d.h==='resize'){ const mn=FRMIN[el.t]||[24,24]; el.w=Math.max(mn[0],p.x-el.x); el.h=Math.max(mn[1],p.y-el.y); }
+      else if(d.h.startsWith('j:')) figDragJoint(el, d.h.slice(2), p);
     }
     ed.render();
   });
@@ -1991,11 +2161,13 @@ function createSchemaEditor(box, schema, onChange){
       case 'rotate': if(s){ ed.snap(); s.rot = s.rot===90?0:90; ed.changed(); } break;
       case 'straight': if(s){ ed.snap(); s.b=0; ed.changed(); } break;
       case 'reverse': if(s){ ed.snap(); [s.x1,s.y1,s.x2,s.y2]=[s.x2,s.y2,s.x1,s.y1]; s.b=-(s.b||0); ed.changed(); } break;
+      case 'fig': if(s){ ed.snap(); figAction(s, a.dataset.v); ed.changed(); } break;
       case 'linetype': if(s){ ed.snap(); if(s.t==='move'){ s.t='ballpath'; s.num=ed.nextNum(); } else { s.t='move'; delete s.num; } ed.changed(); } break;
     }
   });
   ed.props.addEventListener('focusin', e => { if(e.target.dataset.prop){ ed.snap(); } });
   ed.props.addEventListener('input', e => {
+    if(e.target.dataset.cap){ ed.schema[e.target.dataset.cap]=e.target.value; ed.render(); ed.onChange && ed.onChange(); return; }
     const k=e.target.dataset.prop; if(!k) return;
     const s=ed.schema.els.find(x=>x.id===ed.sel); if(!s) return;
     s[k]=e.target.value; ed.render(); ed.onChange && ed.onChange();
@@ -2287,7 +2459,7 @@ function viewEsercizio(){
 function markDirty(){ ui.dirty=true; const m=$('#dirty-msg'); if(m) m.textContent='Modifiche non salvate'; }
 function mountSchemaBox(){
   const box=$('#schema-box'), d=ui.draft; if(!box) return;
-  if(d.schema){ createSchemaEditor(box, d.schema, markDirty); return; }
+  if(d.schema){ createSchemaEditor(box, d.schema, markDirty); const sw=document.createElement('div'); sw.className='sed-switch'; sw.innerHTML=`<button type="button" class="btn sm" data-action="schema-switch">${d.schema.kind==='fig'?'⇄ Usa il campo da pallavolo':'⇄ Usa gli omini (esercizi fisici)'}</button>`; box.appendChild(sw); return; }
   activeEditor=null;
   if(d.image){
     box.innerHTML=`<div class="schema-img"><img src="${d.image}" alt="Schema">
@@ -2295,13 +2467,14 @@ function mountSchemaBox(){
       <button type="button" class="btn sm" data-action="schema-fit">Ridimensiona</button>
       <button type="button" class="btn sm" data-action="schema-upload">Sostituisci immagine…</button>
       <button type="button" class="btn sm" data-action="schema-paste" title="Oppure premi Ctrl+V">Incolla dagli appunti</button>
-      <button type="button" class="btn sm" data-action="schema-draw">Ridisegna con l'editor</button>
+      <button type="button" class="btn sm" data-action="schema-draw">Ridisegna sul campo</button>
+      <button type="button" class="btn sm" data-action="schema-fig">Ridisegna con gli omini</button>
       <button type="button" class="btn sm danger" data-action="schema-remove">Rimuovi</button></div></div>`;
     return;
   }
   box.innerHTML=`<div class="schema-empty">
     <div style="width:min(420px,100%);opacity:.8">${schemaSVG({els:[]})}</div>
-    <div class="actions"><button type="button" class="btn primary" data-action="schema-draw">Disegna lo schema</button><button type="button" class="btn" data-action="schema-upload">Carica un'immagine…</button><button type="button" class="btn" data-action="schema-paste">Incolla dagli appunti</button></div>
+    <div class="actions">${FIS_FONDS.includes(d.fondamentale)?'<button type="button" class="btn primary" data-action="schema-fig">🏃 Disegna con gli omini</button><button type="button" class="btn" data-action="schema-draw">Disegna sul campo</button>':'<button type="button" class="btn primary" data-action="schema-draw">Disegna sul campo</button><button type="button" class="btn" data-action="schema-fig">🏃 Disegna con gli omini</button>'}<button type="button" class="btn" data-action="schema-upload">Carica un'immagine…</button><button type="button" class="btn" data-action="schema-paste">Incolla dagli appunti</button></div>
     <span class="paste-hint">Puoi anche copiare un'immagine e premere <span class="kbd">Ctrl</span>+<span class="kbd">V</span> su questa pagina.</span>
     <span class="muted" style="font-size:13px">Lo schema è facoltativo.</span></div>`;
 }
@@ -4599,6 +4772,7 @@ const GUIDE=[
 <ul><li><b>Cerca</b> per parola e usa i <b>Filtri</b>: formazione, distretto, intensità, durata, preferiti, mai usati.</li>
 <li><b>★ Preferiti</b>: tocca la stella per ritrovarli subito.</li>
 <li><b>+ Nuovo esercizio</b>: titolo, descrizione, durata, fondamentale e lo schema disegnato (o un'immagine).</li>
+<li>Per gli esercizi fisici scegli <b>🏃 Disegna con gli omini</b>: un disegno senza campo con gli omini stilizzati. Scegli una posa pronta (squat, affondo, plank…), poi muovi busto, braccia e gambe trascinando i pallini arancioni; aggiungi frecce, elastici, gradini, tappetini, pesi e una didascalia.</li>
 <li>Dalla scheda di un esercizio puoi <b>aggiungerlo a una sessione</b>.</li></ul>
 <div class="tip">Se un collega ti manda un file di esercizi (.json), lo carichi da <b>Archivio → Importa</b>.</div>`],
 ['📋','Sessioni di allenamento',`
@@ -4913,6 +5087,10 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'schema-fig': ()=>{ if(ui.draft.image && !confirm('Il disegno sostituirà l\'immagine attuale. Continuare?')) return; ui.draft.image=null;
+    const m={id:newId('s'), t:'man', x:Math.round(SW*0.42), y:0}; figInit(m,{x:m.x,y:0}); ui.draft.schema={kind:'fig', els:[m], l1:'', l2:''}; markDirty(); mountSchemaBox(); },
+  'schema-switch': ()=>{ const d=ui.draft; if(d.schema && d.schema.els.length && !confirm('Il disegno attuale verrà cancellato. Continuare?')) return;
+    if(d.schema && d.schema.kind==='fig') d.schema={els:[],zones:false}; else { const m={id:newId('s'), t:'man', x:Math.round(SW*0.42), y:0}; figInit(m,{x:m.x,y:0}); d.schema={kind:'fig', els:[m], l1:'', l2:''}; } markDirty(); mountSchemaBox(); },
   'lic-activate': async ()=>{ const k=($('#lic-key').value||'').trim(); if(!k){ toast('Incolla la chiave'); return; }
     const r=await licVerify(k); if(!r.ok){ toast(r.err); return; }
     if(r.s && r.s<licToday()){ toast('Questa chiave è scaduta il '+shortDate(r.s)); return; }

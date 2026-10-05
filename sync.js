@@ -161,7 +161,7 @@ const Sync = (() => {
         entries.push({ path: 'img/' + ref, mode: '100644', type: 'blob', sha: b.sha });
       });
       for (const ref of imgs.keys()) if (!referenced.has(ref)) entries.push({ path: 'img/' + ref, mode: '100644', type: 'blob', sha: null });
-      const newDoc = { app: 'schedario-pallavolo', formato: 1, aggiornato: new Date().toISOString(), da: deviceName(), collections: out, tombs, settings: ms };
+      const newDoc = { app: 'schedario-pallavolo', formato: 1, aggiornato: new Date().toISOString(), da: deviceName(), collections: Object.assign({}, doc.collections, out), tombs, settings: ms };
       const blob = await gh('/git/blobs', { method: 'POST', body: { content: b64utf8(JSON.stringify(newDoc)), encoding: 'base64' } });
       entries.push({ path: 'dati.json', mode: '100644', type: 'blob', sha: blob.sha });
       const tree = await gh('/git/trees', { method: 'POST', body: { base_tree: h.tree, tree: entries } });

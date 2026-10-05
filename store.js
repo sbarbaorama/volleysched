@@ -10,12 +10,12 @@
    ================================================================== */
 "use strict";
 const Store = (() => {
-  const DBNAME = 'schedario-pallavolo', VERSION = 1;
-  const COLS = ['exercises', 'sessions', 'athletes', 'matches', 'trainings'];
+  const DBNAME = 'schedario-pallavolo', VERSION = 2;
+  const COLS = ['exercises', 'sessions', 'athletes', 'matches', 'trainings', 'notes'];
   const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo', 'campionati', 'preferiti'];
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^\d{1,2}:\d{2}$/;
   let idb = null;
-  const mem = { exercises: new Map(), sessions: new Map(), athletes: new Map(), matches: new Map(), trainings: new Map() };
+  const mem = { exercises: new Map(), sessions: new Map(), athletes: new Map(), matches: new Map(), trainings: new Map(), notes: new Map() };
   let settings = { values: {}, _mk: {} };
   let tombs = {};          // "collezione:id" -> momento dell'eliminazione
   let meta = {};           // altre informazioni (inizializzato, configurazione sincronizzazione, ...)
@@ -134,6 +134,7 @@ const Store = (() => {
     r.inCasa = ![false, 0, '0', 'false'].includes(m.inCasa);
     r.convocati = (m.convocati || []).filter(Boolean).map(String);
     r.assenti = (m.assenti || []).filter(Boolean).map(String);
+    r.disponibili = (m.disponibili || []).filter(Boolean).map(String);
     r.formazione = (m.formazione && typeof m.formazione === 'object') ? clone(m.formazione) : null;
     r.stats = (m.stats && typeof m.stats === 'object') ? clone(m.stats) : null;
     r.createdAt = (old && old.createdAt) || m.createdAt || Date.now(); r.updatedAt = m.updatedAt || Date.now();
@@ -149,7 +150,13 @@ const Store = (() => {
     return { id: s(t.id), data: d, ora, note: s(t.note), annullato: [true, 1, '1', 'true'].includes(t.annullato), presenze: pres,
       createdAt: (old && old.createdAt) || t.createdAt || Date.now(), updatedAt: t.updatedAt || Date.now() };
   }
-  const NORM = { exercises: normEx, sessions: normSess, athletes: normAt, matches: normMatch, trainings: normTr };
+  function normNote(n, old) {
+    const testo = s(n.testo), titolo = s(n.titolo).trim();
+    if (!titolo && !testo.trim()) throw new Error('La nota è vuota');
+    return { id: s(n.id), titolo, testo, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
+      createdAt: (old && old.createdAt) || n.createdAt || Date.now(), updatedAt: n.updatedAt || Date.now() };
+  }
+  const NORM = { exercises: normEx, sessions: normSess, athletes: normAt, matches: normMatch, trainings: normTr, notes: normNote };
   function prep(c, body) {
     const old = mem[c].get(body.id);
     const r = NORM[c](body, old);
@@ -166,7 +173,8 @@ const Store = (() => {
     const at = [...mem.athletes.values()].sort((a, b) => coll(a.cognome, b.cognome) || coll(a.nome, b.nome));
     const ma = [...mem.matches.values()].sort((a, b) => ((a.data || '') + (a.ora || '')).localeCompare((b.data || '') + (b.ora || '')));
     const tr = [...mem.trainings.values()].sort((a, b) => ((a.data || '') + (a.ora || '')).localeCompare((b.data || '') + (b.ora || '')));
-    return { exercises: ex.map(strip), sessions: se.map(strip), athletes: at.map(strip), matches: ma.map(strip), trainings: tr.map(strip),
+    const no = [...mem.notes.values()].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+    return { exercises: ex.map(strip), sessions: se.map(strip), athletes: at.map(strip), matches: ma.map(strip), trainings: tr.map(strip), notes: no.map(strip),
       settings: getSettings(), info: {} };
   }
   function getSettings() {
@@ -276,6 +284,7 @@ const Store = (() => {
       a => !!(s(a.nome).trim() || s(a.cognome).trim()));
     generic('matches', data.matches, (y, m) => !!m.data && s(y.data) === s(m.data) && lc(y.avversario) === lc(m.avversario), () => true);
     generic('trainings', data.trainings, (y, t) => s(y.data) === s(t.data) && s(y.ora) === s(t.ora), t => DATE_RE.test(s(t.data)));
+    generic('notes', data.notes, (y, n) => s(y.titolo) === s(n.titolo) && s(y.testo) === s(n.testo), n => !!(s(n.titolo).trim() || s(n.testo).trim()));
     // un id messo e poi tolto nella stessa importazione: vale l'ultima operazione
     const finalPuts = new Map(), delSet = new Set();
     for (const [c, id] of dels) delSet.add(c + ':' + id);
@@ -286,7 +295,7 @@ const Store = (() => {
 
   /* ---------------------------------------------------------------- "server" */
   const ROUTES = [[/^\/api\/esercizi\/([\w-]+)$/, 'exercises'], [/^\/api\/sessioni\/([\w-]+)$/, 'sessions'], [/^\/api\/atleti\/([\w-]+)$/, 'athletes'],
-    [/^\/api\/partite\/([\w-]+)$/, 'matches'], [/^\/api\/allenamenti\/([\w-]+)$/, 'trainings']];
+    [/^\/api\/partite\/([\w-]+)$/, 'matches'], [/^\/api\/allenamenti\/([\w-]+)$/, 'trainings'], [/^\/api\/note\/([\w-]+)$/, 'notes']];
   function route(url) { for (const [re, c] of ROUTES) { const m = re.exec(url); if (m) return [c, decodeURIComponent(m[1])]; } return [null, null]; }
   async function api(method, url, body) {
     url = url.split('?')[0];

@@ -897,6 +897,10 @@ a.btn{text-decoration:none;color:inherit}
 /* ---------- PARTITE PER CAMPIONATO ---------- */
 .camp-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
 .camp-bar .chips{flex:1;min-width:0}
+.cb-mob{display:none}.cb-desk{display:contents}
+@media (max-width:760px){ .cb-mob{display:contents} .cb-desk{display:none} .page-head .actions .sl{display:none} }
+.camp-sep{align-self:center;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 2px 0 8px;white-space:nowrap}
+.chip.past:not(.on){opacity:.7;border-style:dashed}
 .hero{background:var(--bar);color:#fff;border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);margin-bottom:18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 18px;align-items:center}
 .hero .cd{grid-row:span 3;text-align:center;min-width:86px;border-right:1px solid rgba(255,255,255,.18);padding-right:16px}
 .hero .cd b{display:block;font-size:40px;line-height:1;font-weight:800}
@@ -941,7 +945,7 @@ a.btn{text-decoration:none;color:inherit}
 .mev.tr.x{text-decoration:line-through}
 .mlegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);margin-top:8px}
 .mlegend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
-@media (max-width:760px){ .mev .tm{display:none} .camp-bar .chips{margin:0;padding-left:0;padding-right:0} .camp-bar .sl{display:none} .mcell{min-height:54px;padding:3px} .mev{font-size:9.5px;padding:0 3px} .mcell .n{font-size:11px} }
+@media (max-width:760px){ .mev .tm{display:none} .camp-bar{justify-content:flex-end} .camp-bar .chips{margin:0;padding-left:0;padding-right:0;flex:1 1 100%} .camp-bar .sl{display:none} .mcell{min-height:54px;padding:3px} .mev{font-size:9.5px;padding:0 3px} .mcell .n{font-size:11px} }
 /* andamento */
 .rec{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
 .rec .k{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:92px;box-shadow:var(--shadow)}
@@ -2492,16 +2496,23 @@ function matchCard(m,isNext,past){
 
 const CAMP_NONE='Senza campionato';
 const campOf=m=>(m.competizione||'').trim()||CAMP_NONE;
+function campDefs(){ try{ const v=JSON.parse(db.settings.campionati||'[]'); return Array.isArray(v)?v.filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):[]; }catch(e){ return []; } }
+function saveCampDefs(L){ db.settings.campionati=JSON.stringify([...new Set(L.map(x=>x.trim()).filter(Boolean))]); persist.settings().catch(saveFail); }
 function campList(){
-  const g={}; db.matches.forEach(m=>{ const c=campOf(m); (g[c]=g[c]||[]).push(m); });
-  return Object.entries(g).map(([name,ms])=>({name, ms, last:ms.reduce((x,m)=>(m.data||'')>x?(m.data||''):x,''), first:ms.reduce((x,m)=>(m.data&&m.data<x)?m.data:x,'9999')}))
-    .sort((a,b)=>b.last.localeCompare(a.last) || a.name.localeCompare(b.name,'it'));
+  const g={}; campDefs().forEach(n=>{ g[n]=[]; }); db.matches.forEach(m=>{ const c=campOf(m); (g[c]=g[c]||[]).push(m); });
+  return Object.entries(g).map(([name,ms])=>{ const fut=ms.filter(m=>!isPlayed(m));
+      return {name, ms, next:fut.reduce((x,m)=>(m.data||'9999')<x?(m.data||'9999'):x,'9999~'), last:ms.reduce((x,m)=>(m.data||'')>x?(m.data||''):x,''), active:fut.length>0 || !ms.length}; })
+    .sort((a,b)=>(b.active-a.active) || (a.active?a.next.localeCompare(b.next):b.last.localeCompare(a.last)) || a.name.localeCompare(b.name,'it'));
 }
 function campSel(){
   const L=campList(); if(ui.camp==='__all') return '__all';
   if(ui.camp && L.some(c=>c.name===ui.camp)) return ui.camp;
-  const t=todayISO(), next=[...db.matches].filter(m=>m.data && m.data>=t).sort((a,b)=>matchDT(a).localeCompare(matchDT(b)))[0];
-  return ui.camp = next ? campOf(next) : (L[0]?L[0].name:'__all');
+  return ui.camp = L[0]?L[0].name:'__all';
+}
+function campOptionsHTML(m){
+  const names=campList().map(c=>c.name).filter(n=>n!==CAMP_NONE), cur=(m.competizione||'').trim();
+  if(cur && !names.includes(cur)) names.unshift(cur);
+  return `<option value="">— nessuno —</option>${names.map(n=>`<option value="${esc(n)}" ${n===cur?'selected':''}>${esc(n)}</option>`).join('')}<option value="__new">＋ Nuovo campionato…</option>`;
 }
 const campScope=()=>{ const c=campSel(); return c==='__all'?db.matches:db.matches.filter(m=>campOf(m)===c); };
 /* risultato: set "casa-ospiti"; con le statistiche in partita si usano i set registrati */
@@ -2569,15 +2580,21 @@ function viewPartite(){
   const next=scope.filter(m=>!isPlayed(m)), past=scope.filter(isPlayed).reverse();
   const hero=next.find(m=>m.data) || null, rest=next.filter(m=>m!==hero), vm=viewMode('match');
   const selName=sel==='__all'?'Tutti i campionati':sel;
+  const campBtns=`<button class="btn sm" data-action="camp-new" title="Crea un nuovo campionato">＋<span class="sl"> Campionato</span></button>
+    ${sel!=='__all'?`<button class="btn sm" data-action="camp-rename" title="${sel===CAMP_NONE?'Assegna un campionato':'Rinomina il campionato'}">✎<span class="sl"> ${sel===CAMP_NONE?'Assegna':'Rinomina'}</span></button>`:''}
+    ${sel!=='__all'&&sel!==CAMP_NONE&&!scope.length?`<button class="btn sm danger" data-action="camp-del" title="Elimina il campionato (è vuoto)">🗑</button>`:''}`;
   return `<section>
   <div class="page-head">
     <div><h1>Partite</h1><p class="muted">${esc(selName)} · ${scope.length} partit${scope.length===1?'a':'e'} · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
-    <div class="actions">${db.matches.length?segMatchHTML():''}<button class="btn" data-action="print-cal">Stampa calendario</button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
+    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
   </div>
-  ${camps.length?`<div class="camp-bar"><div class="chips">${camps.map(c=>`<button class="chip ${sel===c.name?'on':''}" data-action="camp-sel" data-v="${esc(c.name)}">${esc(c.name)} <span>${c.ms.length}</span></button>`).join('')}${camps.length>1?`<button class="chip ${sel==='__all'?'on':''}" data-action="camp-sel" data-v="__all">Tutti <span>${db.matches.length}</span></button>`:''}</div>
-    ${sel!=='__all'?`<button class="btn sm" data-action="camp-rename" title="${sel===CAMP_NONE?'Assegna un campionato':'Rinomina il campionato'}">✎<span class="sl"> ${sel===CAMP_NONE?'Assegna un campionato':'Rinomina'}</span></button>`:''}</div>`:''}
+  <div class="camp-bar"><div class="chips">${(()=>{ const chip=c=>`<button class="chip ${sel===c.name?'on':''} ${c.active?'':'past'}" data-action="camp-sel" data-v="${esc(c.name)}" title="${c.active?(c.ms.length?'In corso':'Nuovo, senza partite'):'Concluso'}">${c.active&&c===camps[0]&&c.ms.length?'● ':''}${esc(c.name)} <span>${c.ms.length}</span></button>`;
+      const act=camps.filter(c=>c.active), old=camps.filter(c=>!c.active);
+      return act.map(chip).join('')+(old.length?`<span class="camp-sep">Conclusi</span>${old.map(chip).join('')}`:'')+(camps.length>1?`<button class="chip ${sel==='__all'?'on':''}" data-action="camp-sel" data-v="__all">Tutti <span>${db.matches.length}</span></button>`:''); })()}</div>
+    <span class="cb-desk">${campBtns}</span></div>
+  ${sel!=='__all'&&sel!==CAMP_NONE&&!scope.length?`<div class="empty">«${esc(sel)}» non ha ancora partite. Aggiungile con «+ Nuova partita»: avranno già questo campionato.</div>`:''}
   ${sel===CAMP_NONE&&scope.length?`<div class="warn">Queste partite non hanno il campo «Campionato». Premi «Assegna un campionato» per raggrupparle (es. «Invernale 2026/27»); le prossime che aggiungi da qui lo avranno già compilato.</div>`:''}
-  ${!db.matches.length?`<div class="empty">Nessuna partita in calendario. Aggiungi la prima con «+ Nuova partita».<br><span style="font-size:13px">Scrivi il nome del campionato (es. «Invernale 2026/27»): le partite si raggruppano da sole. Dopo la prima, usa «Duplica» per le successive.</span></div>`:''}
+  ${!db.matches.length&&!camps.length?`<div class="empty">Nessuna partita in calendario. Crea il campionato con «＋ Campionato» (es. «Invernale 2026/27») e poi aggiungi le partite con «+ Nuova partita».<br><span style="font-size:13px">Dopo la prima partita, usa «Duplica» per le successive.</span></div>`:''}
   ${hero && vm!=='mese'?heroHTML(hero):''}
   ${vm==='mese'?monthHTML(scope):(rest.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>${hero?'Dopo':'Prossime partite'}</h2><span class="muted">${rest.length}</span></div>${vm==='compatta'?matchRowsHTML(rest):`<div class="match-list">${rest.map(m=>matchCard(m,false)).join('')}</div>`}`:'')}
   ${past.length?`<div style="margin-top:22px">${recordHTML(past)}</div>`:''}
@@ -3078,7 +3095,7 @@ function viewPartita(){
       ${f('data','Data','date')}${f('ora','Inizio gara','time')}${f('oraRitrovo','Ritrovo','time')}
       ${f('avversario','Avversario','text','Es. Polisportiva Esempio')}
       <label class="f">Campo<select data-mf="inCasa"><option value="1" ${m.inCasa?'selected':''}>In casa</option><option value="0" ${m.inCasa?'':'selected'}>In trasferta</option></select></label>
-      <label class="f">Campionato<input type="text" data-mf="competizione" list="dl-camp" value="${esc(m.competizione)}" placeholder="Es. Invernale 2026/27"><datalist id="dl-camp">${campList().filter(c=>c.name!==CAMP_NONE).map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist></label>
+      <label class="f">Campionato<select data-mf="competizione">${campOptionsHTML(m)}</select></label>
       ${f('giornata','Giornata','text','Es. 3')}
       ${f('numeroGara','N° gara','text','Es. 1234')}
       ${f('palestra','Palestra','text','Es. Palestra comunale')}
@@ -3405,8 +3422,12 @@ function distSelectHTML(){
    ============================================================ */
 const actions={
   'camp-sel': b=>{ ui.camp=b.dataset.v; ui.cmonth=null; render(); },
+  'camp-new': ()=>{ const v=(prompt('Nome del nuovo campionato (es. Primaverile 2027):')||'').trim(); if(!v) return; if(v===CAMP_NONE||v==='__all'){ alert('Scegli un altro nome.'); return; }
+    if(!campList().some(c=>c.name===v)) saveCampDefs([...campDefs(), v]); ui.camp=v; ui.cmonth=null; render(); toast(`Campionato «${v}» creato`); },
   'camp-rename': ()=>{ const c=campSel(); if(c==='__all') return; const v=(prompt(c===CAMP_NONE?'Nome del campionato per queste partite (es. Invernale 2026/27):':'Nuovo nome del campionato:', c===CAMP_NONE?'':c)||'').trim(); if(!v || v===c) return;
-    const L=db.matches.filter(m=>campOf(m)===c); L.forEach(m=>{ m.competizione=v; m.updatedAt=Date.now(); persist.match(m).catch(saveFail); }); ui.camp=v; render(); toast(`${L.length} partit${L.length===1?'a':'e'} in «${v}»`); },
+    const L=db.matches.filter(m=>campOf(m)===c); L.forEach(m=>{ m.competizione=v; m.updatedAt=Date.now(); persist.match(m).catch(saveFail); });
+    saveCampDefs([...campDefs().filter(x=>x!==c), v]); ui.camp=v; render(); toast(L.length?`${L.length} partit${L.length===1?'a':'e'} in «${v}»`:`Campionato rinominato in «${v}»`); },
+  'camp-del': ()=>{ const c=campSel(); if(db.matches.some(m=>campOf(m)===c)) return; if(!confirm(`Eliminare il campionato «${c}»?`)) return; saveCampDefs(campDefs().filter(x=>x!==c)); ui.camp=null; render(); },
   'cm-prev': ()=>{ const [y,m]=ui.cmonth.split('-').map(Number); const d=new Date(y,m-2,1); ui.cmonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); render(); },
   'cm-next': ()=>{ const [y,m]=ui.cmonth.split('-').map(Number); const d=new Date(y,m,1); ui.cmonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); render(); },
   'cm-today': ()=>{ ui.cmonth=todayISO().slice(0,7); render(); },
@@ -3550,6 +3571,9 @@ document.addEventListener('input', e=>{
   const t=e.target;
   if(t.id==='ex-q'){ ui.f.q=t.value; $('#ex-results').innerHTML=exResults(); return; }
   if(t.id==='at-q'){ ui.af.q=t.value; $('#at-rows').innerHTML=atRows(); return; }
+  if(t.dataset.mf==='competizione' && t.value==='__new'){ const m=getMatch(ui.matchId); if(!m) return; const v=(prompt('Nome del nuovo campionato (es. Primaverile 2027):')||'').trim();
+    if(v && v!==CAMP_NONE){ if(!campList().some(c=>c.name===v)) saveCampDefs([...campDefs(), v]); m.competizione=v; touchMatch(m); refreshMatch(m); }
+    t.innerHTML=campOptionsHTML(m); return; }
   if(t.dataset.mf){ const m=getMatch(ui.matchId); if(!m) return; m[t.dataset.mf] = t.dataset.mf==='inCasa' ? t.value==='1' : t.value; touchMatch(m); refreshMatch(m, t.dataset.mf); return; }
   if(t.closest('#at-form')){ if(t.name==='dataNascita') refreshAtDerived(); return; }
   if(t.id==='pick-q'){ ui.pick.q=t.value; $('#plist').innerHTML=pickListHTML(getSess(ui.sessId)); return; }

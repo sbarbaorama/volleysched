@@ -1628,6 +1628,20 @@ body.locked #nav, body.locked .fab, body.locked .sync-pill{display:none!importan
 .fig-poses button:hover{border-color:var(--accent)}
 .sed-props textarea{width:100%;min-height:56px;font-size:13px}
 
+
+.rhint{margin-top:10px;background:color-mix(in srgb,var(--accent) 9%,var(--surface));border-left:4px solid var(--accent);border-radius:8px;padding:8px 12px;font-size:13.5px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.rhint.ok{border-left-color:#22a05a;background:color-mix(in srgb,#22a05a 8%,var(--surface))}
+.atp-sec{margin-top:14px}
+.atp-sec h3{font-size:15px;margin:0 0 2px}
+.atp-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:6px;margin-top:8px}
+.atp-st div{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--surface)}
+.atp-st span{display:block;font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.atp-st b{font-size:18px}
+.atp-st small{display:block;color:var(--muted);font-size:12px}
+.demo-box{margin-top:12px;border:1px dashed var(--line-2);border-radius:10px;padding:10px 12px;display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;font-size:13.5px}
+#print-area .rf-bar,#print-area .rf-ins li,#print-area .rf-worm,#print-area .rf-kpi div{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#print-area .rf-t{page-break-inside:avoid}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2942,6 +2956,7 @@ function viewImpostazioni(){
 ${syncPanelHTML()}
 ${licPanelHTML()}
 ${lookPanelHTML()}
+${gamePanelHTML()}
   <div class="panel">
     <h2>Copie e scambio con altri allenatori</h2>
     <p style="margin-top:0">Scarica una copia di sicurezza o un file da passare a un altro allenatore, scegliendo tu cosa includere. Con «Importa» carichi un file ricevuto: una tua copia oppure gli esercizi di un collega.</p>
@@ -2949,6 +2964,7 @@ ${lookPanelHTML()}
       <button class="btn" data-action="export">Scarica una copia (.json)…</button>
       <button class="btn" data-action="import">Importa…</button>
     </div>
+    ${demoBoxHTML()}
     <p class="muted" style="font-size:13.5px;margin-bottom:0">${db.exercises.length} eserciz${db.exercises.length===1?'io':'i'} · ${db.sessions.length} session${db.sessions.length===1?'e':'i'} · ${db.athletes.length} atlet${db.athletes.length===1?'a':'i'} · ${db.matches.length} partit${db.matches.length===1?'a':'e'} · ${db.trainings.length} allenament${db.trainings.length===1?'o':'i'}</p>
   </div>
   <div class="panel">
@@ -3099,6 +3115,7 @@ function openExportModal(){
 function exportSelected(){
   const o=ui.exp, sel=o.sel; if(!Object.values(sel).some(Boolean)){ alert('Scegli almeno una voce da esportare.'); return; }
   const st=Store.fullState(); delete st.info;
+  if(sel.athletes && sel.matches && sel.trainings) markBackup();
   const out={exercises:[], sessions:[]};
   if(sel.sessions) out.sessions=st.sessions;
   if(sel.exercises){ const F=favSet(); out.exercises=st.exercises.filter(e=>o.exMode==='fav'?F.has(e.id):o.exMode==='mine'?e.origine!=='catalogo':true); }
@@ -3121,6 +3138,7 @@ function exportSelected(){
 }
 function exportBackup(){
   const st=Store.fullState(); delete st.info; if(st.settings){ delete st.settings.licenza; delete st.settings.provaDal; }
+  markBackup();
   const blob=new Blob([JSON.stringify({app:'schedario-pallavolo', exportedAt:new Date().toISOString(), data:st}, null, 1)], {type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='volleysched-'+todayISO()+'.json';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
@@ -3132,7 +3150,7 @@ function importBackup(){
     const f=inp.files[0]; if(!f) return;
     const r=new FileReader();
     r.onload=()=>{
-      let d; try{ const j=JSON.parse(r.result); d=j.data||j; if(!Array.isArray(d.exercises)||!Array.isArray(d.sessions)) throw 0; }catch(e){ alert('Il file non è un backup valido dello schedario.'); return; }
+      let d; try{ const j=JSON.parse(r.result); d=j.data||j; if(j.demoBase) d=demoShift(d, j.demoBase); if(!Array.isArray(d.exercises)||!Array.isArray(d.sessions)) throw 0; }catch(e){ alert('Il file non è un backup valido dello schedario.'); return; }
       openModal(`<div class="modal-box" style="max-width:560px">
         <div class="modal-head"><div style="flex:1"><h2>Importa</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${d.exercises.length} esercizi, ${d.sessions.length} sessioni${Array.isArray(d.athletes)&&d.athletes.length?', '+d.athletes.length+' atleti':''}${Array.isArray(d.matches)&&d.matches.length?', '+d.matches.length+' partite':''}${Array.isArray(d.trainings)&&d.trainings.length?', '+d.trainings.length+' allenamenti':''} nel file.</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
         <div class="modal-body"><p><b>Unisci</b>: aggiunge allo schedario ciò che manca e aggiorna le schede modificate più di recente nel file.</p><p><b>Sostituisci</b>: cancella esercizi e sessioni attuali e li rimpiazza con il contenuto del file.</p><p class="muted" style="font-size:13.5px">Se l'archivio online è collegato, la versione precedente resta comunque recuperabile dalla cronologia di GitHub.</p></div>
@@ -3765,7 +3783,7 @@ const ORDER=['P','B1','C1','O','B2','C2'];          // zone 1..6 con il palleggi
 const ROTNAME=['P1','P6','P5','P4','P3','P2'];
 const ZXY={1:[240,205],2:[240,70],3:[150,70],4:[60,70],5:[60,205],6:[150,205]};
 function rotAt(k){ let z=[...ORDER]; for(let i=0;i<((k%6)+6)%6;i++) z=[z[1],z[2],z[3],z[4],z[5],z[0]]; return z; }   // z[0]=zona 1 ... z[5]=zona 6
-function getForm(m){ return Object.assign({P:'',O:'',B1:'',B2:'',C1:'',C2:'',L:'',libero:false,start:0}, m.formazione||{}); }
+function getForm(m){ const f=Object.assign({P:'',O:'',B1:'',B2:'',C1:'',C2:'',L:'',libero:false,start:0}, m.formazione||{}); if(noLibero()) f.libero=false; return f; }
 function formOk(f){ return SLOTS.every(([s])=>f[s]); }
 function athShort(id){ const a=getAt(id); if(!a) return '?'; const base=a.cognome||a.nome||'?';
   const same=db.athletes.filter(x=>x.id!==a.id && (x.cognome||x.nome)===base); if(!same.length) return base;
@@ -3844,11 +3862,11 @@ function formPanelHTML(m){
   return `<h2>Formazione 5-1 e rotazioni</h2>
     <div class="fslots">${SLOTS.map(([s,l])=>`<label class="fslot"><span><i style="background:${ROLE_COL[SLOT_ROLE[s]]}"></i>${l}</span><select data-fs="${s}">${formOptions(m,f,s)}</select></label>`).join('')}</div>
     <div class="actions" style="margin-top:12px;gap:8px 16px">
-      <label class="sw" style="min-height:0"><input type="checkbox" data-fs="libero" ${f.libero?'checked':''}> Usiamo il libero</label>
+      ${noLibero()?'':`<label class="sw" style="min-height:0"><input type="checkbox" data-fs="libero" ${f.libero?'checked':''}> Usiamo il libero</label>`}
       ${f.libero?`<label class="fslot" style="flex-direction:row;align-items:center;gap:8px"><span><i style="background:${ROLE_COL.L}"></i>Libero</span><select data-fs="L" style="width:auto">${formOptions(m,f,'L')}</select></label>`:''}
       <label class="fslot" style="flex-direction:row;align-items:center;gap:8px">Si parte in<select data-fs="start" style="width:auto">${ROTNAME.map((n,i)=>`<option value="${i}" ${+f.start===i?'selected':''}>${n} (palleggiatore in zona ${n.slice(1)})</option>`).join('')}</select></label>
     </div>
-    ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}
+    ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}${refStartHint(f)}
     <div class="actions" style="margin-top:12px"><button class="btn" data-action="form-auto">✨ Proponi formazione</button><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
       <button class="btn primary" data-action="live-open">📊 ${st?'Riprendi le statistiche':'Statistiche in partita'}</button>${st?`<button class="btn" data-action="stats-match">Riepilogo statistiche</button>`:''}</div>`;
 }
@@ -3951,7 +3969,7 @@ function viewLive(){
     </div>
   </div></section>`;
 }
-function evLabel(e){ if(e.k==='pt') return 'punto nostro'; if(e.k==='pl') return 'punto loro'; const A=ACTS[e.k]; const b=A&&A.b.find(x=>x[0]===e.v); return A?A.l+': '+(b?b[1].toLowerCase():e.v):e.k; }
+function evLabel(e){ if(e.k==='sub') return 'cambio, esce '+athShort(e.out); if(e.k==='pt') return 'punto nostro'; if(e.k==='pl') return 'punto loro'; const A=ACTS[e.k]; const b=A&&A.b.find(x=>x[0]===e.v); return A?A.l+': '+(b?b[1].toLowerCase():e.v):e.k; }
 function liveEvent(k, v){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
   if(k!=='pt' && k!=='pl' && !ui.livePick){ toast('Tocca prima il giocatore'); return; }
@@ -3984,6 +4002,7 @@ function liveSub(){
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>Fai il cambio</button></div></div>`);
   $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; const outA=getAt(who(s)), inA=getAt(id);
     if(outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Fare il cambio lo stesso?')) return;
+    { const L=S.live; S.ev.push({id:newId('ev'), t:Date.now(), s:L.set, a:id, k:'sub', v:'', out:who(s), slot:s, prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k, subs:Object.assign({}, L.subs)}, noi:L.noi, loro:L.loro}); }
     S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
 }
 /* -------------------- riepiloghi -------------------- */
@@ -4298,7 +4317,7 @@ function openAtProfile(id){
       </div>
       ${a.cellulare?`<div class="atp-contact"><a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span></div>`:''}
       ${a.note?`<div class="atp-note">📝 ${nl2br(a.note)}</div>`:''}
-      ${athleteGamesHTML(id)}${athleteTrendHTML(id)}
+      ${athleteGamesHTML(id)}${athleteSeasonHTML(id)}${athleteTrendHTML(id)}
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Chiudi</button><button class="btn primary" data-action="at-edit" data-id="${a.id}">✎ Modifica</button></div></div>`);
 }
@@ -4505,6 +4524,7 @@ function athleteTrendHTML(aid){
 function homeRem(){
   const td=todayISO(), R=[], dd=iso=>Math.round((parseISO(iso)-parseISO(td))/864e5);
   const sessOn=d=>db.sessions.find(s=>s.data===d);
+  { const bd=backupDue(); if(bd) R.push(`<button data-action="bk-now" title="Ultima copia ${bd} giorni fa">💾 Fai la copia di sicurezza del mese</button>`); }
   const sToday=sessOn(td); if(sToday && sToday.items.length) R.push(`<button class="ora" data-action="tr-start" data-id="${sToday.id}">▶ Avvia l'allenamento di oggi</button>`);
   const nt=nextTrainings()[0]; if(nt && dd(nt.data)<=1 && !sessOn(nt.data)) R.push(`<button data-action="gen-open" data-d="${nt.id}">📝 Prepara la sessione di ${dd(nt.data)===0?'oggi':'domani'}</button>`);
   const nm=[...db.matches].filter(m=>m.data&&m.data>=td).sort((a,b)=>matchDT(a).localeCompare(matchDT(b)))[0];
@@ -4809,6 +4829,7 @@ function refWormHTML({s,i,R}){
 function refPanelHTML(m){
   const has=refHas(m), sc=refScores(m);
   return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Referto</h2>${sc.length?`<span class="muted">${sc.map(x=>x.noi+'-'+x.loro).join(', ')}</span>`:''}<span style="flex:1"></span>
+    ${refCanStats(m)?`<button class="btn sm ${has?'':'primary'}" data-action="ref-fromstats">📊 ${has?'Ricrea':'Crea'} dalle statistiche</button>`:''}${has?'<button class="btn sm" data-action="ref-wa">📤 WhatsApp</button><button class="btn sm" data-action="ref-print">🖨 Stampa</button>':''}
     <button class="btn sm ${has?'':'primary'}" data-action="ref-open">📝 ${has?'Modifica il referto':'Inserisci il referto'}</button></div>
     ${has?refAnalysisHTML(refCollect([m]),{match:true}):`<p class="muted" style="margin:0;font-size:13.5px">Nei giorni dopo la partita ricopi dal referto la formazione di partenza e la sequenza dei punti (basta premere +1 noi / +1 loro). L'app ricostruisce rotazioni e turni di battuta e ti mostra in quali rotazioni fate o subite punti, chi batte meglio, l'effetto dei time-out e i parziali. La formazione avversaria è facoltativa.</p>`}`;
 }
@@ -4833,7 +4854,7 @@ const GUIDE=[
 ['👥','Atleti',`
 <ol><li><b>+ Nuovo atleta</b>: nome, ruolo (e secondo ruolo), sesso, data di nascita, cellulare, numero di maglia.</li>
 <li>Inserisci la <b>scadenza della visita medica</b>: se manca o è scaduta l'atleta viene segnalato con la croce rossa e <b>non viene convocato</b>.</li>
-<li>Toccando un atleta apri il suo <b>profilo</b>: presenze, partite giocate, scadenze e andamento.</li></ol>
+<li>Toccando un atleta apri il suo <b>profilo</b>: presenze, partite giocate, scadenze, andamento e le <b>statistiche della stagione</b> (battuta, ricezione, attacco, muro e punti nei turni di battuta).</li></ol>
 <p>Puoi filtrare per ruolo, ordinare l'elenco e stampare l'elenco della squadra. Chi non fa più parte della squadra si toglie da «iscritto» senza cancellarlo.</p>`],
 ['🏐','Esercizi',`
 <p>L'indice a riquadri divide gli esercizi per fondamentale; dentro trovi le schede con lo schema del campo.</p>
@@ -4858,7 +4879,8 @@ const GUIDE=[
 <li><b>Convocati</b>: <b>✨ Suggerisci</b> propone i convocati (disponibili, presenze, equilibrio tra uomini e donne, visita valida), oppure li scegli tu.</li>
 <li><b>Formazione</b>: <b>✨ Proponi formazione</b> e la rotazione di partenza; puoi stamparla per la panchina.</li>
 <li><b>Invia</b>: messaggio di convocazione per WhatsApp, stampa della convocazione e dell'elenco per l'arbitro.</li></ol>
-<p>Dopo la partita scrivi il risultato (set casa – ospiti, es. 3-1): in <b>Partite</b> trovi l'andamento della stagione.</p>`],
+<p>Dopo la partita scrivi il risultato (set casa – ospiti, es. 3-1): in <b>Partite</b> trovi l'andamento della stagione.</p>
+<p>Se avete inserito qualche referto, nella <b>Formazione</b> l'app vi suggerisce da quale rotazione partire (quella in cui vincete più scambi). Se giocate senza libero, attiva <b>Archivio → Squadra e gioco → Giochiamo senza libero</b>.</p>`],
 ['📊','Statistiche durante la partita',`
 <ol><li>Dalla partita (o dalla home il giorno della gara) premi <b>📊 Statistiche</b>: l'app controlla che convocati e formazione siano pronti.</li>
 <li>Tocchi l'atleta, poi il gesto e il giudizio: <b>++</b> perfetto, <b>+</b> buono, <b>0</b> neutro, <b>−</b> errore.</li>
@@ -4870,7 +4892,8 @@ const GUIDE=[
 <li>La <b>formazione avversaria è facoltativa</b>: bastano i numeri di maglia.</li>
 <li>Segui la sequenza dei punti con <b>+1 Noi</b> / <b>+1 Loro</b>; aggiungi time-out e cambi. Rotazioni e battitori li calcola l'app.</li></ol>
 <div class="tip">Nel referto, nelle caselle dei turni di battuta è scritto il punteggio a cui ogni battitore ha perso la battuta: seguendole in ordine ricostruisci la sequenza dei punti.</div>
-<p>L'analisi mostra cambio palla e break per rotazione (P1…P6), i battitori, l'effetto dei time-out, i parziali subiti e l'andamento di ogni set. In <b>Partite</b> c'è l'analisi di tutta la stagione.</p>`],
+<p>L'analisi mostra cambio palla e break per rotazione (P1…P6), i battitori, l'effetto dei time-out, i parziali subiti e l'andamento di ogni set. In <b>Partite</b> c'è l'analisi di tutta la stagione.</p>
+<p>Se in partita hai usato le <b>statistiche dal vivo</b>, non serve ricopiare niente: nella scheda Referto premi <b>📊 Crea dalle statistiche</b>. L'analisi si può mandare su <b>WhatsApp</b> o <b>stampare</b>.</p>`],
 ['🗒️','Note',`<p>Appunti liberi con titolo, colore ed etichetta; 📌 fissa in cima quelli importanti. Ogni nota si può copiare o mandare su WhatsApp. Sul telefono le trovi dalla home.</p>`],
 ['☁️','Sincronizzare i dati online',`
 <p>Per avere gli stessi dati su telefono, tablet e computer si usa un <b>archivio privato su GitHub</b> (gratuito). Solo tu puoi leggerlo. Si prepara una volta sola, meglio dal computer.</p>
@@ -4897,7 +4920,8 @@ const GUIDE=[
 <ol><li><b>Archivio → Scarica una copia</b>: scegli cosa includere (esercizi, sessioni, atleti, partite, presenze, note, impostazioni). «Tutto» è la copia di sicurezza completa.</li>
 <li>Per passare esercizi a un collega scegli solo <b>Esercizi</b> (tutti, i preferiti o solo quelli creati da te): i dati degli atleti non vengono inclusi.</li>
 <li>Chi riceve il file lo carica con <b>Archivio → Importa</b> e sceglie se aggiungerlo ai suoi dati o sostituirli.</li></ol>
-<div class="tip">Fai una copia completa ogni tanto, anche se usi la sincronizzazione, e tienila in un posto sicuro: contiene dati personali degli atleti.</div>`],
+<div class="tip">Fai una copia completa ogni tanto, anche se usi la sincronizzazione, e tienila in un posto sicuro: contiene dati personali degli atleti. Se passa un mese dall'ultima copia, la home te lo ricorda.</div>
+<p>Se hai importato i <b>dati di prova</b>, in Archivio c'è il pulsante <b>🧹 Togli i dati di prova</b>: toglie atleti, partite, presenze e note di prova e lascia esercizi e sessioni.</p>`],
 ['🔄','Aggiornamenti e problemi',`
 <ul><li>Quando c'è una nuova versione compare la barra «È disponibile una nuova versione» con il pulsante <b>Aggiorna</b>.</li>
 <li>Se qualcosa non si vede bene, chiudi e riapri l'app.</li>
@@ -4981,6 +5005,123 @@ window.addEventListener('popstate', ()=>{
   NAV.back=true; go(view, rest); NAV.back=false;
   navSync();
 });
+
+/* ===== Opzioni della squadra ===== */
+function opz(){ try{ return JSON.parse(db.settings.opzioni||'{}')||{}; }catch(e){ return {}; } }
+function setOpz(k,v){ const o=opz(); o[k]=v; db.settings.opzioni=JSON.stringify(o); persist.settings().catch(saveFail); }
+function noLibero(){ return !!opz().noLibero; }
+function gamePanelHTML(){
+  return `<div class="panel"><h2>Squadra e gioco</h2>
+    <label class="sw" style="min-height:0"><input type="checkbox" data-opt="noLibero" ${noLibero()?'checked':''}> Giochiamo senza libero</label>
+    <p class="muted" style="font-size:13px;margin:6px 0 0">Toglie il libero dalla formazione, dalle rotazioni e dalle statistiche. Puoi riattivarlo quando vuoi.</p></div>`;
+}
+/* ===== Promemoria copia di sicurezza ===== */
+function backupDue(){
+  if(!db.athletes.length && !db.matches.length) return 0;
+  const t=todayISO(); let last=Store.getMeta('ultimaCopia');
+  if(!last){ last=Store.getMeta('primoUso'); if(!last){ Store.setMeta('primoUso', t); return 0; } }
+  const d=Math.round((parseISO(t)-parseISO(last))/864e5); return d>=30?d:0;
+}
+function markBackup(){ Store.setMeta('ultimaCopia', todayISO()); }
+/* ===== Referto dalle statistiche ===== */
+function refCanStats(m){ const S=m.stats; return !!(S && S.ev && S.ev.some(e=>OUR_PT(e)||THEIR_PT(e)) && formOk(getForm(m))); }
+function refFromStats(m){
+  const S=m.stats, f=getForm(m), sets=[]; let subs={};
+  const nS=Math.max(S.sets.length, ...S.ev.map(e=>e.s||1));
+  for(let s=1;s<=nS;s++){
+    const E=S.ev.filter(e=>(e.s||1)===s); if(!E.some(e=>OUR_PT(e)||THEIR_PT(e))) continue;
+    const first=E[0], k0=first.prev&&first.prev.k!=null?+first.prev.k:(+f.start||0), sv0=first.prev?!!first.prev.servo:false;
+    const who=sl=>subs[sl]!==undefined?subs[sl]:f[sl];
+    const set={our:rotAt(k0).map(who), pal:who('P'), opp:null, firstServe:sv0?'noi':'loro', ev:[]};
+    for(const e of E){
+      if(e.k==='sub'){ if(e.out && e.a) set.ev.push('SN|'+e.out+'|'+e.a); if(e.slot) subs[e.slot]=e.a; }
+      else if(OUR_PT(e)) set.ev.push('N'); else if(THEIR_PT(e)) set.ev.push('L');
+    }
+    if(s<=S.sets.length && !refOver(refReplay(set), s-1)) set.ev.push('X');
+    sets.push(set);
+  }
+  return sets.length?{sets, daStatistiche:true}:null;
+}
+/* ===== Statistiche della stagione nel profilo ===== */
+function athleteSeasonHTML(id){
+  const ms=db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.some(e=>e.a===id && e.k!=='sub'));
+  let sv=null; { const L=refCollect(db.matches); if(L.length){ const A=refAnalyze(L); sv=A.srv[id]||null; } }
+  if(!ms.length && !sv) return '';
+  const p={bat:0,ace:0,batE:0,ric:0,ricG:0,ricE:0,att:0,attP:0,attE:0,mur:0,dif:0,err:0,set:0};
+  ms.forEach(m=>{ m.stats.ev.forEach(e=>{ if(e.a!==id) return;
+      if(e.k==='bat'){ p.bat++; if(e.v==='#') p.ace++; if(e.v==='=') p.batE++; }
+      if(e.k==='ric'){ p.ric++; if(e.v==='#'||e.v==='+') p.ricG++; if(e.v==='=') p.ricE++; }
+      if(e.k==='att'){ p.att++; if(e.v==='#') p.attP++; if(e.v==='=') p.attE++; }
+      if(e.k==='mur' && e.v==='#') p.mur++;
+      if(e.k==='dif' && e.v==='+') p.dif++;
+      if(e.k==='err' || (e.k==='dif' && e.v==='=')) p.err++; });
+    const pl=(m.stats.live && m.stats.live.played)||{}; p.set+=Object.values(pl).filter(a=>Array.isArray(a) && a.includes(id)).length; });
+  const pc2=(a,b)=>b?Math.round(a*100/b)+'%':'—', t=(l,v,s)=>`<div><span>${l}</span><b>${v}</b>${s?`<small>${s}</small>`:''}</div>`;
+  const tiles=[];
+  if(ms.length){
+    tiles.push(t('Punti', p.ace+p.attP+p.mur, `${p.attP} attacco · ${p.ace} ace · ${p.mur} muro`));
+    if(p.bat) tiles.push(t('Battuta', pc2(p.bat-p.batE,p.bat), `in campo · ${p.bat} battute · ${p.batE} errori`));
+    if(p.ric) tiles.push(t('Ricezione', pc2(p.ricG,p.ric), `positive · ${p.ric} ricezioni · ${p.ricE} errori`));
+    if(p.att) tiles.push(t('Attacco', pc2(p.attP,p.att), `a punto · eff. ${Math.round((p.attP-p.attE)*100/p.att)}% · ${p.attE} errori`));
+    if(p.dif) tiles.push(t('Difese', p.dif, ''));
+    if(p.err) tiles.push(t('Altri errori', p.err, ''));
+  }
+  if(sv) tiles.push(t('Turni di battuta', (sv.pts/sv.turns).toFixed(1), `punti a turno · ${sv.pts} in ${sv.turns} turni (referti)`));
+  return `<div class="atp-sec"><h3>📊 Statistiche della stagione</h3><div class="muted" style="font-size:12.5px">${ms.length?`${ms.length} partit${ms.length===1?'a':'e'} con le statistiche${p.set?' · '+p.set+' set giocati':''}`:'dai referti'}</div><div class="atp-st">${tiles.join('')}</div></div>`;
+}
+/* ===== Rotazione di partenza suggerita ===== */
+function refStartHint(f){
+  const L=refCollect(db.matches); if(!L.length) return '';
+  const A=refAnalyze(L), nm=new Set(L.map(x=>x.m.id)).size;
+  const rows=Object.entries(A.rot).filter(([k,o])=>/^P[1-6]$/.test(k) && o.rcv+o.sv>=8).map(([k,o])=>({k, p:(o.rcvW+o.svW)/(o.rcv+o.sv)}));
+  if(rows.length<4) return '';
+  rows.sort((a,b)=>b.p-a.p); const best=rows[0], k=ROTNAME.indexOf(best.k), pct=Math.round(best.p*100);
+  if(k<0) return '';
+  if(+f.start===k) return `<div class="rhint ok">✓ Partite già dalla vostra rotazione migliore secondo i referti: <b>${best.k}</b> (${pct}% di scambi vinti).</div>`;
+  return `<div class="rhint"><span>💡 Dai referti (${nm} partit${nm===1?'a':'e'}) la vostra rotazione migliore è <b>${best.k}</b>: ci vincete il ${pct}% degli scambi. Partendo da lì la giocate più spesso.</span><button class="btn sm" data-action="rot-best" data-k="${k}">Parti in ${best.k}</button></div>`;
+}
+/* ===== Condividi e stampa l'analisi ===== */
+function refShareText(m){
+  const L=refCollect([m]), A=refAnalyze(L), sc=refScores(m), I=refInsights(A,true), q=(a,b)=>b?Math.round(a*100/b)+'%':'—';
+  const T=[`🏐 *Analisi della partita*`, matchTitle(m)+(m.data?' · '+shortDate(m.data):'')];
+  if(sc.length) T.push('Set: '+sc.map(x=>x.noi+'-'+x.loro).join(', '));
+  T.push(`Cambio palla ${q(A.so[0],A.so[1])} · Break ${q(A.br[0],A.br[1])} · Punti ${A.pf}-${A.ps}`);
+  T.push('', '*Rotazioni* (cambio palla / break)');
+  refRotOrder(Object.keys(A.rot)).forEach(k=>{ const o=A.rot[k]; T.push(`${k}: ${q(o.rcvW,o.rcv)} / ${q(o.svW,o.sv)}`); });
+  const sv=Object.entries(A.srv).filter(([i,x])=>x.turns>=2).sort((a,b)=>b[1].pts/b[1].turns-a[1].pts/a[1].turns).slice(0,3);
+  if(sv.length){ T.push('', '*Battitori*'); sv.forEach(([i,x])=>T.push(`${refName(i)}: ${x.pts} punti in ${x.turns} turni`)); }
+  if(I.length){ T.push('', '*In breve*'); I.forEach(([c,t])=>T.push('• '+t.replace(/<[^>]+>/g,''))); }
+  return T.join('\n');
+}
+function refPrint(m){
+  const sc=refScores(m);
+  doPrint(`<div style="font-family:Arial,sans-serif"><h1 style="font-size:17pt;margin:0 0 2pt">Analisi del referto</h1>
+    <p style="margin:0 0 8pt;color:#555">${esc(matchTitle(m))}${m.data?' · '+esc(cap(fmtDate(m.data))):''}${sc.length?' · set '+sc.map(x=>x.noi+'-'+x.loro).join(', '):''}</p>
+    ${refAnalysisHTML(refCollect([m]),{match:true})}</div>`, 'Analisi referto '+(m.avversario||''));
+}
+/* ===== Dati di prova ===== */
+function demoShift(d, base){
+  const n=Math.round((parseISO(todayISO())-parseISO(base))/864e5); if(!n) return d;
+  const sh=iso=>{ if(!iso || !/^\d{4}-\d\d-\d\d$/.test(iso)) return iso; const x=parseISO(iso); x.setDate(x.getDate()+n); return toISO(x); };
+  (d.matches||[]).forEach(m=>{ m.data=sh(m.data); });
+  (d.trainings||[]).forEach(t=>{ t.data=sh(t.data); });
+  (d.sessions||[]).forEach(s=>{ s.data=sh(s.data); });
+  (d.athletes||[]).forEach(a=>{ a.scadenzaVisita=sh(a.scadenzaVisita); a.scadenzaDocumento=sh(a.scadenzaDocumento); a.dataNascita=sh(a.dataNascita); });
+  return d;
+}
+const isDemo=x=>String(x&&x.id||'').startsWith('demo-');
+function demoCount(){ return db.athletes.filter(isDemo).length+db.matches.filter(isDemo).length+db.trainings.filter(isDemo).length+(db.notes||[]).filter(isDemo).length; }
+function demoBoxHTML(){ const n=demoCount(); if(!n) return '';
+  return `<div class="demo-box"><span style="flex:1;min-width:200px">🧪 Ci sono <b>dati di prova</b> (atleti, partite, presenze e note). Quando vuoi partire con la tua squadra puoi toglierli: esercizi e sessioni di prova restano.</span><button class="btn sm" data-action="demo-clear">🧹 Togli i dati di prova</button></div>`; }
+async function demoClear(){
+  if(!confirm('Togliere atleti, partite, presenze e note di prova? Esercizi e sessioni restano.')) return;
+  const jobs=[...db.athletes.filter(isDemo).map(x=>'/api/atleti/'+x.id), ...db.matches.filter(isDemo).map(x=>'/api/partite/'+x.id),
+    ...db.trainings.filter(isDemo).map(x=>'/api/allenamenti/'+x.id), ...(db.notes||[]).filter(isDemo).map(x=>'/api/note/'+x.id)];
+  try{ for(const u of jobs) await api('DELETE', u);
+    if(db.settings.squadra==='Volley Demo') db.settings.squadra='';
+    db.settings.campionati=JSON.stringify(campDefs().filter(c=>!/\(demo\)/.test(c)));
+    await persist.settings(); await loadState(); render(); toast('Dati di prova tolti'); }catch(e){ saveFail(e); }
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -5174,6 +5315,13 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'bk-now': ()=>{ exportBackup(); toast('Copia scaricata: tienila in un posto sicuro'); setTimeout(()=>{ if(ui.view==='home') render(); }, 300); },
+  'ref-fromstats': ()=>{ const m=getMatch(ui.matchId); if(refHas(m) && !confirm('Il referto attuale verrà sostituito con quello ricavato dalle statistiche. Continuare?')) return;
+    const r=refFromStats(m); if(!r){ toast('Nelle statistiche non ci sono punti'); return; } m.referto=r; touchMatch(m); ui.mTab='ref'; render(); toast('Referto creato dalle statistiche: '+r.sets.length+' set'); },
+  'ref-wa': ()=>{ const m=getMatch(ui.matchId); window.open('https://wa.me/?text='+encodeURIComponent(refShareText(m)),'_blank'); },
+  'ref-print': ()=>refPrint(getMatch(ui.matchId)),
+  'rot-best': b=>{ const m=getMatch(ui.matchId), f=getForm(m); f.start=+b.dataset.k; m.formazione=f; touchMatch(m); const fp=$('#form-panel'); if(fp) fp.innerHTML=formPanelHTML(m); toast('Si parte in '+ROTNAME[f.start]); },
+  'demo-clear': ()=>demoClear(),
   'schema-fig': ()=>{ if(ui.draft.image && !confirm('Il disegno sostituirà l\'immagine attuale. Continuare?')) return; ui.draft.image=null;
     const m={id:newId('s'), t:'man', x:Math.round(SW*0.42), y:0}; figInit(m,{x:m.x,y:0}); ui.draft.schema={kind:'fig', els:[m], l1:'', l2:''}; markDirty(); mountSchemaBox(); },
   'schema-switch': ()=>{ const d=ui.draft; if(d.schema && d.schema.els.length && !confirm('Il disegno attuale verrà cancellato. Continuare?')) return;
@@ -5428,6 +5576,7 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.opt){ setOpz(e.target.dataset.opt, e.target.checked); toast(e.target.checked?'Fatto: niente libero':'Libero riattivato'); return; }
   if(e.target.dataset.rf!==undefined){ refFormChange(e.target); return; }
   if(e.target.dataset.qm!==undefined){ qmCount(); return; }
   if(e.target.dataset.exp){ ui.exp.sel[e.target.dataset.exp]=e.target.checked; return; }

@@ -1087,6 +1087,13 @@ a.btn{text-decoration:none;color:inherit}
 .ftile b{display:block;font-size:16.5px;line-height:1.2}
 .ftile small{color:var(--muted);font-size:13px;font-weight:600}
 .ftile.spec{border-left-style:dashed}
+.ftiles.cmp{grid-template-columns:1fr;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.ftiles.cmp .ftile{flex-direction:row;align-items:center;border:0;border-left:5px solid var(--c);border-top:1px solid var(--line);border-radius:0;box-shadow:none;padding:9px 14px;gap:12px}
+.ftiles.cmp .ftile:first-child{border-top:0}
+.ftiles.cmp .ftile .exi{width:36px;height:36px;padding:7px;border-radius:10px}
+.ftiles.cmp .ftile>span:last-child{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex:1;min-width:0}
+.ftiles.cmp .ftile b{font-size:15.5px}
+.ftiles.cmp .ftile.spec{border-left-style:dashed}
 .ftiles-sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 8px}
 /* testata del fondamentale */
 .fhead{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
@@ -1295,6 +1302,21 @@ details.panel.acc > summary::before{display:none}
 :root[data-theme=dark] .mtabs button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 :root[data-theme=dark] .atp-t.ok b{color:#97e4b8}:root[data-theme=dark] .atp-t.warn b{color:#f3ca72}:root[data-theme=dark] .atp-t.bad b{color:#f4a0ab}
 }
+
+
+.exp-list{display:flex;flex-direction:column;gap:8px;margin:6px 0 12px}
+.exp-pre .btn{white-space:normal;text-align:left}
+.exp-it{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;background:var(--surface)}
+.exp-it:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 7%,var(--surface))}
+.exp-it input{width:20px;height:20px;accent-color:var(--accent)}
+.exp-it b{font-size:15px}
+.exp-it small{grid-column:2/-1;color:var(--muted);font-size:12.5px}
+.exp-it .n{font-size:13px;color:var(--ink-2);font-weight:700;white-space:nowrap}
+.exp-it .priv{color:#b3263a;font-weight:700}
+.exp-sub{grid-column:2/-1;display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.exp-sub label{display:inline-flex;align-items:center;gap:5px;font-size:13px;border:1px solid var(--line-2);border-radius:999px;padding:3px 10px;cursor:pointer}
+.exp-sub input{width:15px;height:15px}
+.exp-pre{display:flex;flex-wrap:wrap;gap:8px}
 
 #print-area{display:none}
 
@@ -1876,9 +1898,10 @@ function exIndexHTML(){
   const fonds=fondOrder(db.exercises), F=favSet(), U=exUsage();
   const cnt=f=>db.exercises.filter(e=>(e.fondamentale||'Senza categoria')===f).length;
   const nFav=db.exercises.filter(e=>F.has(e.id)).length, nMai=db.exercises.filter(e=>!U.has(e.id)).length;
-  return `<div class="ftiles">${fonds.map(f=>`<button class="ftile" style="--c:${fondColor(f==='Senza categoria'?'':f)}" data-action="f-fond" data-v="${esc(f)}"><span class="exi">${fondIcon(f)}</span><span><b>${esc(f)}</b><small>${cnt(f)} eserciz${cnt(f)===1?'io':'i'}</small></span></button>`).join('')}</div>
+  const cmp=viewMode('ex')==='compatta'?' cmp':'';
+  return `<div class="ftiles${cmp}">${fonds.map(f=>`<button class="ftile" style="--c:${fondColor(f==='Senza categoria'?'':f)}" data-action="f-fond" data-v="${esc(f)}"><span class="exi">${fondIcon(f)}</span><span><b>${esc(f)}</b><small>${cnt(f)} eserciz${cnt(f)===1?'io':'i'}</small></span></button>`).join('')}</div>
     <div class="ftiles-sec">Scorciatoie</div>
-    <div class="ftiles">
+    <div class="ftiles${cmp}">
       <button class="ftile spec" style="--c:#f0a500" data-action="exf-short" data-k="fav"><span class="exi">${EXI.starf}</span><span><b>Preferiti</b><small>${nFav} eserciz${nFav===1?'io':'i'}</small></span></button>
       <button class="ftile spec" style="--c:#e07b22" data-action="exf-short" data-k="mai"><span class="exi">${EXI.new}</span><span><b>Mai usati</b><small>${nMai} da provare</small></span></button>
       <button class="ftile spec" style="--c:#6b7280" data-action="f-fond" data-v="__all"><span class="exi">${EXI.all}</span><span><b>Tutti</b><small>${db.exercises.length} esercizi</small></span></button>
@@ -2436,7 +2459,7 @@ ${lookPanelHTML()}
     <h2>Copie e scambio con altri allenatori</h2>
     <p style="margin-top:0">Scarica tutto in un file JSON (da tenere come copia o da passare a un altro allenatore), oppure importa un file ricevuto. Qui si importa anche il file esportato dal vecchio programma per il computer.</p>
     <div class="actions">
-      <button class="btn" data-action="export">Scarica una copia (.json)</button>
+      <button class="btn" data-action="export">Scarica una copia (.json)…</button>
       <button class="btn" data-action="import">Importa…</button>
     </div>
     <p class="muted" style="font-size:13.5px;margin-bottom:0">${db.exercises.length} eserciz${db.exercises.length===1?'io':'i'} · ${db.sessions.length} session${db.sessions.length===1?'e':'i'} · ${db.athletes.length} atlet${db.athletes.length===1?'a':'i'} · ${db.matches.length} partit${db.matches.length===1?'a':'e'} · ${db.trainings.length} allenament${db.trainings.length===1?'o':'i'}</p>
@@ -2560,6 +2583,51 @@ function viewBenvenuto(){
   <button type="button" class="choice" data-action="import"><span class="ic">📥</span><span><b>Importo il file esportato dal vecchio programma</b><span class="muted" style="font-size:13.5px">Il file .json con esercizi, sessioni, atleti, partite e presenze.</span></span></button>
   <button type="button" class="choice" data-action="w-empty"><span class="ic">✏️</span><span><b>Parto da zero</b><span class="muted" style="font-size:13.5px">Schedario vuoto: gli esercizi li inserisci tu, o li importi più avanti.</span></span></button>
   </section>`;
+}
+
+const EXP_ITEMS=[
+  ['exercises','🏐 Esercizi','Le schede degli esercizi con schemi e immagini.',false],
+  ['sessions','📋 Sessioni di allenamento','I programmi degli allenamenti (con gli esercizi che usano).',false],
+  ['athletes','👥 Atleti','Nomi, telefoni, date di nascita, visite mediche e documenti.',true],
+  ['matches','📅 Partite e convocazioni','Calendario, convocati, assenti, formazioni e statistiche.',true],
+  ['trainings','✅ Presenze','Calendario degli allenamenti e presenze di ogni atleta.',true],
+  ['settings','⚙️ Impostazioni','Nome della squadra, allenatore, note di stampa, colori e logo.',false],
+];
+function openExportModal(){
+  const o=ui.exp=ui.exp||{sel:{exercises:true,sessions:true}, exMode:'all'};
+  const cnt={exercises:db.exercises.length, sessions:db.sessions.length, athletes:db.athletes.length, matches:db.matches.length, trainings:db.trainings.length, settings:''};
+  const nFav=favSet().size;
+  openModal(`<div class="modal-box" style="max-width:620px">
+    <div class="modal-head"><div style="flex:1"><h2>Scarica una copia</h2><div class="muted" style="font-size:13px;margin-top:4px">Scegli cosa mettere nel file. Le voci in rosso contengono dati personali degli atleti.</div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    <div class="modal-body">
+      <div class="exp-pre"><button class="btn sm" data-action="exp-pre" data-v="coach">Solo esercizi e sessioni (per un altro allenatore)</button><button class="btn sm" data-action="exp-pre" data-v="all">Tutto (copia di sicurezza)</button></div>
+      <div class="exp-list">${EXP_ITEMS.map(([k,l,d,p])=>`<div class="exp-it"><input type="checkbox" id="exp-${k}" data-exp="${k}" ${o.sel[k]?'checked':''}><label for="exp-${k}" style="cursor:pointer"><b>${l}</b></label><span class="n">${cnt[k]!==''?cnt[k]:''}</span><small>${d}${p?' <span class="priv">Dati personali.</span>':''}</small>
+        ${k==='exercises'?`<div class="exp-sub">${[['all','Tutti'],['mine','Solo quelli creati da me'],['fav','Solo i preferiti ('+nFav+')']].map(([v,t])=>`<label><input type="radio" name="exp-ex" value="${v}" ${o.exMode===v?'checked':''}>${t}</label>`).join('')}</div>`:''}</div>`).join('')}</div>
+      <p class="muted" style="font-size:12.5px;margin:0">Se esporti le sessioni, gli esercizi che usano vengono inclusi comunque, così l'altro allenatore le vede complete. Il codice di accesso a GitHub non viene mai esportato.</p>
+    </div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="exp-go">Scarica il file</button></div></div>`);
+}
+function exportSelected(){
+  const o=ui.exp, sel=o.sel; if(!Object.values(sel).some(Boolean)){ alert('Scegli almeno una voce da esportare.'); return; }
+  const st=Store.fullState(); delete st.info;
+  const out={exercises:[], sessions:[]};
+  if(sel.sessions) out.sessions=st.sessions;
+  if(sel.exercises){ const F=favSet(); out.exercises=st.exercises.filter(e=>o.exMode==='fav'?F.has(e.id):o.exMode==='mine'?e.origine!=='catalogo':true); }
+  if(sel.sessions){ const have=new Set(out.exercises.map(e=>e.id)), need=new Set(out.sessions.flatMap(s=>s.items.filter(i=>i.type==='ex').map(i=>i.exId)));
+    st.exercises.forEach(e=>{ if(need.has(e.id) && !have.has(e.id)) out.exercises.push(e); }); }
+  if(sel.athletes) out.athletes=st.athletes;
+  if(sel.matches) out.matches=sel.athletes?st.matches:st.matches.map(m=>Object.assign({}, m, {convocati:[], assenti:[], formazione:null, stats:null}));
+  if(sel.trainings) out.trainings=sel.athletes?st.trainings:st.trainings.map(t=>Object.assign({}, t, {presenze:{}}));
+  if(sel.settings){ const s=Object.assign({}, st.settings); delete s.preferiti; out.settings=s; }
+  if(!out.exercises.length && !out.sessions.length && !out.athletes && !out.matches && !out.trainings && !out.settings){ alert('Con queste scelte il file sarebbe vuoto (per esempio non hai esercizi preferiti).'); return; }
+  const all=EXP_ITEMS.every(([k])=>sel[k]) && o.exMode==='all';
+  const name=all?'volleysched-completo-':(Object.keys(sel).filter(k=>sel[k]).length===1&&sel.exercises?'volleysched-esercizi-':'volleysched-');
+  const blob=new Blob([JSON.stringify({app:'schedario-pallavolo', exportedAt:new Date().toISOString(), contenuto:Object.keys(sel).filter(k=>sel[k]), data:out}, null, 1)], {type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name+todayISO()+'.json';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  closeModal();
+  const parts=[out.exercises.length?out.exercises.length+' esercizi':'', out.sessions.length?out.sessions.length+' sessioni':'', out.athletes?out.athletes.length+' atleti':'', out.matches?out.matches.length+' partite':'', out.trainings?out.trainings.length+' allenamenti':''].filter(Boolean);
+  toast('Scaricato: '+(parts.join(', ')||'impostazioni'));
 }
 function exportBackup(){
   const st=Store.fullState(); delete st.info;
@@ -4093,7 +4161,9 @@ const actions={
   'it-down': b=>moveItem(b.dataset.uid,1),
   'it-del': b=>{ const s=getSess(ui.sessId); s.items=s.items.filter(i=>i.uid!==b.dataset.uid); touchSess(s,'items'); },
   'p-fond': b=>{ ui.pick.fond=b.dataset.v; $$('[data-action=p-fond]').forEach(c=>c.classList.toggle('on',c.dataset.v===ui.pick.fond)); $('#plist').innerHTML=pickListHTML(getSess(ui.sessId)); },
-  'export': ()=>exportBackup(),
+  'export': ()=>openExportModal(),
+  'exp-pre': b=>{ const v=b.dataset.v; ui.exp.sel = v==='all' ? Object.fromEntries(EXP_ITEMS.map(([k])=>[k,true])) : {exercises:true, sessions:true}; ui.exp.exMode='all'; openExportModal(); },
+  'exp-go': ()=>exportSelected(),
   'import': ()=>importBackup(),
   'reset-note': ()=>{ if(!confirm('Sostituire le note generali con il testo predefinito?')) return; db.settings.noteGenerali=DEFAULT_NOTE; persist.settings().catch(saveFail); render(); },
   'sync-connect': ()=>syncConnect(false),
@@ -4148,6 +4218,8 @@ document.addEventListener('input', e=>{
   if(t.dataset.set){ db.settings[t.dataset.set]=t.value; if(t.dataset.set==='colore'||t.dataset.set==='accento') applyBrand(); clearTimeout(window._setT); window._setT=setTimeout(()=>{ persist.settings().then(()=>{ const i=$('#set-saved'); if(i){ i.textContent='✓ Salvato'; setTimeout(()=>i.textContent='',1500);} }).catch(saveFail); },400); }
 });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.exp){ ui.exp.sel[e.target.dataset.exp]=e.target.checked; return; }
+  if(e.target.name==='exp-ex'){ ui.exp.exMode=e.target.value; return; }
   const t=e.target;
   if(t.id==='ex-form'){ ui.f.form=t.value; refreshExList(); }
   if(t.id==='ex-dist'){ ui.f.dist=t.value; refreshExList(); }

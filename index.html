@@ -2382,7 +2382,8 @@ function byNumber(a,b){
 function convocati(m){ const ids=new Set(m.convocati||[]); return db.athletes.filter(a=>ids.has(a.id)).sort(byNumber); }
 function convWarn(a,m,nums){
   const ref=m.data||todayISO(), w=[];
-  if(a.scadenzaVisita && a.scadenzaVisita<ref) w.push('visita medica scaduta');
+  if(!a.scadenzaVisita) w.push('visita medica mancante');
+  else if(a.scadenzaVisita<ref) w.push('visita medica scaduta');
   if(a.scadenzaDocumento && a.scadenzaDocumento<ref) w.push('documento scaduto');
   const st=absStats(a.id, m.data||'9999-12-31'); if(st.n && st.ass>=3) w.push(`assente a ${st.ass} degli ultimi ${st.n} allenamenti`);
   if(!a.numeroMaglia) w.push('manca il numero di maglia');
@@ -2447,7 +2448,7 @@ function suggestCandidates(m, o){
   for(const a of db.athletes){
     if(!a.iscritto){ excl.push({a, why:'non iscritto'}); continue; }
     if((m.assenti||[]).includes(a.id)){ excl.push({a, why:'assente per impegni personali'}); continue; }
-    if(o.noVisita && a.scadenzaVisita && a.scadenzaVisita<(m.data||todayISO())){ excl.push({a, why:'visita medica scaduta'}); continue; }
+    if(!visitaOk(a,m)){ excl.push({a, why:visitaWhy(a)}); continue; }
     const st=absStats(a.id, ref), pres=st.n-st.ass;
     out.push({a, st, pres, played:convCount(a.id, m.data, m.id), sp:seasonPct(a.id)??-1});
   }
@@ -2510,7 +2511,7 @@ function openSuggest(){
       <div class="grid g3" style="margin-bottom:10px">
         <label class="f">Uomini<input type="number" id="sg-m" min="0" max="20" value="${o.men}"></label>
         <label class="f">Donne<input type="number" id="sg-w" min="0" max="20" value="${o.women}"></label>
-        <label class="sw" style="align-self:end"><input type="checkbox" id="sg-vis" ${o.noVisita?'checked':''}> Escludi chi ha la visita scaduta</label>
+        <span class="muted" style="align-self:end;font-size:13px">🩺 Sono esclusi in automatico gli assenti e chi non ha la visita medica valida per la data della partita.</span>
       </div>
       <div id="sg-quota" class="${o.mode==='ruoli'?'':'hidden'}" style="margin-bottom:12px"><div class="muted" style="font-size:13px;margin-bottom:6px">Quanti per ruolo (5-1):</div>
         <div class="daypick">${roles.map(r=>`<label class="dayopt on" style="min-width:120px"><span style="font-size:13px;font-weight:700">${esc(r)}</span><input type="number" min="0" max="12" data-quota="${esc(r)}" value="${o.quota[r]}" style="width:70px"></label>`).join('')}</div>
@@ -2854,6 +2855,8 @@ function seasonStatsHTML(){
 document.addEventListener('toggle', e=>{ if(e.target.id==='stats-sum') ui.ssOpen=e.target.open; }, true);
 
 const absentOf=m=>new Set(m.assenti||[]);
+const visitaOk=(a,m)=>!!a.scadenzaVisita && a.scadenzaVisita>=(m.data||todayISO());
+const visitaWhy=a=>a.scadenzaVisita?'visita medica scaduta':'visita medica mancante';
 function absPanelHTML(m){
   const A=absentOf(m), L=db.athletes.filter(a=>a.iscritto || A.has(a.id)).sort((x,y)=>(x.cognome||'').localeCompare(y.cognome||'','it')||(x.nome||'').localeCompare(y.nome||'','it'));
   return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px"><h2 style="margin:0">Assenti per impegni personali</h2><span class="muted" id="abs-count">${A.size?`${A.size} assent${A.size===1?'e':'i'}`:'nessuno'}</span></div>
@@ -2899,7 +2902,7 @@ function convTable(m){
     return `<tr class="${on?'sel':''} ${a.iscritto?'':'off'} ${ab?'abs':''}">
       <td style="width:30px"><input type="checkbox" id="cv-${a.id}" data-conv="${a.id}" ${on?'checked':''}></td>
       <td class="num">${esc(a.numeroMaglia)||'–'}</td>
-      <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${ab?'<span class="abs-tag">assente</span>':''}${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
+      <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${ab?'<span class="abs-tag">assente</span>':''}${(a.iscritto && !visitaOk(a,m))?`<span class="abs-tag" style="background:#8a1c2c">${a.scadenzaVisita?'visita scaduta':'senza visita'}</span>`:''}${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
       <td class="muted">${esc(roleText(a))}${a.sesso?' · '+(isF(a)?'D':'U'):''}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
 }
 function convCountText(m){ const L=convocati(m), c=L.length, u=L.filter(isM).length, d=L.filter(isF).length; return `${c} convocat${c===1?'o':'i'}`+(c?` · ${u} U · ${d} D`:'')+(c && (u!==d)?' ⚠':''); }
@@ -3292,7 +3295,7 @@ const actions={
   'del-match': ()=>{ const m=getMatch(ui.matchId); if(!m || !confirm(`Eliminare la partita «${matchTitle(m)}»?`)) return; clearTimeout(touchMatch._t);
     api('DELETE','/api/partite/'+encodeURIComponent(m.id)).then(()=>{ db.matches=db.matches.filter(x=>x.id!==m.id); go('partite'); toast('Partita eliminata'); }).catch(saveFail); },
   'abs-toggle': b=>toggleAbsent(b.dataset.id),
-  'conv-all': ()=>{ const m=getMatch(ui.matchId); const A=new Set(m.assenti||[]); m.convocati=db.athletes.filter(a=>a.iscritto && !A.has(a.id)).map(a=>a.id); if(A.size) toast(`Esclusi ${A.size} assent${A.size===1?'e':'i'}`); touchMatch(m); refreshMatch(m,'conv'); },
+  'conv-all': ()=>{ const m=getMatch(ui.matchId); const A=new Set(m.assenti||[]); m.convocati=db.athletes.filter(a=>a.iscritto && !A.has(a.id) && visitaOk(a,m)).map(a=>a.id); { const nv=db.athletes.filter(a=>a.iscritto && !A.has(a.id) && !visitaOk(a,m)).length; const p=[A.size?`${A.size} assent${A.size===1?'e':'i'}`:'', nv?`${nv} senza visita medica valida`:''].filter(Boolean); if(p.length) toast('Esclusi: '+p.join(' e ')); } touchMatch(m); refreshMatch(m,'conv'); },
   'conv-suggest': ()=>openSuggest(),
   'rot-view': ()=>openRotations(),
   'form-auto': ()=>{ const m=getMatch(ui.matchId); const f=getForm(m); if(SLOTS.some(([s])=>f[s]) && !confirm('Sostituire la formazione attuale con quella proposta?')) return; autoForm(m); },
@@ -3408,7 +3411,8 @@ document.addEventListener('change', e=>{
   if(t.id==='at-ruolo'){ ui.af.ruolo=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.id==='at-iscr'){ ui.af.iscr=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.closest('#at-form') && t.name==='dataNascita') refreshAtDerived();
-  if(t.dataset.conv){ const m=getMatch(ui.matchId); if(!m) return; const s=new Set(m.convocati||[]); if(t.checked) s.add(t.dataset.conv); else s.delete(t.dataset.conv);
+  if(t.dataset.conv){ const m=getMatch(ui.matchId); if(!m) return;
+    if(t.checked){ const a0=getAt(t.dataset.conv); if(a0 && !visitaOk(a0,m) && !confirm(`${fullName(a0)}: ${visitaWhy(a0)}. Convocarlo comunque?`)){ t.checked=false; return; } } const s=new Set(m.convocati||[]); if(t.checked) s.add(t.dataset.conv); else s.delete(t.dataset.conv);
     m.convocati=db.athletes.filter(a=>s.has(a.id)).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); return; }
   if(t.dataset.fs){ const m=getMatch(ui.matchId); if(!m) return; const f=getForm(m); const k=t.dataset.fs;
     f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }

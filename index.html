@@ -3713,7 +3713,7 @@ function liveEndSet(){
   const won=S.sets.filter(x=>x.noi>x.loro).length, lost=S.sets.length-won;
   L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
   if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=`${won}-${lost}`;
-  markPlayed(m); touchMatch(m); rerenderLive();
+  touchMatch(m); rerenderLive();
   toast(`Set chiuso · risultato ${won}-${lost}. Controlla rotazione e chi batte per il set ${L.set}.`);
 }
 function liveSub(){

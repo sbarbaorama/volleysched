@@ -1009,6 +1009,50 @@ a.btn{text-decoration:none;color:inherit}
   .home-head h1{font-size:22px}
   .home-head img{width:46px;height:46px}
 }
+/* telefono: tutto in una schermata, i bottoni si adattano all'altezza */
+@media (max-width:760px){
+  main:has(.home){padding-top:10px;padding-bottom:calc(66px + env(safe-area-inset-bottom))}
+  .home{display:flex;flex-direction:column;height:calc(100dvh - 56px - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:470px}
+  .home-head{margin:0 0 8px;gap:10px}
+  .home-head h1{font-size:20px}
+  .home-head p{font-size:13px;margin:0}
+  .home-head img{width:38px;height:38px}
+  .home-next{gap:8px;margin-bottom:8px}
+  .hn{padding:7px 10px;gap:10px;border-radius:12px}
+  .hn .dd{width:44px;padding:2px 0}
+  .hn .dd b{font-size:17px}
+  .hn .dd span{font-size:9.5px}
+  .hn .k{font-size:10px}
+  .hn .t{font-size:14.5px}
+  .hn .s{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .home-alerts{margin-bottom:8px;gap:6px;flex-wrap:nowrap;overflow-x:auto}
+  .home-alerts button{padding:4px 10px;font-size:12px;white-space:nowrap;flex:none}
+  .tiles{flex:1;min-height:0;grid-template-rows:repeat(3,minmax(0,1fr));gap:8px}
+  .tile{min-height:0;padding:10px 12px;gap:4px;border-radius:14px;justify-content:center}
+  .tile .ic{width:40px;height:40px;border-radius:12px}
+  .tile .ic svg{width:24px;height:24px}
+  .tile b{font-size:16px;line-height:1.2}
+  .tile small{font-size:12px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  .tile::after{width:80px;height:80px;right:-24px;bottom:-24px}
+}
+@media (max-width:760px) and (max-height:700px){
+  .hn .s{display:none}
+  .tile .ic{width:34px;height:34px}
+  .tile .ic svg{width:20px;height:20px}
+}
+/* telefono in orizzontale: due righe da tre */
+@media (orientation: landscape) and (max-height:520px){
+  main:has(.home){padding-top:8px;padding-bottom:8px}
+  .home{display:flex;flex-direction:column;height:calc(100dvh - 16px)}
+  .home-head{margin:0 0 6px}.home-head h1{font-size:18px}.home-head p{font-size:12px;margin:0}.home-head img{width:32px;height:32px}
+  .home-next{grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+  .hn{padding:5px 10px;gap:10px}.hn .dd{width:40px;padding:1px 0}.hn .dd b{font-size:15px}.hn .s{display:none}.hn .t{font-size:14px}
+  .home-alerts{display:none}
+  .tiles{flex:1;min-height:0;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:8px}
+  .tile{min-height:0;padding:8px 12px;gap:3px;flex-direction:row;align-items:center;flex-wrap:wrap}
+  .tile .ic{width:38px;height:38px}.tile .ic svg{width:22px;height:22px}
+  .tile b{font-size:15px}.tile small{width:100%;font-size:11.5px}
+}
 @media screen{
 :root[data-theme=dark] .home-alerts .red{background:rgba(215,38,61,.15);border-color:rgba(215,38,61,.45);color:#f6aab4}
 :root[data-theme=dark] .home-alerts .ora{background:rgba(224,123,34,.12);border-color:rgba(224,123,34,.4);color:#f3c590}
@@ -2068,12 +2112,12 @@ function viewHome(){
   const tiles=[
     ['atleti','Atleti','#2f6fb8',`${iscr.length} iscritt${iscr.length===1?'o':'i'}${bd.length?' · 🎂 '+bd.length:''}`],
     ['partite','Partite','#e07b22', nextM?`Prossima ${rel(nextM.data)}`:`${db.matches.length} in calendario`],
-    ['presenze','Presenze','#22a05a', nextT?`Prossimo allenamento ${rel(nextT.data)}`:'Registro degli allenamenti'],
+    ['presenze','Presenze','#22a05a', nextT?`Allenamento ${rel(nextT.data)}`:'Registro degli allenamenti'],
     ['sessioni','Sessioni','#7b5cc4', lastS?`Ultima: ${esc(lastS.titolo||'senza titolo')}`:`${db.sessions.length} sessioni`],
     ['esercizi','Esercizi','#d64a5a', `${db.exercises.length} schede`],
-    ['impostazioni','Archivio','#6b7280','Copie, sincronizzazione, aspetto'],
+    ['impostazioni','Archivio','#6b7280','Copie e impostazioni'],
   ];
-  return `<section>
+  return `<section class="home">
   <div class="home-head">${st.logo?`<img src="${st.logo}" alt="">`:''}<div><h1>${esc(st.squadra||'Volleysched')}</h1><p>${esc(new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</p></div></div>
   ${(nextM||nextT)?`<div class="home-next">
     ${nextM?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}

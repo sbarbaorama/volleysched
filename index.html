@@ -1414,6 +1414,44 @@ body.train-mode main{padding:0!important;max-width:none}
 :root[data-theme=dark] .disp-seg .si.on{color:#fff}
 }
 
+
+.mday{background:var(--bar);color:#fff;border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.mday .k{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.mday h2{color:#fff;font-size:20px;margin:0}
+.mday .s{font-size:13.5px;opacity:.9}
+.mday .chk{display:flex;flex-wrap:wrap;gap:6px}
+.mday .chk span{background:rgba(255,255,255,.13);border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
+.mday .chk .ok{background:rgba(34,160,90,.38)}.mday .chk .ko{background:rgba(214,74,90,.5)}
+.mday .bt{display:flex;gap:8px;flex-wrap:wrap}
+.mday .bt .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff}
+.mday .bt .btn.big{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-size:17px;padding:11px 18px;font-weight:800;flex:1;justify-content:center}
+@media (max-width:760px){ .mday{padding:10px 12px;gap:6px;margin-bottom:8px} .mday h2{font-size:17px} .mday .s{font-size:12.5px} .mday .bt .btn.big{font-size:16px;padding:9px 14px} }
+@media (orientation: landscape) and (max-height:520px){ .mday{flex-direction:row;flex-wrap:wrap;align-items:center;padding:8px 12px;gap:6px 12px} .mday .chk{display:none} .mday .bt{margin-left:auto} }
+@media (max-width:760px){
+  .home:has(.mday) .tile small{display:none}
+  .home:has(.mday) .tile .ic{width:34px;height:34px}
+  .home:has(.mday) .tile .ic svg{width:20px;height:20px}
+  .home:has(.mday) .hn .s{display:none}
+  .mday .chk{flex-wrap:nowrap;overflow:hidden}
+  .mday .chk span{white-space:nowrap;font-size:11.5px}
+}
+@media (orientation: landscape) and (max-height:520px){
+  .home-alerts{display:flex!important;flex-wrap:nowrap;overflow-x:auto;margin-bottom:6px}
+  .home:has(.mday) .home-next{display:none}
+  .mday h2{font-size:16px}.mday .bt .btn{padding:6px 12px;font-size:14px}.mday .bt .btn.big{padding:7px 14px;font-size:15px}
+}
+.rdy{display:flex;flex-direction:column;gap:10px}
+.rdy .it{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rdy .it .ic{font-size:20px;text-align:center}
+.rdy .it b{display:block}
+.rdy .it small{color:var(--muted);font-size:12.5px}
+.rdy .it.ok{border-color:#7cc99a}.rdy .it.ko{border-color:#e9a0aa}
+.qm-conv{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.qm-conv label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);border-radius:999px;padding:4px 10px 4px 5px;font-size:13.5px;font-weight:600;cursor:pointer}
+.qm-conv label:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.qm-conv input{display:none}
+.qm-conv .av{margin:0}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2375,11 +2413,12 @@ function viewHome(){
   ];
   return `<section class="home">
   <div class="home-head">${st.logo?`<img src="${st.logo}" alt="">`:''}<div><h1>${esc(st.squadra||'Volleysched')}</h1><p>${esc(new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</p></div></div>
+  ${matchDay()?matchDayHTML(matchDay()):''}
   ${(nextM||nextT)?`<div class="home-next">
-    ${nextM?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
+    ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
     ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
   </div>`:''}
-  ${(bdToday.length||noVis||homeRem().length)?`<div class="home-alerts">${homeRem().join('')}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button>${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
   <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
   </section>`;
 }
@@ -3196,7 +3235,7 @@ function viewPartite(){
   return `<section>
   <div class="page-head">
     <div><h1>Partite</h1><p class="muted">${esc(selName)} · ${scope.length} partit${scope.length===1?'a':'e'} · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
-    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
+    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="qm-open" title="Partita veloce">⚡<span class="sl"> Partita veloce</span></button><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
   </div>
   <div class="camp-bar"><div class="chips">${(()=>{ const chip=c=>`<button class="chip ${sel===c.name?'on':''} ${c.active?'':'past'}" data-action="camp-sel" data-v="${esc(c.name)}" title="${c.active?(c.ms.length?'In corso':'Nuovo, senza partite'):'Concluso'}">${c.active&&c===camps[0]&&c.ms.length?'● ':''}${esc(c.name)} <span>${c.ms.length}</span></button>`;
       const act=camps.filter(c=>c.active), old=camps.filter(c=>!c.active);
@@ -3438,7 +3477,7 @@ function autoForm(m){
     if(!best || score>best.score) best={res, score, second, miss};
   }
   Object.assign(f, best.res); m.formazione=f; touchMatch(m);
-  $('#form-panel').innerHTML=formPanelHTML(m);
+  { const fp=$('#form-panel'); if(fp) fp.innerHTML=formPanelHTML(m); }
   toast(best.miss ? 'Formazione proposta: controlla i posti segnalati' : 'Formazione proposta'+(best.second.length?' · '+best.second.join(', '):''));
 }
 function formWarn(m,f){
@@ -3513,7 +3552,7 @@ function viewLiveLand(){
   return `<div class="ll">
   <div>
     <div class="ll-score">
-      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button><span class="st">Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span><button class="btn" data-action="live-undo" ${S.ev.length?'':'disabled'}>↶</button></div>
+      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button><span class="st">${esc(m.avversario||"")} · Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span><button class="btn" data-action="live-undo" ${S.ev.length?'':'disabled'}>↶</button></div>
       <div class="r"><span class="sc">${L.noi}<small>–</small>${L.loro}</span><span style="flex:1"></span><button class="btn" data-action="live-pt" title="Punto nostro su errore avversario">+1 noi</button><button class="btn" data-action="live-pl">+1 loro</button></div>
       <div class="r"><span class="serve ${L.servo?'':'them'}" data-action="live-servo">${L.servo?'🏐 '+esc(athShort(server)):'Battono loro'}</span><span style="flex:1"></span><select data-live="k">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></div>
     </div>
@@ -4173,6 +4212,61 @@ async function noteSave(silent){
   if(!silent){ closeModal(); if(ui.view==='note') render(); toast('Nota salvata'); }
   return true;
 }
+
+function matchDay(){
+  const td=todayISO(), y=(()=>{ const d=parseISO(td); d.setDate(d.getDate()-1); return toISO(d); })();
+  const L=[...db.matches].filter(m=>m.data===td || (m.data===y && m.stats && m.stats.ev && m.stats.ev.length && !(m.risultato||'').trim()));
+  return L.sort((a,b)=>matchDT(b).localeCompare(matchDT(a)))[0] || null;
+}
+function readyInfo(m){ const conv=convocati(m), f=getForm(m), S=m.stats, started=!!(S && S.ev && S.ev.length);
+  return {n:conv.length, u:conv.filter(isM).length, d:conv.filter(isF).length, form:formOk(f), started, live:started&&S.live?S.live:null}; }
+function matchDayHTML(m){
+  const r=readyInfo(m), td=m.data===todayISO();
+  return `<div class="mday"><div class="k">${td?'🏐 Oggi si gioca':'🏐 Partita di ieri'}${m.ora&&td?' · ore '+esc(m.ora):''}</div>
+    <h2>${esc(matchTitle(m))}</h2>
+    <div class="chk"><span class="${r.n>=6?'ok':'ko'}">${r.n?`✓ ${r.n} convocati · ${r.u} U · ${r.d} D`:'✗ convocazioni da fare'}</span><span class="${r.form?'ok':'ko'}">${r.form?'✓ formazione pronta':'✗ formazione da fare'}</span>${r.live?`<span>in corso: set ${r.live.set} · ${r.live.noi}–${r.live.loro}</span>`:''}</div>
+    <div class="bt"><button class="btn big" data-action="quick-stats" data-id="${m.id}">📊 ${r.started?'Riprendi le statistiche':'Statistiche'}</button><button class="btn" data-action="open-match" data-id="${m.id}">Apri la partita</button></div></div>`;
+}
+function openReady(id){
+  const m=getMatch(id); if(!m) return; ui.matchId=id; const r=readyInfo(m);
+  if(r.n>=6 && r.form){ actions['live-open'](); return; }
+  openModal(`<div class="modal-box" style="max-width:560px">
+    <div class="modal-head"><div style="flex:1"><h2>Pronti per le statistiche?</h2><div class="muted" style="font-size:13px;margin-top:4px">${esc(matchTitle(m))}</div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    <div class="modal-body"><div class="rdy">
+      <div class="it ${r.n>=6?'ok':'ko'}"><span class="ic">${r.n>=6?'✅':'⚠️'}</span><div><b>Convocati: ${r.n}</b><small>${r.n>=6?`${r.u} uomini · ${r.d} donne`:'Servono almeno 6 giocatori per seguire le rotazioni.'}</small></div>${r.n>=6?'':`<button class="btn sm primary" data-action="rd-conv">Convoca i disponibili</button>`}</div>
+      <div class="it ${r.form?'ok':'ko'}"><span class="ic">${r.form?'✅':'⚠️'}</span><div><b>Formazione di partenza</b><small>${r.form?'Pronta.':'Senza formazione le statistiche funzionano, ma la rotazione e chi batte non vengono seguiti.'}</small></div>${r.form?'':`<button class="btn sm primary" data-action="rd-form" ${r.n?'':'disabled'}>✨ Proponi</button>`}</div>
+    </div></div>
+    <div class="modal-foot"><button class="btn" data-action="open-match" data-id="${m.id}">Sistema nella partita</button><span style="flex:1"></span><button class="btn primary" data-action="rd-go">▶ Inizia${r.form&&r.n>=6?'':' comunque'}</button></div></div>`);
+}
+function openQuickMatch(){
+  const td=todayISO(), tr=db.trainings.find(t=>t.data===td && !t.annullato), P=tr?tr.presenze||{}:{};
+  const L=db.athletes.filter(a=>a.iscritto).sort(byNumber);
+  const pre=a=>tr&&Object.keys(P).length ? P[a.id]==='P' : visitaOk(a,{data:td});
+  const camps=campList().map(c=>c.name).filter(n=>n!==CAMP_NONE);
+  openModal(`<div class="modal-box" style="max-width:620px">
+    <div class="modal-head"><div style="flex:1"><h2>⚡ Partita veloce</h2><div class="muted" style="font-size:13px;margin-top:4px">Per un'amichevole o un torneo non in calendario: la crei e parti subito con le statistiche.</div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    <div class="modal-body"><div class="grid g2">
+      <label class="f">Avversario<input type="text" id="qm-avv" placeholder="Es. Volley Amici"></label>
+      <label class="f">Campo<select id="qm-casa"><option value="1">In casa</option><option value="0">In trasferta</option></select></label>
+      <label class="f" style="grid-column:1/-1">Campionato<select id="qm-camp"><option value="Amichevoli">Amichevoli</option>${camps.filter(c=>c!=='Amichevoli').map(c=>`<option>${esc(c)}</option>`).join('')}<option value="">— nessuno —</option></select></label>
+    </div>
+    <div style="margin-top:12px;font-size:13px;font-weight:700;color:var(--ink-2)">Chi gioca oggi <span class="muted" style="font-weight:400" id="qm-n"></span></div>
+    <div class="qm-conv">${L.map(a=>`<label><input type="checkbox" data-qm="${a.id}" ${pre(a)?'checked':''}>${avatarHTML(a,24)}${esc(athShort?athShort(a.id):fullName(a))}</label>`).join('')}</div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">${tr&&Object.keys(P).length?'Già selezionati i presenti all\'allenamento di oggi.':'Già selezionati gli iscritti con la visita medica valida.'} La formazione viene proposta in automatico e puoi cambiarla dopo.</p></div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="qm-go">▶ Crea e inizia</button></div></div>`);
+  qmCount();
+}
+function qmCount(){ const n=$$('[data-qm]:checked').length, e=$('#qm-n'); if(e) e.textContent='· '+n+' selezionat'+(n===1?'o':'i'); }
+function quickMatchGo(){
+  const avv=$('#qm-avv').value.trim(); if(!avv){ alert('Scrivi il nome dell\'avversario.'); $('#qm-avv').focus(); return; }
+  const ids=$$('[data-qm]:checked').map(x=>x.dataset.qm); if(ids.length<6 && !confirm(`Hai scelto solo ${ids.length} giocatori: la rotazione non potrà essere seguita. Continuare?`)) return;
+  const d=new Date(), m=newMatch();
+  Object.assign(m,{data:todayISO(), ora:String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'), avversario:avv, inCasa:$('#qm-casa').value==='1', competizione:$('#qm-camp').value, convocati:ids, note:''});
+  if(m.competizione && !campList().some(c=>c.name===m.competizione)) saveCampDefs([...campDefs(), m.competizione]);
+  persist.match(m).catch(saveFail); closeModal(); ui.matchId=m.id;
+  if(ids.length>=6) autoForm(m);
+  actions['live-open'](); toast('Partita creata: buon divertimento!');
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -4366,6 +4460,12 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'quick-stats': b=>openReady(b.dataset.id),
+  'rd-conv': ()=>{ const m=getMatch(ui.matchId); const A=new Set(m.assenti||[]); m.convocati=db.athletes.filter(a=>a.iscritto && !A.has(a.id) && visitaOk(a,m)).map(a=>a.id); touchMatch(m); openReady(m.id); },
+  'rd-form': ()=>{ const m=getMatch(ui.matchId); autoForm(m); openReady(m.id); },
+  'rd-go': ()=>{ closeModal(); actions['live-open'](); },
+  'qm-open': ()=>openQuickMatch(),
+  'qm-go': ()=>quickMatchGo(),
   'tr-start': b=>{ ui.trs=null; go('allena',{sessId:b.dataset.id||ui.sessId}); keepAwake(true); },
   'tr-exit': ()=>{ keepAwake(false); go('sessione',{sessId:ui.sessId}); },
   'tr-play': ()=>{ const T=trState(); if(T.t0){ T.el+=Date.now()-T.t0; T.t0=null; } else T.t0=Date.now(); const b=$('#trm-play'); if(b){ b.textContent=T.t0?'⏸ Pausa':'▶ Via'; b.classList.toggle('primary',!T.t0); } },
@@ -4581,6 +4681,7 @@ document.addEventListener('input', e=>{
   if(t.dataset.set){ db.settings[t.dataset.set]=t.value; if(t.dataset.set==='colore'||t.dataset.set==='accento') applyBrand(); clearTimeout(window._setT); window._setT=setTimeout(()=>{ persist.settings().then(()=>{ const i=$('#set-saved'); if(i){ i.textContent='✓ Salvato'; setTimeout(()=>i.textContent='',1500);} }).catch(saveFail); },400); }
 });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.qm!==undefined){ qmCount(); return; }
   if(e.target.dataset.exp){ ui.exp.sel[e.target.dataset.exp]=e.target.checked; return; }
   if(e.target.name==='exp-ex'){ ui.exp.exMode=e.target.value; return; }
   const t=e.target;

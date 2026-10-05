@@ -1014,6 +1014,111 @@ a.btn{text-decoration:none;color:inherit}
 :root[data-theme=dark] .home-alerts .ora{background:rgba(224,123,34,.12);border-color:rgba(224,123,34,.4);color:#f3c590}
 }
 
+
+/* ---------- ESERCIZI ---------- */
+.exi svg{width:100%;height:100%;display:block}
+.ex-sticky{position:sticky;top:64px;z-index:11;background:var(--bg);padding:6px 0 10px;margin:-6px 0 6px;display:flex;gap:8px;align-items:center}
+.ex-sticky .sbox{flex:1;position:relative;min-width:0}
+.ex-sticky .sbox svg{position:absolute;left:12px;top:50%;width:18px;height:18px;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.ex-sticky input{width:100%;padding-left:38px;max-width:none}
+.fbtn{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.fbtn svg{width:16px;height:16px}
+.fbtn .n{background:var(--accent);color:var(--accent-ink);border-radius:999px;font-size:11px;min-width:18px;height:18px;display:inline-grid;place-items:center;padding:0 5px}
+.fpanel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:12px 20px}
+.fpanel .fl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:6px}
+.fpanel select{width:100%}
+.fpanel .opts{display:flex;flex-wrap:wrap;gap:6px}
+.fpanel .opts button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink-2)}
+.fpanel .opts button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+.fpills{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 12px}
+.fpills button{border:0;background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--ink);border-radius:999px;padding:4px 6px 4px 11px;font-size:12.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.fpills button i{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.1);font-size:12px}
+.fpills .clear{background:none;color:var(--muted);text-decoration:underline;padding:4px 6px}
+/* indice */
+.ftiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.ftile{--c:#8a94a6;display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:14px;cursor:pointer;box-shadow:var(--shadow);text-align:left;font:inherit;color:inherit;min-width:0}
+.ftile:hover{border-color:var(--c)}
+.ftile:active{transform:scale(.98)}
+.ftile .exi{flex:none;width:50px;height:50px;border-radius:14px;padding:11px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c)}
+.ftile b{display:block;font-size:16.5px;line-height:1.2}
+.ftile small{color:var(--muted);font-size:13px;font-weight:600}
+.ftile.spec{border-left-style:dashed}
+.ftiles-sec{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:20px 0 8px}
+/* testata del fondamentale */
+.fhead{display:flex;align-items:center;gap:12px;margin:2px 0 14px}
+.fhead .exi{width:46px;height:46px;border-radius:13px;padding:10px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);flex:none}
+.fhead h2{font-size:22px}
+.fhead .back{display:inline-flex;align-items:center;gap:2px;padding:6px 10px 6px 6px}
+.fhead .back svg{width:18px;height:18px}
+/* schede */
+.cards.exg{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.exc{position:relative;border-top:4px solid var(--c)}
+.exc .thumb{position:relative;overflow:hidden}
+.exc .card-body{gap:6px;flex:1}
+.exc h3{font-size:15.5px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.5em}
+.exmeta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--ink-2);font-weight:600;align-items:center}
+.exmeta span{display:inline-flex;align-items:center;gap:4px}
+.exmeta svg{width:15px;height:15px;color:var(--muted)}
+.int{display:inline-flex;gap:3px}
+.int i{width:7px;height:7px;border-radius:50%;background:var(--line-2);display:inline-block}
+.int.i1 i:nth-child(-n+1),.int.i2 i:nth-child(-n+2),.int.i3 i:nth-child(-n+3){background:var(--c,var(--accent))}
+.exc .clamp{-webkit-line-clamp:2;font-size:13px;color:var(--muted);margin:0}
+.favb{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.88);color:#9aa1b0;display:grid;place-items:center;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.15);z-index:2}
+.favb svg{width:19px;height:19px}
+.favb.on{color:#f0a500}
+.usedb{position:absolute;left:6px;bottom:6px;background:rgba(31,42,68,.78);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;display:inline-flex;align-items:center;gap:4px;z-index:2}
+.usedb svg{width:12px;height:12px}
+.usedb.never{background:rgba(224,123,34,.9)}
+/* miniature ritagliate */
+.thumb img.fig{object-fit:cover;object-view-box:inset(1% 8% 23% 8%)}
+.thumb img.crt{object-fit:cover;object-view-box:inset(5% 9% 5% 9%)}
+.detail-schema img.crt{object-view-box:inset(4% 8% 4% 8%)}
+/* vista compatta: icona del fondamentale */
+.ex-row .th.ic{background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c);padding:9px;width:44px;height:44px;border-radius:12px}
+.ex-row{grid-template-columns:44px minmax(0,1fr) auto auto}
+.ex-row .fv{color:#f0a500;width:18px;height:18px}
+@media (max-width:760px){
+  .ex-sticky{top:52px}
+  .cards.exg{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .exc h3{font-size:14px}
+  .exmeta{font-size:11.5px;gap:3px 9px}
+  .exmeta svg{width:13px;height:13px}
+  .ftiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ftile{flex-direction:column;align-items:flex-start;gap:8px;padding:12px}
+  .ftile .exi{width:44px;height:44px;padding:9px}
+  .ftile b{font-size:15px}
+  .favb{width:30px;height:30px}
+  .ex-row{grid-template-columns:40px minmax(0,1fr) auto}
+  .ex-row .th.ic{width:40px;height:40px;padding:8px}
+  .ex-row .tags{grid-column:2/-1}
+}
+@media (orientation: landscape) and (max-height:520px){ .ex-sticky{top:0} }
+/* dettaglio */
+.exd-head{display:flex;align-items:flex-start;gap:10px}
+.exd-kick{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--c)}
+.exd-kick .exi{width:18px;height:18px}
+.exd-nav{display:flex;gap:4px}
+.exd-nav .iconbtn svg{width:18px;height:18px}
+.exd-info{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.exd-info span{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:13.5px;font-weight:600}
+.exd-info svg{width:16px;height:16px;color:var(--muted)}
+.exd-sec{display:grid;grid-template-columns:30px minmax(0,1fr);gap:2px 10px;padding:10px 0;border-top:1px solid var(--line)}
+.exd-sec .ei{font-size:18px;line-height:1.3;text-align:center}
+.exd-sec h4{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--c,var(--accent));font-weight:800}
+.exd-sec p{margin:2px 0 0;grid-column:2}
+.exd-used{font-size:13px;color:var(--muted);margin:-6px 0 12px;display:flex;align-items:center;gap:6px}
+.exd-used svg{width:14px;height:14px}
+.exd-foot .sp{flex:1}
+@media (max-width:760px){ .exd-foot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px} .exd-foot .addto{grid-column:1/-1} .exd-foot .sp{display:none} .exd-foot>.btn{justify-content:center;padding:8px 4px;font-size:13.5px} }
+.exd-swipe{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+@media screen{
+:root[data-theme=dark] .thumb{background:#2a2f38}
+:root[data-theme=dark] .thumb img,:root[data-theme=dark] .detail-schema img,:root[data-theme=dark] .thumb svg{filter:brightness(.9)}
+:root[data-theme=dark] .favb{background:rgba(30,33,40,.85)}
+:root[data-theme=dark] .fpills button i{background:rgba(255,255,255,.15)}
+:root[data-theme=dark] .fpanel .opts button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1525,91 +1630,169 @@ function fondOrder(list){
 /* ============================================================
    Vista: elenco esercizi
    ============================================================ */
-function matchEx(e, q){
-  if(!q) return true;
-  const hay=[e.titolo,e.fondamentale,e.formazione,e.distretto,(e.dosaggio&&e.dosaggio.carico)||'',e.organizzazione,e.svolgimento,e.puntoChiave,e.variante,e.note,e.materiale].join(' ').toLowerCase();
-  return q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>hay.includes(w));
-}
+
+const EXI = {flame:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 1.6 1 2.5 2 3 0-3 0-5.5.5-8z"/></svg>',serve:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14.5" cy="12" r="6"/><path d="M14.5 6c-1.6 2-1.6 10 0 12M8.8 10.2c3.4.9 8.2.9 11.4 0M2.5 9h3.5M2 12h4M2.5 15h3.5"/></svg>',recv:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9M8 8.5l4 4 4-4"/><path d="M4.5 14.5c0 3.4 3.4 6 7.5 6s7.5-2.6 7.5-6"/></svg>',set:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20c1-8 3.4-12 7-12s6 4 7 12"/><circle cx="12" cy="4.5" r="2.2"/></svg>',spike:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 2.5L5 13.5h6.2L10 21.5l9-12h-6.4z"/></svg>',block:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3 9.7h18M3 14.3h18M9 5v4.7M15 9.7v4.6M9 14.3V19"/></svg>',shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.2c0 4.8-3.2 8.2-7.5 9.8-4.3-1.6-7.5-5-7.5-9.8V6z"/></svg>',court:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M12 6v12M8 6v12M16 6v12"/></svg>',dumbbell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 7.5v9M17.5 7.5v9M3.5 10v4M20.5 10v4M6.5 12h11"/></svg>',leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-9 6-14 14-14 0 8-5 14-14 14z"/><path d="M5 19l8-8"/></svg>',cross:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5h4v6.5h6.5v4H14v6.5h-4V14H3.5v-4H10z"/></svg>',ball:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 12c-.6-3.6.6-6.6 3.4-8M12 12c3 2 4.4 4.9 4.2 7.9M12 12c-3.4 1.4-6.6 1.2-8.9-.6"/></svg>',p1:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="3.5"/><path d="M5 20.5c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>',p2:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.2c2.8.2 4.8 2.1 4.8 5"/></svg>',p3:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="2.8"/><circle cx="5.5" cy="9.5" r="2.2"/><circle cx="18.5" cy="9.5" r="2.2"/><path d="M7.5 19.5c0-3 2-5 4.5-5s4.5 2 4.5 5M2 18.5c0-2.2 1.5-3.8 3.5-3.8M22 18.5c0-2.2-1.5-3.8-3.5-3.8"/></svg>',clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>',starf:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/></svg>',repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/></svg>',filter:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4 1.5v-8z"/></svg>',back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>',all:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',new:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v4.5M12 15.8v.2"/></svg>'};
+function fondIcon(f){ const s=(f||'').toLowerCase();
+  if(/riscald/.test(s)) return EXI.flame; if(/battut/.test(s)) return EXI.serve; if(/ricez/.test(s)) return EXI.recv; if(/alzat|palleg/.test(s)) return EXI.set;
+  if(/attacc|schiacc/.test(s)) return EXI.spike; if(/muro/.test(s)) return EXI.block; if(/difes/.test(s)) return EXI.shield; if(/gioco|partit/.test(s)) return EXI.court;
+  if(/prepar|fisic|forza/.test(s)) return EXI.dumbbell; if(/defatic|stretch|allung/.test(s)) return EXI.leaf; if(/recuper|terap|infort|riabil|preven/.test(s)) return EXI.cross; return EXI.ball; }
+function formIcon(f){ const s=(f||'').toLowerCase(); return /individ/.test(s)?EXI.p1:/coppi/.test(s)?EXI.p2:EXI.p3; }
+const INTN={bassa:1,media:2,alta:3};
+const intDots=(v,c)=>{ const n=INTN[(v||'').toLowerCase()]; return n?`<span class="int i${n}" title="Intensità ${esc(v.toLowerCase())}" ${c?`style="--c:${c}"`:''}><i></i><i></i><i></i></span>`:''; };
+/* preferiti (sincronizzati nelle impostazioni) */
+function favSet(){ try{ const v=JSON.parse(db.settings.preferiti||'[]'); return new Set(Array.isArray(v)?v:[]); }catch(e){ return new Set(); } }
+function toggleFav(id){ const S=favSet(); S.has(id)?S.delete(id):S.add(id); db.settings.preferiti=JSON.stringify([...S].filter(x=>getEx(x))); persist.settings().catch(saveFail); return S.has(id); }
+/* uso nelle sessioni */
+function exUsage(){ const M=new Map(); for(const s of db.sessions){ const seen=new Set(); for(const it of s.items){ if(it.type!=='ex' || seen.has(it.exId)) continue; seen.add(it.exId); const u=M.get(it.exId)||{n:0,last:''}; u.n++; if((s.data||'')>u.last) u.last=s.data||''; M.set(it.exId,u); } } return M; }
+/* miniature: ritaglio automatico (disegni su sfondo bianco o campo su sfondo grigio) */
+const THUMB_KIND=new Map();
+function thumbFit(img){ try{ const k=img.dataset.k; let c=THUMB_KIND.get(k);
+  if(c===undefined){ const cv=document.createElement('canvas'); cv.width=cv.height=1; const x=cv.getContext('2d'); x.drawImage(img,2,2,1,1,0,0,1,1); const p=x.getImageData(0,0,1,1).data;
+    c = (p[0]>248&&p[1]>248&&p[2]>248)?'fig':(Math.abs(p[0]-233)<8&&Math.abs(p[1]-236)<8&&Math.abs(p[2]-239)<8)?'crt':''; THUMB_KIND.set(k,c); }
+  if(c) img.classList.add(c); }catch(e){} }
+function exThumb(e){ if(e?.image) return `<img src="${e.image}" alt="" loading="lazy" data-k="${e.id}${e.updatedAt||''}" class="${THUMB_KIND.get(e.id+(e.updatedAt||''))||''}" onload="thumbFit(this)">`; return exVisual(e); }
+/* filtri */
+const DUR_OPTS=[['5','fino a 5′'],['10','6–10′'],['20','11–20′'],['21','oltre 20′']];
+function durOk(e,d){ const v=+e.durata||0; if(!d) return true; if(!v) return false; return d==='5'?v<=5:d==='10'?v>5&&v<=10:d==='20'?v>10&&v<=20:v>20; }
+function exFilterCount(){ const f=ui.f; return [f.form,f.dist,f.int,f.dur,f.fav,f.uso].filter(Boolean).length; }
 function filteredEx(){
-  const f=ui.f;
-  return db.exercises.filter(e => matchEx(e,f.q) && (!f.fond || (e.fondamentale||'Senza categoria')===f.fond) && (!f.form || e.formazione===f.form) && (!f.dist || e.distretto===f.dist));
+  const f=ui.f, F=f.fav?favSet():null, U=f.uso?exUsage():null, fond=(f.fond==='__all'||(f.q||'').trim())?'':f.fond;
+  return db.exercises.filter(e => matchEx(e,f.q) && (!fond || (e.fondamentale||'Senza categoria')===fond) && (!f.form || e.formazione===f.form) && (!f.dist || e.distretto===f.dist)
+    && (!f.int || (e.intensita||'').toLowerCase()===f.int) && durOk(e,f.dur) && (!F || F.has(e.id)) && (!U || (f.uso==='mai' ? !U.has(e.id) : U.has(e.id))));
+}
+function exOrdered(list){ const g=fondOrder(list); return [...list].sort((a,b)=>g.indexOf(a.fondamentale||'Senza categoria')-g.indexOf(b.fondamentale||'Senza categoria') || a.titolo.localeCompare(b.titolo,'it')); }
+function exPillsHTML(){
+  const f=ui.f, P=[];
+  if(f.form) P.push(['form',f.form]); if(f.dist) P.push(['dist',f.dist]); if(f.int) P.push(['int','Intensità '+f.int]);
+  if(f.dur) P.push(['dur',DUR_OPTS.find(x=>x[0]===f.dur)[1]]); if(f.fav) P.push(['fav','★ Preferiti']); if(f.uso) P.push(['uso',f.uso==='mai'?'Mai usati':'Già usati']);
+  return P.length?`<div class="fpills">${P.map(([k,l])=>`<button data-action="exf-clear" data-k="${k}">${esc(l)}<i>×</i></button>`).join('')}${P.length>1?'<button class="clear" data-action="exf-clear" data-k="__all">Togli tutti</button>':''}</div>`:'';
+}
+function exFilterPanelHTML(){
+  const f=ui.f, forms=[...new Set(db.exercises.map(e=>e.formazione).filter(Boolean))].sort();
+  const opt=(k,list)=>`<div class="opts">${list.map(([v,l])=>`<button data-action="exf" data-k="${k}" data-v="${v}" class="${String(f[k]||'')===v?'on':''}">${l}</button>`).join('')}</div>`;
+  return `<div class="fpanel">
+    <div><div class="fl">Formazione</div><select id="ex-form"><option value="">Tutte</option>${forms.map(x=>`<option ${f.form===x?'selected':''}>${esc(x)}</option>`).join('')}</select></div>
+    <div><div class="fl">Distretto</div>${distSelectHTML()}</div>
+    <div><div class="fl">Intensità</div>${opt('int',[['bassa','Bassa'],['media','Media'],['alta','Alta']])}</div>
+    <div><div class="fl">Durata</div>${opt('dur',DUR_OPTS)}</div>
+    <div><div class="fl">Preferiti e uso</div>${opt('fav',[['1','★ Solo preferiti']])}<div style="height:6px"></div>${opt('uso',[['mai','Mai usati'],['si','Già usati']])}</div>
+  </div>`;
 }
 function viewEsercizi(){
-  const fonds=fondOrder(db.exercises);
-  const forms=[...new Set(db.exercises.map(e=>e.formazione).filter(Boolean))].sort();
-  const cnt=f=>db.exercises.filter(e=>(e.fondamentale||'Senza categoria')===f).length;
+  const nf=exFilterCount();
   return `<section>
     <div class="page-head">
     <div><h1>Esercizi</h1><p class="muted">${db.exercises.length} schede nello schedario</p></div>
     <div class="actions">
       ${segHTML('ex')}
-      <button class="btn" data-action="print-catalog" title="Stampa le schede visualizzate">Stampa elenco</button>
+      <button class="btn" data-action="print-catalog" title="Stampa le schede visualizzate">Stampa<span class="sl"> elenco</span></button>
       <button class="btn primary" data-action="new-ex">+ Nuovo esercizio</button>
     </div>
   </div>
-  <div class="filters">
-    <input type="search" id="ex-q" placeholder="Cerca per titolo o contenuto…" value="${esc(ui.f.q)}">
-    <div class="chips">
-      <button class="chip ${!ui.f.fond?'on':''}" data-action="f-fond" data-v="">Tutti <span>${db.exercises.length}</span></button>
-      ${fonds.map(f=>`<button class="chip ${ui.f.fond===f?'on':''}" data-action="f-fond" data-v="${esc(f)}">${esc(f)} <span>${cnt(f)}</span></button>`).join('')}
-    </div>
-    <select id="ex-form"><option value="">Tutte le formazioni</option>${forms.map(f=>`<option ${ui.f.form===f?'selected':''}>${esc(f)}</option>`).join('')}</select>${distSelectHTML()}
-  </div>
+  <div class="ex-sticky"><div class="sbox">${EXI.search}<input type="search" id="ex-q" placeholder="Cerca in tutti gli esercizi…" value="${esc(ui.f.q)}"></div>
+    <button class="btn fbtn ${ui.fOpen?'dark':''}" data-action="exf-toggle">${EXI.filter}Filtri${nf?`<span class="n" id="ex-fcount">${nf}</span>`:''}</button></div>
+  ${ui.fOpen?exFilterPanelHTML():''}
   <div id="ex-results">${exResults()}</div>
   </section>`;
 }
-function exCard(e){
-  return `<article class="card" data-action="open-ex" data-id="${e.id}">
-    <div class="thumb">${exVisual(e)}</div>
+function exIndexHTML(){
+  const fonds=fondOrder(db.exercises), F=favSet(), U=exUsage();
+  const cnt=f=>db.exercises.filter(e=>(e.fondamentale||'Senza categoria')===f).length;
+  const nFav=db.exercises.filter(e=>F.has(e.id)).length, nMai=db.exercises.filter(e=>!U.has(e.id)).length;
+  return `<div class="ftiles">${fonds.map(f=>`<button class="ftile" style="--c:${fondColor(f==='Senza categoria'?'':f)}" data-action="f-fond" data-v="${esc(f)}"><span class="exi">${fondIcon(f)}</span><span><b>${esc(f)}</b><small>${cnt(f)} eserciz${cnt(f)===1?'io':'i'}</small></span></button>`).join('')}</div>
+    <div class="ftiles-sec">Scorciatoie</div>
+    <div class="ftiles">
+      <button class="ftile spec" style="--c:#f0a500" data-action="exf-short" data-k="fav"><span class="exi">${EXI.starf}</span><span><b>Preferiti</b><small>${nFav} eserciz${nFav===1?'io':'i'}</small></span></button>
+      <button class="ftile spec" style="--c:#e07b22" data-action="exf-short" data-k="mai"><span class="exi">${EXI.new}</span><span><b>Mai usati</b><small>${nMai} da provare</small></span></button>
+      <button class="ftile spec" style="--c:#6b7280" data-action="f-fond" data-v="__all"><span class="exi">${EXI.all}</span><span><b>Tutti</b><small>${db.exercises.length} esercizi</small></span></button>
+    </div>`;
+}
+function exCard(e, F, U){
+  const c=fondColor(e.fondamentale), u=U.get(e.id), fav=F.has(e.id), dos=dosShort(e.dosaggio);
+  return `<article class="card exc" style="--c:${c}" data-action="open-ex" data-id="${e.id}">
+    <div class="thumb">${exThumb(e)}<button class="favb ${fav?'on':''}" data-action="fav" data-id="${e.id}" title="${fav?'Togli dai preferiti':'Aggiungi ai preferiti'}">${fav?EXI.starf:EXI.star}</button>
+      ${u?`<span class="usedb" title="Usato in ${u.n} session${u.n===1?'e':'i'}${u.last?', ultima '+shortDate(u.last):''}">${EXI.repeat}${u.n}×</span>`:''}</div>
     <div class="card-body">
-      <div class="tags">${ptag(e.formazione)}${dosShort(e.dosaggio)?ptag(dosShort(e.dosaggio)):''}${e.distretto?ptag(e.distretto):''}${e.durata?ptag(e.durata+' min'):''}${e.intensita?ptag('Intensità '+e.intensita.toLowerCase()):''}</div>
       <h3>${esc(e.titolo)}</h3>
+      <div class="exmeta">${e.formazione?`<span>${formIcon(e.formazione)}${esc(e.formazione)}</span>`:''}${e.durata?`<span>${EXI.clock}${e.durata}′</span>`:''}${dos&&!e.durata?`<span>${esc(dos)}</span>`:''}${intDots(e.intensita,c)}</div>
       <p class="clamp">${esc(e.svolgimento||e.organizzazione||'')}</p>
     </div></article>`;
 }
+function exRowsHTML(items, F, U){
+  F=F||favSet(); U=U||exUsage();
+  return `<div class="ex-rows">${items.map(e=>{ const desc=e.svolgimento||e.organizzazione||'', c=fondColor(e.fondamentale), u=U.get(e.id);
+    return `<div class="ex-row" style="--c:${c}" data-action="open-ex" data-id="${e.id}"><div class="th ic">${fondIcon(e.fondamentale)}</div>
+      <div class="t"><b>${esc(e.titolo)}</b>${desc?`<small>${esc(desc)}</small>`:''}</div>
+      <div class="tags exmeta">${e.formazione?`<span>${formIcon(e.formazione)}${esc(e.formazione)}</span>`:''}${e.durata?`<span>${EXI.clock}${e.durata}′</span>`:''}${intDots(e.intensita,c)}${u?`<span title="Usato in ${u.n} sessioni">${EXI.repeat}${u.n}×</span>`:''}</div>
+      ${F.has(e.id)?`<span class="fv">${EXI.starf}</span>`:'<span></span>'}</div>`; }).join('')}</div>`;
+}
 function exResults(){
-  const list=filteredEx();
   if(!db.exercises.length) return `<div class="empty">Lo schedario è vuoto. Crea il primo esercizio con «+ Nuovo esercizio».</div>`;
-  if(!list.length) return `<div class="empty">Nessun esercizio corrisponde ai filtri.</div>`;
-  const byTitle=(a,b)=>a.titolo.localeCompare(b.titolo,'it');
-  const groups = fondOrder(list);
-  return groups.map(g=>{
+  const f=ui.f, idx=!f.fond && !f.q && !exFilterCount();
+  if(idx) return exIndexHTML();
+  const list=exOrdered(filteredEx()), F=favSet(), U=exUsage(), one=f.fond && f.fond!=='__all' && !(f.q||'').trim();
+  const head=one?`<div class="fhead" style="--c:${fondColor(f.fond==='Senza categoria'?'':f.fond)}"><button class="btn sm back" data-action="f-fond" data-v="">${EXI.back}Indice</button><span class="exi">${fondIcon(f.fond)}</span><div><h2>${esc(f.fond)}</h2><span class="muted" style="font-size:13px">${list.length} eserciz${list.length===1?'io':'i'}${exFilterCount()||f.q?' con questi filtri':''}</span></div></div>`
+    :`<div class="fhead"><button class="btn sm back" data-action="exf-home">${EXI.back}Indice</button><div><h2 style="font-size:19px">${f.q?`Risultati per «${esc(f.q)}»`:f.fond==='__all'?'Tutti gli esercizi':'Esercizi filtrati'}</h2><span class="muted" style="font-size:13px">${list.length} eserciz${list.length===1?'io':'i'}</span></div></div>`;
+  if(!list.length) return head+exPillsHTML()+`<div class="empty">Nessun esercizio corrisponde ai filtri.</div>`;
+  const groups=fondOrder(list), compact=viewMode('ex')==='compatta';
+  return head+exPillsHTML()+groups.map(g=>{
     const items=list.filter(e=>(e.fondamentale||'Senza categoria')===g);
-    return `<div class="group-title" style="--c:${fondColor(g)}"><span class="bar"></span><h2>${esc(g)}</h2><span class="muted">${items.length}</span></div>
-      ${viewMode('ex')==='compatta'?exRowsHTML(items):`<div class="cards">${items.map(exCard).join('')}</div>`}`;
+    return `${one?'':`<div class="group-title" style="--c:${fondColor(g==='Senza categoria'?'':g)}"><span class="bar"></span><h2>${esc(g)}</h2><span class="muted">${items.length}</span></div>`}
+      ${compact?exRowsHTML(items,F,U):`<div class="cards exg">${items.map(e=>exCard(e,F,U)).join('')}</div>`}`;
   }).join('');
+}
+function refreshExList(){ const r=$('#ex-results'); if(r) r.innerHTML=exResults(); const n=exFilterCount(), b=$('[data-action=exf-toggle]'); if(b){ const s=b.querySelector('.n'); if(n){ if(s) s.textContent=n; else b.insertAdjacentHTML('beforeend',`<span class="n">${n}</span>`); } else if(s) s.remove(); } }
+/* dettaglio */
+const EXD_SEC=[['dosaggio','💪','Carico di lavoro'],['organizzazione','🧩','Organizzazione'],['svolgimento','▶️','Svolgimento'],['puntoChiave','🎯','Punto chiave'],['variante','🔁','Variante'],['materiale','🧰','Materiale'],['note','📝','Note']];
+function exNeighbors(e){ const L=exOrdered(db.exercises.filter(x=>(x.fondamentale||'')===(e.fondamentale||''))); const i=L.findIndex(x=>x.id===e.id); return {prev:L[i-1]||null, next:L[i+1]||null, pos:i+1, tot:L.length}; }
+function openExModal(id, preferSess){
+  const e=getEx(id); if(!e) return;
+  const c=fondColor(e.fondamentale), u=exUsage().get(id), fav=favSet().has(id), nb=exNeighbors(e), dos=dosShort(e.dosaggio);
+  const sessOpts = [...db.sessions].sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(s=>`<option value="${s.id}" ${s.id===preferSess?'selected':''}>${esc(s.titolo||'Senza titolo')}${s.data?' · '+fmtDate(s.data,{day:'numeric',month:'short'}):''}</option>`).join('');
+  const info=[e.durata?`<span>${EXI.clock}${e.durata} min</span>`:'', e.intensita?`<span>${intDots(e.intensita,c)} Intensità ${esc(e.intensita.toLowerCase())}</span>`:'', e.formazione?`<span>${formIcon(e.formazione)}${esc(e.formazione)}</span>`:'', dos?`<span>💪 ${esc(dos)}</span>`:'', e.distretto?`<span>📍 ${esc(e.distretto)}</span>`:''].filter(Boolean).join('');
+  const secs=EXD_SEC.map(([k,ic,l])=>{ const v=k==='dosaggio'?dosFull(e.dosaggio):e[k]; return v&&String(v).trim()?`<div class="exd-sec"><span class="ei">${ic}</span><h4>${l}</h4><p>${nl2br(v)}</p></div>`:''; }).join('');
+  openModal(`<div class="modal-box" style="--c:${c}">
+    <div class="modal-head exd-head">
+      <div style="flex:1;min-width:0"><div class="exd-kick"><span class="exi">${fondIcon(e.fondamentale)}</span>${esc(e.fondamentale||'Senza categoria')}${nb.tot>1?` · ${nb.pos} di ${nb.tot}`:''}</div><h2 style="margin-top:2px">${esc(e.titolo)}</h2></div>
+      <div class="exd-nav">${nb.tot>1?`<button class="iconbtn" data-action="ex-nav" data-id="${nb.prev?nb.prev.id:''}" ${nb.prev?'':'disabled'} title="Precedente">${EXI.back}</button><button class="iconbtn" data-action="ex-nav" data-id="${nb.next?nb.next.id:''}" ${nb.next?'':'disabled'} title="Successivo">${EXI.next}</button>`:''}
+        <button class="iconbtn" data-action="fav" data-id="${e.id}" style="color:${fav?'#f0a500':'inherit'}" title="${fav?'Togli dai preferiti':'Aggiungi ai preferiti'}">${fav?EXI.starf:EXI.star}</button>
+        <button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
+    </div>
+    <div class="modal-body" id="exd-body">
+      ${hasSchema(e)?`<div class="detail-schema">${exThumb(e)}</div>`:''}
+      ${info?`<div class="exd-info">${info}</div>`:''}
+      <div class="exd-used">${EXI.repeat}${u?`Usato in ${u.n} session${u.n===1?'e':'i'}${u.last?' · ultima il '+shortDate(u.last):''}`:'Mai usato in una sessione'}</div>
+      ${secs||'<p class="muted">Nessuna descrizione.</p>'}
+      ${nb.tot>1?'<div class="exd-swipe">Scorri a destra o a sinistra per passare all\'esercizio vicino</div>':''}
+    </div>
+    <div class="modal-foot exd-foot">
+      <div class="addto" style="margin-left:0">
+        <select id="addto-sel"><option value="__new">+ Nuova sessione</option>${sessOpts}</select>
+        <button class="btn primary" data-action="add-to-sess" data-id="${e.id}">Aggiungi alla sessione</button>
+      </div>
+      <span class="sp"></span>
+      <button class="btn" data-action="print-ex" data-id="${e.id}">Stampa</button>
+      <button class="btn dark" data-action="edit-ex" data-id="${e.id}">Modifica</button>
+      <button class="btn" data-action="dup-ex" data-id="${e.id}">Duplica</button>
+      <button class="btn danger" data-action="del-ex" data-id="${e.id}">Elimina</button>
+    </div></div>`);
+  ui.exModal={id, preferSess};
+  if(!preferSess && db.sessions.length){ const s=$('#addto-sel'); if(s.options.length>1) s.selectedIndex=1; }
+  const body=$('#exd-body'); let x0=null, y0=null;
+  body.addEventListener('touchstart', ev=>{ const t=ev.touches[0]; x0=t.clientX; y0=t.clientY; }, {passive:true});
+  body.addEventListener('touchend', ev=>{ if(x0===null) return; const t=ev.changedTouches[0], dx=t.clientX-x0, dy=t.clientY-y0; x0=null;
+    if(Math.abs(dx)>70 && Math.abs(dy)<50){ const n=dx<0?nb.next:nb.prev; if(n) openExModal(n.id, preferSess); } }, {passive:true});
+}
+function matchEx(e, q){
+  if(!q) return true;
+  const hay=[e.titolo,e.fondamentale,e.formazione,e.distretto,(e.dosaggio&&e.dosaggio.carico)||'',e.organizzazione,e.svolgimento,e.puntoChiave,e.variante,e.note,e.materiale].join(' ').toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(w=>hay.includes(w));
 }
 
 /* dettaglio esercizio (finestra) */
 function exFieldsHTML(e){
   const f=[['Carico di lavoro',dosFull(e.dosaggio)],['Distretto',e.distretto],['Organizzazione',e.organizzazione],['Svolgimento',e.svolgimento],['Punto chiave',e.puntoChiave],['Variante',e.variante],['Materiale',e.materiale],['Note',e.note]].filter(x=>x[1]&&String(x[1]).trim());
   return f.length ? `<dl class="fields">${f.map(([k,v])=>`<dt>${k}</dt><dd>${nl2br(v)}</dd>`).join('')}</dl>` : `<p class="muted">Nessuna descrizione.</p>`;
-}
-function openExModal(id, preferSess){
-  const e=getEx(id); if(!e) return;
-  const used=db.sessions.filter(s=>s.items.some(i=>i.exId===id));
-  const sessOpts = [...db.sessions].sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(s=>`<option value="${s.id}" ${s.id===preferSess?'selected':''}>${esc(s.titolo||'Senza titolo')}${s.data?' · '+fmtDate(s.data,{day:'numeric',month:'short'}):''}</option>`).join('');
-  openModal(`<div class="modal-box">
-    <div class="modal-head">
-      <div style="flex:1"><div class="tags" style="margin-bottom:6px">${tag(e.fondamentale)}${ptag(e.formazione)}${dosShort(e.dosaggio)?ptag(dosShort(e.dosaggio)):''}${e.distretto?ptag(e.distretto):''}${e.durata?ptag(e.durata+' min'):''}${e.intensita?ptag('Intensità '+e.intensita.toLowerCase()):''}</div><h2>${esc(e.titolo)}</h2>
-      ${used.length?`<div class="muted" style="font-size:13px;margin-top:4px">Usato in ${used.length} session${used.length>1?'i':'e'}</div>`:''}</div>
-      <button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button>
-    </div>
-    <div class="modal-body">
-      ${hasSchema(e)?`<div class="detail-schema">${exVisual(e)}</div>`:''}
-      ${exFieldsHTML(e)}
-    </div>
-    <div class="modal-foot">
-      <button class="btn dark" data-action="edit-ex" data-id="${e.id}">Modifica</button>
-      <button class="btn" data-action="dup-ex" data-id="${e.id}">Duplica</button>
-      <button class="btn" data-action="print-ex" data-id="${e.id}">Stampa scheda</button>
-      <button class="btn danger" data-action="del-ex" data-id="${e.id}">Elimina</button>
-      <div class="addto">
-        <select id="addto-sel"><option value="__new">+ Nuova sessione</option>${sessOpts}</select>
-        <button class="btn primary" data-action="add-to-sess" data-id="${e.id}">Aggiungi alla sessione</button>
-      </div>
-    </div></div>`);
-  if(!preferSess && db.sessions.length){ const s=$('#addto-sel'); if(s.options.length>1) s.selectedIndex=1; }
 }
 function openModal(html){ const m=$('#modal'); m.innerHTML=html; m.classList.remove('hidden'); document.body.style.overflow='hidden'; }
 function closeModal(){ const m=$('#modal'); m.classList.add('hidden'); m.innerHTML=''; document.body.style.overflow=''; }
@@ -1618,7 +1801,7 @@ $('#modal').addEventListener('mousedown', e => { if(e.target.id==='modal') close
 /* ============================================================
    Vista: modifica / nuovo esercizio
    ============================================================ */
-function blankEx(){ return {id:null,titolo:'',fondamentale:ui.f.fond&&ui.f.fond!=='Senza categoria'?ui.f.fond:'',formazione:'',durata:'',intensita:'',materiale:'',organizzazione:'',svolgimento:'',puntoChiave:'',variante:'',note:'',image:null,schema:null,dosaggio:null,distretto:''}; }
+function blankEx(){ return {id:null,titolo:'',fondamentale:ui.f.fond&&ui.f.fond!=='Senza categoria'&&ui.f.fond!=='__all'?ui.f.fond:'',formazione:'',durata:'',intensita:'',materiale:'',organizzazione:'',svolgimento:'',puntoChiave:'',variante:'',note:'',image:null,schema:null,dosaggio:null,distretto:''}; }
 function viewEsercizio(){
   const d=ui.draft;
   const ta=(n,l,ph,rows=3)=>`<label class="f">${l}<textarea name="${n}" rows="${rows}" placeholder="${esc(ph)}">${esc(d[n])}</textarea></label>`;
@@ -1816,12 +1999,6 @@ function viewMode(k){ ui.vmode=ui.vmode||{}; if(ui.vmode[k]) return ui.vmode[k];
 function setViewMode(k,v){ ui.vmode=ui.vmode||{}; ui.vmode[k]=v; try{ localStorage.setItem('vs-'+k+'View', v); }catch(e){} render(); }
 const sessView=()=>viewMode('sess');
 const segHTML=k=>`<div class="vseg" role="group" aria-label="Vista"><button data-action="view-mode" data-k="${k}" data-v="schede" class="${viewMode(k)==='schede'?'on':''}" title="Vista a schede"><span class="si">${ICO.grid}</span><span class="sl">Schede</span></button><button data-action="view-mode" data-k="${k}" data-v="compatta" class="${viewMode(k)==='compatta'?'on':''}" title="Vista compatta"><span class="si">${ICO.list}</span><span class="sl">Compatta</span></button></div>`;
-function exRowsHTML(items){
-  return `<div class="ex-rows">${items.map(e=>{ const desc=e.svolgimento||e.organizzazione||'';
-    return `<div class="ex-row" data-action="open-ex" data-id="${e.id}"><div class="th">${exVisual(e)}</div>
-      <div class="t"><b>${esc(e.titolo)}</b>${desc?`<small>${esc(desc)}</small>`:''}</div>
-      <div class="tags">${ptag(e.formazione)}${dosShort(e.dosaggio)?ptag(dosShort(e.dosaggio)):''}${e.distretto?ptag(e.distretto):''}${e.durata?ptag(e.durata+' min'):''}</div></div>`; }).join('')}</div>`;
-}
 function sessRowsHTML(list){
   return `<div class="sess-rows">${list.map(s=>{
     const tl=sessTimeline(s), cb=compBar(s), nEx=s.items.filter(i=>i.type==='ex').length;
@@ -3515,7 +3692,14 @@ const actions={
   'logo-pick': ()=>pickImage(url=>setLogo(url)),
   'logo-del': ()=>{ if(!confirm('Rimuovere il logo?')) return; db.settings.logo=''; saveBrand(); },
   'view-mode': b=>setViewMode(b.dataset.k, b.dataset.v),
-  'f-fond': b=>{ ui.f.fond=b.dataset.v; $('#app').innerHTML=viewEsercizi(); },
+  'f-fond': b=>{ ui.f.fond=b.dataset.v; $('#app').innerHTML=viewEsercizi(); window.scrollTo(0,0); },
+  'exf-toggle': ()=>{ ui.fOpen=!ui.fOpen; $('#app').innerHTML=viewEsercizi(); },
+  'exf': b=>{ const k=b.dataset.k, v=b.dataset.v; ui.f[k] = String(ui.f[k]||'')===v ? '' : v; $('#app').innerHTML=viewEsercizi(); },
+  'exf-clear': b=>{ const k=b.dataset.k; if(k==='__all') Object.assign(ui.f,{form:'',dist:'',int:'',dur:'',fav:'',uso:''}); else ui.f[k]=''; $('#app').innerHTML=viewEsercizi(); },
+  'exf-short': b=>{ Object.assign(ui.f,{fond:'__all', q:'', fav:b.dataset.k==='fav'?'1':'', uso:b.dataset.k==='mai'?'mai':''}); $('#app').innerHTML=viewEsercizi(); window.scrollTo(0,0); },
+  'exf-home': ()=>{ Object.assign(ui.f,{fond:'',q:'',form:'',dist:'',int:'',dur:'',fav:'',uso:''}); $('#app').innerHTML=viewEsercizi(); window.scrollTo(0,0); },
+  'fav': b=>{ const on=toggleFav(b.dataset.id); toast(on?'★ Aggiunto ai preferiti':'Tolto dai preferiti'); if(ui.view==='esercizi') refreshExList(); if(ui.exModal && $('#exd-body')) openExModal(ui.exModal.id, ui.exModal.preferSess); },
+  'ex-nav': b=>{ if(b.dataset.id) openExModal(b.dataset.id, ui.exModal&&ui.exModal.preferSess); },
   'open-ex': (b)=>{ if(b.dataset.id) openExModal(b.dataset.id, ui.view==='sessione'?ui.sessId:null); },
   'close-modal': ()=>closeModal(),
   'new-ex': ()=>go('esercizio',{draft:blankEx(), back:null}),
@@ -3645,7 +3829,7 @@ document.addEventListener('click', e=>{
 });
 document.addEventListener('input', e=>{
   const t=e.target;
-  if(t.id==='ex-q'){ ui.f.q=t.value; $('#ex-results').innerHTML=exResults(); return; }
+  if(t.id==='ex-q'){ ui.f.q=t.value; refreshExList(); return; }
   if(t.id==='at-q'){ ui.af.q=t.value; $('#at-rows').innerHTML=atRows(); return; }
   if(t.dataset.mf==='competizione' && t.value==='__new'){ const m=getMatch(ui.matchId); if(!m) return; const v=(prompt('Nome del nuovo campionato (es. Primaverile 2027):')||'').trim();
     if(v && v!==CAMP_NONE){ if(!campList().some(c=>c.name===v)) saveCampDefs([...campDefs(), v]); m.competizione=v; touchMatch(m); refreshMatch(m); }
@@ -3667,8 +3851,8 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('change', e=>{
   const t=e.target;
-  if(t.id==='ex-form'){ ui.f.form=t.value; $('#ex-results').innerHTML=exResults(); }
-  if(t.id==='ex-dist'){ ui.f.dist=t.value; $('#ex-results').innerHTML=exResults(); }
+  if(t.id==='ex-form'){ ui.f.form=t.value; refreshExList(); }
+  if(t.id==='ex-dist'){ ui.f.dist=t.value; refreshExList(); }
   if(t.id==='at-ruolo'){ ui.af.ruolo=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.id==='at-iscr'){ ui.af.iscr=t.value; $('#at-rows').innerHTML=atRows(); }
   if(t.closest('#at-form') && t.name==='dataNascita') refreshAtDerived();

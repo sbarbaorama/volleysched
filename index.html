@@ -1537,6 +1537,11 @@ body.train-mode main{padding:0!important;max-width:none}
 .guide .gb li{margin:3px 0}
 .guide .gb .tip{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-left:4px solid var(--accent);border-radius:6px;padding:7px 10px;margin:8px 0;font-size:13.5px}
 .guide .gb code{background:var(--surface-2);border-radius:4px;padding:0 4px;font-size:13px}
+.help-btn{flex:none;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;font-weight:800;font-size:17px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.help-btn:hover{background:rgba(255,255,255,.22)}
+body.locked .help-btn{display:none}
+@media (max-width:760px){ .help-btn{width:30px;height:30px;font-size:16px} }
+@media (orientation: landscape) and (max-height:520px){ .help-btn{width:auto;height:30px;border-radius:10px} }
 .guide .gnone{text-align:center;color:var(--muted);padding:20px}
 
 
@@ -1612,6 +1617,7 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
     <button data-nav="impostazioni"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nl">Archivio</span></button>
   </nav>
   <div class="spacer"></div>
+  <button type="button" class="help-btn" data-action="guide-open" title="Guida: come si fa" aria-label="Guida">?</button>
   <button type="button" id="syncPill" class="sync-pill off" data-nav="impostazioni" title="Stato della sincronizzazione"><i></i><span id="syncLbl">Solo su questo dispositivo</span></button>
 </header>
 <div id="offline" class="offline hidden">Archivio del browser non disponibile: le modifiche non vengono salvate. Ricarica la pagina.</div>
@@ -2519,7 +2525,7 @@ function viewHome(){
     ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
     ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
   </div>`:''}
-  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button><button data-action="guide-open">📖 Guida</button>${licBadge()}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button>${licBadge()}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
   <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
   </section>`;
 }

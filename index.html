@@ -1522,6 +1522,68 @@ body.train-mode main{padding:0!important;max-width:none}
   .mtabbed.mt-ref [data-mt=ref]{display:block!important}
 }
 
+@media (max-width:760px){
+  body.ref-mode .nav, body.ref-mode .fab{display:none!important}
+  body.ref-mode main{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .rf-wrap .page-head{margin-bottom:2px!important}
+  .rf-wrap .page-head a{font-size:12.5px!important}
+  .rf-h1{font-size:17px!important;margin-top:0!important}
+  .rf-h1 .rf-ttl{display:none}
+  .rf-sets{flex-wrap:nowrap;overflow-x:auto;margin:4px 0 8px;scrollbar-width:none}
+  .rf-sets button{padding:4px 10px;font-size:12.5px;flex:none}
+  .rf-entry .rf-score{padding:7px 12px;border-radius:12px}
+  .rf-entry .rf-score .n{font-size:34px}
+  .rf-entry .rf-score .t{font-size:11px}
+  .rf-entry .rf-score .mid{font-size:11.5px;line-height:1.25}
+  .rf-entry .rf-score .srv{margin-top:2px;font-size:11.5px;padding:1px 8px}
+  .rf-entry .rf-info{margin-top:6px;font-size:12.5px;gap:6px}
+  .rf-entry .rf-court{margin:6px 0;gap:3px}
+  .rf-entry .rf-court div{padding:3px 4px;font-size:12px;display:flex;gap:4px;align-items:baseline;justify-content:center}
+  .rf-entry .rf-court div small{display:inline;font-size:10px}
+  .rf-entry .rf-over{margin:6px 0;padding:8px 10px}
+  .rf-entry .rf-over b{font-size:15px}
+  .rf-entry .rf-big{margin:6px 0;gap:8px}
+  .rf-entry .rf-big button{padding:26px 6px;font-size:23px;border-radius:14px}
+  .rf-entry .rf-small{display:grid;grid-template-columns:repeat(auto-fit,minmax(56px,1fr));gap:5px}
+  .rf-entry .rf-small .btn{padding:9px 2px;font-size:12.5px;min-width:0;white-space:nowrap}
+  .rf-entry .rf-small .lg{display:none}
+  .rf-entry .rf-seq{margin-top:8px!important;padding:7px 8px!important}
+  .rf-entry .rf-seqh{gap:5px!important}
+  .rf-entry .rf-seqh b{font-size:12.5px!important}
+  .rf-entry .rf-seqh .btn{padding:4px 8px;font-size:12px}
+  .rf-entry .rf-seqh .lg{display:none}
+  .rf-entry .rf-leg{display:none}
+  .rf-entry .rf-tl{flex-wrap:nowrap;overflow-x:auto;margin-top:5px;padding-bottom:2px;scrollbar-width:thin}
+  .rf-entry .rf-tl i{flex:none}
+  .rf-entry .rf-note{display:none}
+}
+@media (orientation: landscape) and (max-height:520px){
+  .rf-wrap{max-width:none}
+  .rf-wrap .page-head{display:none}
+  .rf-sets{flex-wrap:nowrap;overflow-x:auto;margin:0 0 6px}
+  .rf-sets button{padding:3px 10px;font-size:12.5px;flex:none}
+  .rf-entry{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px;align-items:start;grid-auto-flow:row dense}
+  .rf-entry>*{grid-column:2}
+  .rf-entry>.rf-score,.rf-entry>.rf-info,.rf-entry>.rf-court,.rf-entry>.rf-seq{grid-column:1}
+  .rf-entry .rf-score{padding:6px 12px}
+  .rf-entry .rf-score .n{font-size:32px}
+  .rf-entry .rf-info{margin-top:4px;font-size:12.5px}
+  .rf-entry .rf-court{margin:4px 0;gap:3px;max-width:none}
+  .rf-entry .rf-court div{padding:2px 4px;font-size:12px}
+  .rf-entry .rf-court div small{display:inline;margin-right:4px}
+  .rf-entry .rf-big{margin:0 0 6px}
+  .rf-entry .rf-big button{padding:22px 6px;font-size:22px}
+  .rf-entry .rf-small .btn{padding:7px 6px;font-size:13px}
+  .rf-entry .rf-small .lg{display:none}
+  .rf-entry .rf-over{margin:0 0 6px;padding:6px 10px}
+  .rf-entry .rf-seq{margin-top:4px!important;padding:6px 8px!important}
+  .rf-entry .rf-leg,.rf-entry .rf-seqh .lg{display:none}
+  .rf-entry .rf-seqh .btn{padding:3px 8px;font-size:12px}
+  .rf-entry .rf-tl{flex-wrap:nowrap;overflow-x:auto;margin-top:4px}
+  .rf-entry .rf-tl i{flex:none}
+  .rf-entry .rf-note{display:none}
+}
+
 
 .guide{max-width:820px;margin:0 auto}
 .guide .gsearch{margin:4px 0 12px}
@@ -1991,7 +2053,7 @@ function figCap(sc){ if(!sc || sc.kind!=='fig') return ''; let o='';
   if(sc.l2) o+=`<text x="${(0.9*FU).toFixed(1)}" y="${(SH-0.75*FU+7).toFixed(1)}" font-family="Arial,sans-serif" font-size="21.5" fill="#6b7280">${esc(sc.l2)}</text>`;
   return o; }
 function schemaBg(sc){ return sc && sc.kind==='fig' ? figBg(sc) : courtMarkup(sc?.zones); }
-const FIG_HINT={select:'Tocca un omino e trascina i <b>pallini arancioni</b> per muovere busto, testa, braccia e gambe (i pallini chiari sono il braccio e la gamba dietro). Trascina il corpo per spostarlo. Le pose pronte compaiono quando selezioni l'omino.',
+const FIG_HINT={select:'Tocca un omino e trascina i <b>pallini arancioni</b> per muovere busto, testa, braccia e gambe (i pallini chiari sono il braccio e la gamba dietro). Trascina il corpo per spostarlo. Le pose pronte compaiono quando selezioni un omino.',
   line:'Tieni premuto e trascina dal punto di partenza a quello di arrivo; poi, con «Seleziona», trascina il punto centrale per curvare.',
   place:'Tocca il disegno per inserire l\'elemento. Premi <span class="kbd">Esc</span> per tornare a «Seleziona».'};
 function figHint(ed){ return ed.tool==='select'?FIG_HINT.select:(ed.tool==='farrow'||ed.tool==='band')?FIG_HINT.line:FIG_HINT.place; }
@@ -2207,7 +2269,7 @@ window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault();
 function render(){
   if(licLocked()){ document.body.classList.add('locked'); $('#app').innerHTML=viewLock(); return; } document.body.classList.remove('locked');
   $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto') && b.dataset.nav==='partite')));
-  refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); if(ui.view!=='allena') keepAwake(false);
+  refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); document.body.classList.toggle('ref-mode', ui.view==='referto'); if(ui.view!=='allena') keepAwake(false);
   const app=$('#app');
   if(ui.view==='esercizi') app.innerHTML = viewEsercizi();
   else if(ui.view==='esercizio') { app.innerHTML = viewEsercizio(); mountSchemaBox(); updateDosUI(true); }
@@ -2223,7 +2285,7 @@ function render(){
   else if(ui.view==='presenze') app.innerHTML = viewPresenze();
   else if(ui.view==='benvenuto') app.innerHTML = viewBenvenuto();
   else if(ui.view==='live') app.innerHTML = viewLive();
-  else if(ui.view==='referto') app.innerHTML = viewReferto();
+  else if(ui.view==='referto'){ app.innerHTML = viewReferto(); const t=$('.rf-tl'); if(t) t.scrollLeft=t.scrollWidth; }
   else if(ui.view==='guida') app.innerHTML = viewGuida();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
   document.body.classList.toggle('live-land', ui.view==='live' && isLand());
@@ -4599,8 +4661,8 @@ function viewReferto(){
     + (!s?`<button class="on">Set ${i+1}</button>`:'')
     + (s && i===S.length-1 && refOver(refReplay(s),i) && !refMatchOver(m) ? `<button data-action="rf-newset">＋ Set ${S.length+1}</button>`:'');
   const head=`<div class="page-head" style="margin-bottom:6px"><div><a href="#" data-action="rf-back" class="muted" style="font-size:13.5px;text-decoration:none">← Torna alla partita</a>
-    <h1 style="margin-top:4px;font-size:20px">Referto · ${esc(matchTitle(m))}</h1></div></div><div class="rf-sets">${chips}</div>`;
-  return `<section class="rf-wrap">${head}${editForm?refLineupHTML(m,i):refEntryHTML(m,i)}</section>`;
+    <h1 class="rf-h1" style="margin-top:4px;font-size:20px">Referto<span class="rf-ttl"> · ${esc(matchTitle(m))}</span></h1></div></div><div class="rf-sets">${chips}</div>`;
+  return `<section class="rf-wrap">${head}${editForm?refLineupHTML(m,i):`<div class="rf-entry">${refEntryHTML(m,i)}</div>`}</section>`;
 }
 function refLineupHTML(m,i){
   if(!ui.refDraft || ui.refDraft.i!==i){ const s=refSets(m)[i]; ui.refDraft=Object.assign({i}, s?{our:[...s.our], pal:s.pal||'', opp:s.opp?[...s.opp]:null, firstServe:s.firstServe||'noi'}:refDefaultLineup(m,i)); if(!ui.refDraft.pal) ui.refDraft.pal=refAutoPal(ui.refDraft.our); }
@@ -4635,11 +4697,11 @@ function refEntryHTML(m,i){
     <div class="rf-big"><button class="n" data-action="rf-pt" data-v="N" ${over?'disabled':''}>+1 Noi</button><button class="l" data-action="rf-pt" data-v="L" ${over?'disabled':''}>+1 Loro</button></div>
     <div class="rf-small">
       <button class="btn" data-action="rf-to" data-v="TN" ${over?'disabled':''}>T.O. noi</button><button class="btn" data-action="rf-to" data-v="TL" ${over?'disabled':''}>T.O. loro</button>
-      <button class="btn" data-action="rf-sub" data-v="N" ${over?'disabled':''}>⇄ Cambio noi</button>${R.opp?`<button class="btn" data-action="rf-sub" data-v="L" ${over?'disabled':''}>⇄ Cambio loro</button>`:''}
-      <button class="btn" data-action="rf-undo" ${(s.ev||[]).length?'':'disabled'}>↶ Annulla</button>
+      <button class="btn" data-action="rf-sub" data-v="N" ${over?'disabled':''}>⇄<span class="lg"> Cambio</span> noi</button>${R.opp?`<button class="btn" data-action="rf-sub" data-v="L" ${over?'disabled':''}>⇄<span class="lg"> Cambio</span> loro</button>`:''}
+      <button class="btn" data-action="rf-undo" ${(s.ev||[]).length?'':'disabled'}>↶<span class="lg"> Annulla</span></button>
     </div>
-    <div class="panel" style="margin-top:12px;padding:10px 12px"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="font-size:13.5px">Sequenza</b><span class="muted" style="font-size:12px">${(s.ev||[]).length>40?'ultimi 40 · ':''}N noi · L loro · TO time-out · ⇄ cambio</span><span style="flex:1"></span>
-      <button class="btn sm" data-action="rf-form">✎ Formazione</button>${over?'':'<button class="btn sm" data-action="rf-close" title="Per set con un punteggio diverso dal 25 (o dal 15)">■ Chiudi il set qui</button>'}${i===refSets(m).length-1?'<button class="btn sm danger" data-action="rf-delset">Elimina set</button>':''}</div>
+    <div class="panel rf-seq" style="margin-top:12px;padding:10px 12px"><div class="rf-seqh" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="font-size:13.5px">Sequenza</b><span class="muted rf-leg" style="font-size:12px">${(s.ev||[]).length>40?'ultimi 40 · ':''}N noi · L loro · TO time-out · ⇄ cambio</span><span style="flex:1"></span>
+      <button class="btn sm" data-action="rf-form">✎ Formazione</button>${over?'':'<button class="btn sm" data-action="rf-close" title="Per set con un punteggio diverso dal 25 (o dal 15)">■ Chiudi<span class="lg"> il</span> set<span class="lg"> qui</span></button>'}${i===refSets(m).length-1?'<button class="btn sm danger" data-action="rf-delset">Elimina<span class="lg"> set</span></button>':''}</div>
       <div class="rf-tl">${tl||'<span class="muted" style="font-size:12.5px">Ancora nessun punto. Segui il referto: a ogni punto premi +1 della squadra che l\'ha fatto.</span>'}</div></div>
     <p class="rf-note">Consiglio: nel referto, nelle caselle dei turni di battuta c'è il punteggio a cui ogni battitore ha perso la battuta; seguendole in ordine ricostruisci la sequenza dei punti. Rotazione e battitore li calcola l'app.</p>`;
 }

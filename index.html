@@ -893,6 +893,77 @@ a.btn{text-decoration:none;color:inherit}
 :root[data-theme=dark] .abs-pill,:root[data-theme=dark] .cwarn{color:#f4a0ab}
 }
 
+
+/* ---------- PARTITE PER CAMPIONATO ---------- */
+.camp-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:-4px 0 16px}
+.camp-bar .chips{flex:1;min-width:0}
+.hero{background:var(--bar);color:#fff;border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);margin-bottom:18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 18px;align-items:center}
+.hero .cd{grid-row:span 3;text-align:center;min-width:86px;border-right:1px solid rgba(255,255,255,.18);padding-right:16px}
+.hero .cd b{display:block;font-size:40px;line-height:1;font-weight:800}
+.hero .cd span{font-size:12.5px;opacity:.8;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.hero .cd.today b{color:var(--accent)}
+.hero h2{color:#fff;font-size:21px;margin:0}
+.hero .hm{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px;opacity:.92}
+.hero .hm a{color:#fff;text-decoration:underline}
+.hero .hs{display:flex;flex-wrap:wrap;gap:6px}
+.hero .hs span{background:rgba(255,255,255,.13);border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
+.hero .hs .ok{background:rgba(34,160,90,.35)}
+.hero .hs .ko{background:rgba(214,74,90,.45)}
+.hero .ha{vertical-align:3px}
+.hero .hs{grid-column:2}
+.hero .hb{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.hero .hb .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff}
+.hero .hb .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.hero .kick{grid-column:2;font-size:12px;text-transform:uppercase;letter-spacing:.08em;opacity:.7;font-weight:800}
+@media (max-width:760px){ .hero{grid-template-columns:1fr;padding:14px} .hero .cd{grid-row:auto;border:0;padding:0;text-align:left;display:flex;align-items:baseline;gap:8px} .hero .cd b{display:inline;font-size:30px} .hero .kick{grid-column:1} .hero .hs{grid-column:1} }
+.mrows{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.mrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);cursor:pointer;font-size:14px}
+.mrow:first-child{border-top:0}
+.mrow:hover{background:var(--surface-2)}
+.mrow .d{font-weight:700;color:var(--ink-2);font-size:13px;white-space:nowrap}
+.mrow .t{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.mrow .t small{font-weight:400;color:var(--muted)}
+.mrow .s{font-size:12.5px;white-space:nowrap;text-align:right}
+@media (max-width:760px){ .mrow{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 12px} .mrow .d{grid-column:1} .mrow .t{grid-column:1} .mrow .h{grid-row:1;grid-column:2} .mrow .s{grid-column:2;grid-row:2} }
+/* mese */
+.mnav{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.mnav h3{flex:1;text-align:center;text-transform:capitalize;font-size:16px}
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.mgrid .wd{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800;text-align:center;padding:2px 0}
+.mcell{min-height:86px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:4px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.mcell.out{opacity:.35}
+.mcell.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.mcell .n{font-size:12px;font-weight:800;color:var(--ink-2)}
+.mev{font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.mev.casa{background:#dff3e6;color:#1d6b3c}
+.mev.trasf{background:#e3ecf8;color:#24538f}
+.mev.tr{background:var(--surface-2);color:var(--muted);font-weight:600;cursor:default}
+.mev.tr.x{text-decoration:line-through}
+.mlegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--ink-2);margin-top:8px}
+.mlegend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+@media (max-width:760px){ .mev .tm{display:none} .camp-bar .chips{margin:0;padding-left:0;padding-right:0} .camp-bar .sl{display:none} .mcell{min-height:54px;padding:3px} .mev{font-size:9.5px;padding:0 3px} .mcell .n{font-size:11px} }
+/* andamento */
+.rec{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.rec .k{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:92px;box-shadow:var(--shadow)}
+.rec .k b{display:block;font-size:22px;line-height:1.1}
+.rec .k span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.streak{display:inline-flex;gap:4px}
+.streak i{font-style:normal;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:6px;font-size:12px;font-weight:800;color:#fff}
+.streak .V{background:#22a05a}.streak .P{background:#d64a5a}
+.rtab{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.rtab th{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;padding:8px 10px;background:var(--surface-2)}
+.rtab td{padding:8px 10px;border-top:1px solid var(--line)}
+.rtab tr{cursor:pointer}
+.rtab tbody tr:hover{background:var(--surface-2)}
+.rtab .n{text-align:center;white-space:nowrap}
+.esito{display:inline-grid;place-items:center;min-width:26px;height:24px;border-radius:6px;font-weight:800;font-size:12.5px;color:#fff;padding:0 6px}
+.esito.V{background:#22a05a}.esito.P{background:#d64a5a}.esito.N{background:#9aa1b0}
+@media (max-width:760px){ .rtab .hide-s{display:none} .rtab td,.rtab th{padding:7px 6px} }
+@media screen{
+:root[data-theme=dark] .mev.casa{background:rgba(34,160,90,.25);color:#97e4b8}
+:root[data-theme=dark] .mev.trasf{background:rgba(47,111,184,.3);color:#a5c8f3}
+}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1690,7 +1761,7 @@ function compBar(s){
 }
 
 const MEDX=`<svg class="medx" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="5" fill="#d7263d"/><path d="M9.5 4.5h5v5h5v5h-5v5h-5v-5h-5v-5h5z" fill="#fff"/></svg>`;
-function viewMode(k){ ui.vmode=ui.vmode||{}; if(ui.vmode[k]) return ui.vmode[k]; let v=''; try{ v=localStorage.getItem('vs-'+k+'View')||''; }catch(e){} return ui.vmode[k]=(v==='compatta'?'compatta':'schede'); }
+function viewMode(k){ ui.vmode=ui.vmode||{}; if(ui.vmode[k]) return ui.vmode[k]; let v=''; try{ v=localStorage.getItem('vs-'+k+'View')||''; }catch(e){} return ui.vmode[k]=(v==='compatta'||(v==='mese'&&k==='match')?v:'schede'); }
 function setViewMode(k,v){ ui.vmode=ui.vmode||{}; ui.vmode[k]=v; try{ localStorage.setItem('vs-'+k+'View', v); }catch(e){} render(); }
 const sessView=()=>viewMode('sess');
 const segHTML=k=>`<div class="vseg" role="group" aria-label="Vista"><button data-action="view-mode" data-k="${k}" data-v="schede" class="${viewMode(k)==='schede'?'on':''}" title="Vista a schede"><span class="si">${ICO.grid}</span><span class="sl">Schede</span></button><button data-action="view-mode" data-k="${k}" data-v="compatta" class="${viewMode(k)==='compatta'?'on':''}" title="Vista compatta"><span class="si">${ICO.list}</span><span class="sl">Compatta</span></button></div>`;
@@ -2418,18 +2489,99 @@ function matchCard(m,isNext,past){
     <div class="mside">${m.risultato?`<div class="res">${esc(m.risultato)}</div>`:''}${past?(n?`<span class="muted">${n} convocati</span>`:''):(n?`<span class="conv-ok">✓ ${n} convocati</span>`:`<span class="conv-no">Convocazioni da fare</span>`)}${(!past && (m.assenti||[]).length)?`<span class="abs-pill">${m.assenti.length} assent${m.assenti.length===1?'e':'i'}</span>`:''}</div>
   </article>`;
 }
+
+const CAMP_NONE='Senza campionato';
+const campOf=m=>(m.competizione||'').trim()||CAMP_NONE;
+function campList(){
+  const g={}; db.matches.forEach(m=>{ const c=campOf(m); (g[c]=g[c]||[]).push(m); });
+  return Object.entries(g).map(([name,ms])=>({name, ms, last:ms.reduce((x,m)=>(m.data||'')>x?(m.data||''):x,''), first:ms.reduce((x,m)=>(m.data&&m.data<x)?m.data:x,'9999')}))
+    .sort((a,b)=>b.last.localeCompare(a.last) || a.name.localeCompare(b.name,'it'));
+}
+function campSel(){
+  const L=campList(); if(ui.camp==='__all') return '__all';
+  if(ui.camp && L.some(c=>c.name===ui.camp)) return ui.camp;
+  const t=todayISO(), next=[...db.matches].filter(m=>m.data && m.data>=t).sort((a,b)=>matchDT(a).localeCompare(matchDT(b)))[0];
+  return ui.camp = next ? campOf(next) : (L[0]?L[0].name:'__all');
+}
+const campScope=()=>{ const c=campSel(); return c==='__all'?db.matches:db.matches.filter(m=>campOf(m)===c); };
+/* risultato: set "casa-ospiti"; con le statistiche in partita si usano i set registrati */
+function matchSets(m){
+  const S=m.stats&&m.stats.sets; if(S && S.length){ const w=S.filter(s=>s.noi>s.loro).length; return {noi:w, loro:S.length-w, src:'stats'}; }
+  const r=(m.risultato||'').match(/(\d)\s*[-–:\/]\s*(\d)/); if(!r) return null;
+  const h=+r[1], a=+r[2]; return m.inCasa?{noi:h, loro:a}:{noi:a, loro:h};
+}
+function matchOutcome(m){ const s=matchSets(m); if(!s || (s.noi!==3 && s.loro!==3)) return null;
+  const win=s.noi>s.loro, pts=win?(s.loro===2?2:3):(s.noi===2?1:0); return {win, pts, noi:s.noi, loro:s.loro}; }
+function daysUntil(iso){ const a=new Date(todayISO()+'T12:00'), b=new Date(iso+'T12:00'); return Math.round((b-a)/864e5); }
+function heroHTML(m){
+  const n=m.data?daysUntil(m.data):null, conv=convocati(m), u=conv.filter(isM).length, d=conv.filter(isF).length;
+  const nv=conv.filter(a=>!visitaOk(a,m)).length, ab=(m.assenti||[]).length, fo=formOk(getForm(m));
+  const place=[m.palestra,m.indirizzo].filter(Boolean).join(', ');
+  return `<div class="hero">
+    <div class="cd ${n===0?'today':''}">${n===null?'<b>?</b><span>data da definire</span>':n===0?'<b>Oggi</b><span>si gioca</span>':n===1?'<b>1</b><span>giorno</span>':`<b>${n}</b><span>giorni</span>`}</div>
+    <div class="kick">Prossima partita${campSel()==='__all'&&m.competizione?' · '+esc(m.competizione):''}</div>
+    <div><h2>${esc(matchTitle(m))} <span class="ha ${m.inCasa?'casa':'trasf'}">${m.inCasa?'Casa':'Trasferta'}</span></h2></div>
+    <div class="hm">${m.data?`<span>📅 ${esc(cap(fmtDate(m.data)))}</span>`:''}${m.ora?`<span>⏰ ${esc(m.ora)}${m.oraRitrovo?' · ritrovo '+esc(m.oraRitrovo):''}</span>`:''}${place?`<span>📍 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}" target="_blank" rel="noopener">${esc(m.palestra||place)}</a></span>`:''}</div>
+    <div class="hs">${conv.length?`<span class="ok">✓ ${conv.length} convocati · ${u} U · ${d} D</span>`:'<span class="ko">Convocazioni da fare</span>'}${ab?`<span>${ab} assent${ab===1?'e':'i'}</span>`:''}${nv?`<span class="ko">${nv} convocat${nv===1?'o':'i'} senza visita valida</span>`:''}${conv.length?(fo?'<span class="ok">Formazione pronta</span>':'<span>Formazione da fare</span>'):''}</div>
+    <div class="hb"><button class="btn primary" data-action="open-match" data-id="${m.id}">${conv.length?'Apri la partita':'Fai le convocazioni'}</button>${conv.length?`<button class="btn" data-action="hero-wa" data-id="${m.id}">Invia con WhatsApp</button><button class="btn" data-action="hero-live" data-id="${m.id}">📊 Statistiche</button>`:''}</div>
+  </div>`;
+}
+function matchRowsHTML(L){
+  return `<div class="mrows">${L.map(m=>{ const n=convocati(m).length, ab=(m.assenti||[]).length;
+    return `<div class="mrow" data-action="open-match" data-id="${m.id}"><span class="d">${m.data?esc(cap(fmtDate(m.data,{weekday:'short',day:'numeric',month:'short'}))):'da definire'}${m.ora?' · '+esc(m.ora):''}</span>
+      <span class="t">${esc(matchTitle(m))}${m.giornata?` <small>· ${/^\d+$/.test(m.giornata)?m.giornata+'ª g.':esc(m.giornata)}</small>`:''}</span>
+      <span class="h"><span class="ha ${m.inCasa?'casa':'trasf'}">${m.inCasa?'Casa':'Trasf.'}</span></span>
+      <span class="s">${n?`<span class="conv-ok">✓ ${n}</span>`:'<span class="conv-no">da convocare</span>'}${ab?` <span class="abs-pill">· ${ab} ass.</span>`:''}</span></div>`; }).join('')}</div>`;
+}
+function monthHTML(L){
+  const t=todayISO(); if(!ui.cmonth){ const f=L.find(m=>m.data&&m.data>=t)||L.find(m=>m.data); ui.cmonth=(f?f.data:t).slice(0,7); }
+  const [y,mo]=ui.cmonth.split('-').map(Number), first=new Date(y,mo-1,1), start=new Date(y,mo-1,1-((first.getDay()+6)%7));
+  const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const byDay={}; L.forEach(m=>{ if(m.data) (byDay[m.data]=byDay[m.data]||[]).push({k:'m', m}); });
+  (db.trainings||[]).forEach(tr=>{ if(tr.data && tr.data.slice(0,7)===ui.cmonth) (byDay[tr.data]=byDay[tr.data]||[]).push({k:'t', tr}); });
+  let cells=''; for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); const k=iso(d); if(i>=35 && d.getMonth()!==mo-1) break;
+    const ev=(byDay[k]||[]).sort((a,b)=>(a.k==='m'?0:1)-(b.k==='m'?0:1));
+    cells+=`<div class="mcell ${d.getMonth()!==mo-1?'out':''} ${k===t?'today':''}"><span class="n">${d.getDate()}</span>${ev.map(e=>e.k==='m'
+      ?`<span class="mev ${e.m.inCasa?'casa':'trasf'}" data-action="open-match" data-id="${e.m.id}" title="${esc(matchTitle(e.m))}${e.m.ora?' · '+esc(e.m.ora):''}">${(()=>{ const o=matchOutcome(e.m); return o?(o.win?'✓ ':'✗ '):''; })()}${esc((e.m.avversario||'Partita').split(' ')[0])}</span>`
+      :`<span class="mev tr ${e.tr.annullato?'x':''}" title="Allenamento${e.tr.ora?' '+e.tr.ora:''}">All.${e.tr.ora?'<span class="tm"> '+esc(e.tr.ora)+'</span>':''}</span>`).join('')}</div>`; }
+  const label=first.toLocaleDateString('it-IT',{month:'long',year:'numeric'});
+  return `<div class="panel"><div class="mnav"><button class="btn sm" data-action="cm-prev">‹</button><h3>${label}</h3><button class="btn sm" data-action="cm-today">Oggi</button><button class="btn sm" data-action="cm-next">›</button></div>
+    <div class="mgrid">${['Lun','Mar','Mer','Gio','Ven','Sab','Dom'].map(x=>`<span class="wd">${x}</span>`).join('')}${cells}</div>
+    <div class="mlegend"><span><i style="background:#dff3e6;border:1px solid #7cc99a"></i>Partita in casa</span><span><i style="background:#e3ecf8;border:1px solid #9fb6d6"></i>In trasferta</span><span><i style="background:var(--surface-2);border:1px solid var(--line-2)"></i>Allenamento</span><span>✓ vinta · ✗ persa</span></div></div>`;
+}
+function recordHTML(played){
+  if(!played.length) return '';
+  const O=played.map(m=>({m, o:matchOutcome(m), s:matchSets(m)}));
+  const known=O.filter(x=>x.o), V=known.filter(x=>x.o.win).length, P=known.length-V;
+  const sw=known.reduce((s,x)=>s+x.o.noi,0), sl=known.reduce((s,x)=>s+x.o.loro,0), pts=known.reduce((s,x)=>s+x.o.pts,0);
+  const last5=known.slice(0,5).reverse();
+  return `<div class="group-title" style="--c:#8a94a6"><span class="bar"></span><h2>Andamento</h2><span class="muted">${played.length} giocat${played.length===1?'a':'e'}</span></div>
+  ${known.length?`<div class="rec"><div class="k"><span>Vinte</span><b style="color:#22a05a">${V}</b></div><div class="k"><span>Perse</span><b style="color:#d64a5a">${P}</b></div><div class="k"><span>Set</span><b>${sw}–${sl}</b></div><div class="k"><span>Punti</span><b>${pts}</b></div>${last5.length?`<div class="k"><span>Ultime ${last5.length}</span><b class="streak">${last5.map(x=>`<i class="${x.o.win?'V':'P'}">${x.o.win?'V':'P'}</i>`).join('')}</b></div>`:''}</div>`:''}
+  <table class="rtab"><thead><tr><th>Data</th><th>Partita</th><th class="n">Set</th><th class="n">Esito</th><th class="n hide-s">Punti</th><th class="n hide-s">Conv.</th></tr></thead>
+  <tbody>${O.map(x=>`<tr data-action="open-match" data-id="${x.m.id}"><td style="white-space:nowrap">${shortDate(x.m.data)}</td><td><b>${esc(matchTitle(x.m))}</b>${x.m.giornata?` <span class="muted" style="font-size:12px">· ${/^\d+$/.test(x.m.giornata)?x.m.giornata+'ª g.':esc(x.m.giornata)}</span>`:''}</td>
+    <td class="n"><b>${x.s?x.s.noi+'–'+x.s.loro:'<span class="muted">—</span>'}</b></td><td class="n">${x.o?`<span class="esito ${x.o.win?'V':'P'}">${x.o.win?'V':'P'}</span>`:'<span class="muted" style="font-size:12px">da inserire</span>'}</td>
+    <td class="n hide-s">${x.o?x.o.pts:''}</td><td class="n hide-s">${convocati(x.m).length||''}</td></tr>`).join('')}</tbody></table>
+  <p class="muted" style="font-size:12px;margin:6px 0 0">Set e punti si calcolano dal risultato (scritto come «set della squadra di casa – set degli ospiti», es. 3-1) o dai set registrati con le statistiche in partita. Punti: 3 per la vittoria 3-0/3-1, 2 per il 3-2, 1 per la sconfitta 2-3.</p>`;
+}
+function segMatchHTML(){ const v=viewMode('match'); return `<div class="vseg" role="group" aria-label="Vista">${[['schede','grid','Schede'],['compatta','list','Compatta'],['mese','partite','Mese']].map(([k,ic,l])=>`<button data-action="view-mode" data-k="match" data-v="${k}" class="${v===k?'on':''}" title="Vista ${l.toLowerCase()}"><span class="si">${ICO[ic]}</span><span class="sl">${l}</span></button>`).join('')}</div>`; }
 function viewPartite(){
-  const t=todayISO(), all=[...db.matches].sort((a,b)=>matchDT(a).localeCompare(matchDT(b)));
-  const next=all.filter(m=>!m.data || m.data>=t), past=all.filter(m=>m.data && m.data<t).reverse();
+  const t=todayISO(), camps=campList(), sel=campSel(), scope=campScope().slice().sort((a,b)=>matchDT(a).localeCompare(matchDT(b)));
+  const next=scope.filter(m=>!isPlayed(m)), past=scope.filter(isPlayed).reverse();
+  const hero=next.find(m=>m.data) || null, rest=next.filter(m=>m!==hero), vm=viewMode('match');
+  const selName=sel==='__all'?'Tutti i campionati':sel;
   return `<section>
   <div class="page-head">
-    <div><h1>Partite</h1><p class="muted">${all.length} partit${all.length===1?'a':'e'} in calendario · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
-    <div class="actions"><button class="btn" data-action="print-cal">Stampa calendario</button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
+    <div><h1>Partite</h1><p class="muted">${esc(selName)} · ${scope.length} partit${scope.length===1?'a':'e'} · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
+    <div class="actions">${db.matches.length?segMatchHTML():''}<button class="btn" data-action="print-cal">Stampa calendario</button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
   </div>
-  ${!all.length?`<div class="empty">Nessuna partita in calendario. Aggiungi la prima con «+ Nuova partita».<br><span style="font-size:13px">Suggerimento: dopo la prima, usa «Duplica» per le successive: palestra, orari e convocati restano già compilati.</span></div>`:''}
-  ${next.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>Prossime partite</h2><span class="muted">${next.length}</span></div><div class="match-list">${next.map((m,i)=>matchCard(m, i===0 && !!m.data)).join('')}</div>`:''}
-  ${past.length?`<div class="group-title" style="--c:#8a94a6"><span class="bar"></span><h2>Partite giocate</h2><span class="muted">${past.length}</span></div><div class="match-list">${past.map(m=>matchCard(m,false,true)).join('')}</div>`:''}
-  ${all.length?convSummaryHTML():''}
+  ${camps.length?`<div class="camp-bar"><div class="chips">${camps.map(c=>`<button class="chip ${sel===c.name?'on':''}" data-action="camp-sel" data-v="${esc(c.name)}">${esc(c.name)} <span>${c.ms.length}</span></button>`).join('')}${camps.length>1?`<button class="chip ${sel==='__all'?'on':''}" data-action="camp-sel" data-v="__all">Tutti <span>${db.matches.length}</span></button>`:''}</div>
+    ${sel!=='__all'?`<button class="btn sm" data-action="camp-rename" title="${sel===CAMP_NONE?'Assegna un campionato':'Rinomina il campionato'}">✎<span class="sl"> ${sel===CAMP_NONE?'Assegna un campionato':'Rinomina'}</span></button>`:''}</div>`:''}
+  ${sel===CAMP_NONE&&scope.length?`<div class="warn">Queste partite non hanno il campo «Campionato». Premi «Assegna un campionato» per raggrupparle (es. «Invernale 2026/27»); le prossime che aggiungi da qui lo avranno già compilato.</div>`:''}
+  ${!db.matches.length?`<div class="empty">Nessuna partita in calendario. Aggiungi la prima con «+ Nuova partita».<br><span style="font-size:13px">Scrivi il nome del campionato (es. «Invernale 2026/27»): le partite si raggruppano da sole. Dopo la prima, usa «Duplica» per le successive.</span></div>`:''}
+  ${hero && vm!=='mese'?heroHTML(hero):''}
+  ${vm==='mese'?monthHTML(scope):(rest.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>${hero?'Dopo':'Prossime partite'}</h2><span class="muted">${rest.length}</span></div>${vm==='compatta'?matchRowsHTML(rest):`<div class="match-list">${rest.map(m=>matchCard(m,false)).join('')}</div>`}`:'')}
+  ${past.length?`<div style="margin-top:22px">${recordHTML(past)}</div>`:''}
+  ${scope.length?convSummaryHTML():''}
   ${seasonStatsHTML()}
   </section>`;
 }
@@ -2441,7 +2593,8 @@ const ROLE_QUOTA_DEF={'Palleggiatore':2,'Banda':4,'Centrale':4,'Opposto':2,'Libe
 const ROLE_LBL_NOTE='';
 const isPlayed=m=>!!m.data && (m.data<todayISO() || !!(m.risultato||'').trim());
 function convCount(aid, beforeISO, exceptId){   // partite giocate in cui l'atleta era convocato
-  return db.matches.filter(m=>m.id!==exceptId && isPlayed(m) && (!beforeISO || m.data<beforeISO) && (m.convocati||[]).includes(aid)).length;
+  const cm=exceptId&&getMatch(exceptId);
+  return db.matches.filter(m=>m.id!==exceptId && isPlayed(m) && (!cm || campOf(m)===campOf(cm)) && (!beforeISO || m.data<beforeISO) && (m.convocati||[]).includes(aid)).length;
 }
 function suggestCandidates(m, o){
   const ref=m.data||'9999-12-31', out=[], excl=[];
@@ -2552,7 +2705,7 @@ function openSuggest(){
 }
 /* riepilogo: quante partite ha giocato da convocato ogni atleta */
 function convSummary(all){
-  const played=db.matches.filter(isPlayed), future=db.matches.filter(m=>!isPlayed(m));
+  const sc=campScope(), played=sc.filter(isPlayed), future=sc.filter(m=>!isPlayed(m));
   const L=db.athletes.filter(a=>all || a.iscritto).map(a=>{
     const mine=played.filter(m=>(m.convocati||[]).includes(a.id)).sort((x,y)=>x.data.localeCompare(y.data));
     return {a, n:mine.length, next:future.filter(m=>(m.convocati||[]).includes(a.id)).length, last:mine.length?mine[mine.length-1].data:'', sp:seasonPct(a.id)};
@@ -2570,7 +2723,7 @@ function convSummaryHTML(){
       <td class="n">${x.sp===null?'<span class="muted">—</span>':x.sp+'%'}</td>
       <td class="muted" style="white-space:nowrap">${x.last?shortDate(x.last):'mai'}</td>
       <td>${low?'<span class="conv-no">sotto la media</span>':high?'<span style="color:#2f6fb8;font-weight:700">sopra la media</span>':''}</td></tr>`; }).join('');
-  return `<details class="panel" id="conv-sum" ${ui.csOpen?'open':''} style="margin-top:22px"><summary><b style="font-size:18px">Riepilogo convocazioni</b> <span class="muted">· ${S.played} partit${S.played===1?'a giocata':'e giocate'} · media ${S.avg.toFixed(1).replace('.',',')} a testa</span></summary>
+  return `<details class="panel" id="conv-sum" ${ui.csOpen?'open':''} style="margin-top:22px"><summary><b style="font-size:18px">Riepilogo convocazioni</b>${campSel()!=='__all'?` <span class="muted">· ${esc(campSel())}</span>`:''} <span class="muted">· ${S.played} partit${S.played===1?'a giocata':'e giocate'} · media ${S.avg.toFixed(1).replace('.',',')} a testa</span></summary>
     <div class="actions" style="margin:12px 0 8px"><label class="sw" style="min-height:0"><input type="checkbox" id="cs-all" ${ui.csAll?'checked':''}> Mostra anche i non iscritti</label><span style="flex:1"></span><button class="btn sm" data-action="print-convsum">Stampa riepilogo</button></div>
     <div style="overflow:auto"><table class="atable"><thead><tr><th>Atleta</th><th>Ruolo</th><th title="Partite giocate da convocato / partite giocate">Partite da convocato</th><th style="text-align:center" title="Partite future in cui è già convocato">In programma</th><th class="n">Presenze all.</th><th>Ultima</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">Si contano le partite con data passata (o con il risultato inserito). In arancione chi è più di una partita sotto la media, in blu chi è più di una partita sopra.</p></details>`;
@@ -2845,7 +2998,7 @@ function openMatchStats(){
     <div class="modal-foot"><button class="btn danger" data-action="stats-reset">Azzera le statistiche</button><span style="flex:1"></span><button class="btn" data-action="stats-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
 }
 function seasonStatsHTML(){
-  const ms=db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.length);
+  const ms=campScope().filter(m=>m.stats && m.stats.ev && m.stats.ev.length);
   if(!ms.length) return '';
   const ev=ms.flatMap(m=>m.stats.ev), played={};
   ms.forEach(m=>{ for(const [id,n] of Object.entries(playedCount(m))) played[id]=(played[id]||0)+n; });
@@ -2925,13 +3078,13 @@ function viewPartita(){
       ${f('data','Data','date')}${f('ora','Inizio gara','time')}${f('oraRitrovo','Ritrovo','time')}
       ${f('avversario','Avversario','text','Es. Polisportiva Esempio')}
       <label class="f">Campo<select data-mf="inCasa"><option value="1" ${m.inCasa?'selected':''}>In casa</option><option value="0" ${m.inCasa?'':'selected'}>In trasferta</option></select></label>
-      ${f('competizione','Campionato','text','Es. Mista 3ª Generazione')}
+      <label class="f">Campionato<input type="text" data-mf="competizione" list="dl-camp" value="${esc(m.competizione)}" placeholder="Es. Invernale 2026/27"><datalist id="dl-camp">${campList().filter(c=>c.name!==CAMP_NONE).map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist></label>
       ${f('giornata','Giornata','text','Es. 3')}
       ${f('numeroGara','N° gara','text','Es. 1234')}
       ${f('palestra','Palestra','text','Es. Palestra comunale')}
       ${f('indirizzo','Indirizzo','text','Via e città','span2')}
       ${f('divisa','Divisa','text','Es. maglia blu')}
-      ${f('risultato','Risultato','text','Es. 3-1')}
+      ${f('risultato','Risultato (set casa – ospiti)','text','Es. 3-1')}
       <label class="f span3">Note per i convocati<textarea data-mf="note" rows="2">${esc(m.note)}</textarea></label>
     </div></div>
     <div class="panel" id="abs-panel">${absPanelHTML(m)}</div>
@@ -2966,7 +3119,7 @@ function touchMatch(m){
 }
 function newMatch(from){
   const t=Date.now();
-  const m = from ? Object.assign(clone(from), {id:newId('pa'), data:'', risultato:'', numeroGara:'', giornata:/^\d+$/.test((from.giornata||'').trim())?String(+from.giornata+1):'', createdAt:t, updatedAt:t})
+  const m = from ? Object.assign(clone(from), {id:newId('pa'), data:'', risultato:'', numeroGara:'', stats:null, assenti:[], giornata:/^\d+$/.test((from.giornata||'').trim())?String(+from.giornata+1):'', createdAt:t, updatedAt:t})
                  : {id:newId('pa'), data:'', ora:'', oraRitrovo:'', avversario:'', inCasa:true, palestra:'', indirizzo:'', competizione:'', giornata:'', numeroGara:'', divisa:'', risultato:'', note:DEFAULT_CONV_NOTE, convocati:[], createdAt:t, updatedAt:t};
   db.matches.push(m); persist.match(m).catch(saveFail); return m;
 }
@@ -2993,8 +3146,8 @@ function printConv(m, arb){
     (arb?'Elenco arbitro ':'Convocazione ')+(m.data||''));
 }
 function printCalendar(){
-  const all=[...db.matches].sort((a,b)=>matchDT(a).localeCompare(matchDT(b))); if(!all.length){ alert('Il calendario è vuoto.'); return; }
-  doPrint(`<div class="p-head">${headTeam()}<h1>Calendario partite</h1><div class="p-meta"><span>${all.length} partite</span></div></div>
+  const all=campScope().slice().sort((a,b)=>matchDT(a).localeCompare(matchDT(b))); if(!all.length){ alert('Il calendario è vuoto.'); return; }
+  doPrint(`<div class="p-head">${headTeam()}<h1>Calendario partite</h1><div class="p-meta">${campSel()!=='__all'?`<span><b>${esc(campSel())}</b></span>`:''}<span>${all.length} partite</span></div></div>
     <table class="p-sched"><thead><tr><th>Data</th><th>Ora</th><th>Partita</th><th>Campo</th><th>Palestra</th><th>Risultato</th></tr></thead>
     <tbody>${all.map(m=>`<tr><td>${m.data?esc(cap(fmtDate(m.data,{weekday:'short',day:'numeric',month:'short',year:'numeric'}))):'da definire'}</td><td>${esc(m.ora)}</td><td><b>${esc(matchTitle(m))}</b>${matchInfo(m)?`<div style="font-size:8pt;color:#666">${esc(matchInfo(m))}</div>`:''}</td><td>${m.inCasa?'Casa':'Trasferta'}</td><td>${esc([m.palestra,m.indirizzo].filter(Boolean).join(', '))}</td><td><b>${esc(m.risultato)}</b></td></tr>`).join('')}</tbody></table>`, 'Calendario partite');
 }
@@ -3251,6 +3404,14 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'camp-sel': b=>{ ui.camp=b.dataset.v; ui.cmonth=null; render(); },
+  'camp-rename': ()=>{ const c=campSel(); if(c==='__all') return; const v=(prompt(c===CAMP_NONE?'Nome del campionato per queste partite (es. Invernale 2026/27):':'Nuovo nome del campionato:', c===CAMP_NONE?'':c)||'').trim(); if(!v || v===c) return;
+    const L=db.matches.filter(m=>campOf(m)===c); L.forEach(m=>{ m.competizione=v; m.updatedAt=Date.now(); persist.match(m).catch(saveFail); }); ui.camp=v; render(); toast(`${L.length} partit${L.length===1?'a':'e'} in «${v}»`); },
+  'cm-prev': ()=>{ const [y,m]=ui.cmonth.split('-').map(Number); const d=new Date(y,m-2,1); ui.cmonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); render(); },
+  'cm-next': ()=>{ const [y,m]=ui.cmonth.split('-').map(Number); const d=new Date(y,m,1); ui.cmonth=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); render(); },
+  'cm-today': ()=>{ ui.cmonth=todayISO().slice(0,7); render(); },
+  'hero-wa': b=>{ window.open('https://wa.me/?text='+encodeURIComponent(waText(getMatch(b.dataset.id))), '_blank'); },
+  'hero-live': b=>{ ui.matchId=b.dataset.id; actions['live-open'](); },
   'theme-set': b=>{ try{ localStorage.setItem('vs-theme', b.dataset.v); }catch(e){} applyTheme(); render(); },
   'brand-sw': b=>{ db.settings[b.dataset.k]=b.dataset.v; saveBrand(); },
   'brand-reset': ()=>{ db.settings.colore=''; db.settings.accento=''; saveBrand(); },
@@ -3289,7 +3450,7 @@ const actions={
   'del-at': b=>{ const a=getAt(b.dataset.id); if(!a || !confirm(`Eliminare «${fullName(a)}» dall'anagrafica?`)) return;
     api('DELETE','/api/atleti/'+encodeURIComponent(a.id)).then(()=>{ db.athletes=db.athletes.filter(x=>x.id!==a.id); closeModal(); render(); toast('Atleta eliminato'); }).catch(saveFail); },
   'print-at': ()=>printAthletes(),
-  'new-match': ()=>{ const m=newMatch(); go('partita',{matchId:m.id}); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
+  'new-match': ()=>{ const m=newMatch(); { const c=campSel(); if(c!=='__all' && c!==CAMP_NONE){ m.competizione=c; persist.match(m).catch(saveFail); } } go('partita',{matchId:m.id}); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
   'open-match': b=>go('partita',{matchId:b.dataset.id}),
   'dup-match': ()=>{ const m=newMatch(getMatch(ui.matchId)); go('partita',{matchId:m.id}); toast('Partita duplicata: giornata aumentata di 1, inserisci data, avversario e n° gara'); setTimeout(()=>$('[data-mf=data]')?.focus(),50); },
   'del-match': ()=>{ const m=getMatch(ui.matchId); if(!m || !confirm(`Eliminare la partita «${matchTitle(m)}»?`)) return; clearTimeout(touchMatch._t);

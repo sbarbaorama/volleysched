@@ -1656,6 +1656,41 @@ body.locked #nav, body.locked .fab, body.locked .sync-pill{display:none!importan
 .ver-msg.ok{color:#1d8a4f}.ver-msg.new{color:#b25a00;font-weight:700}
 .guide .gver{font-size:12.5px;color:var(--muted);margin-top:2px}
 
+
+.team-list{display:flex;flex-direction:column;gap:6px;margin:6px 0 10px}
+.team-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.team-row.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.team-row b{flex:1;min-width:120px}
+.team-pick{display:flex;flex-direction:column;gap:8px}
+.team-pick button{display:flex;align-items:center;gap:10px;border:1px solid var(--line-2);background:var(--surface);border-radius:12px;padding:12px 14px;font-weight:800;font-size:16px;cursor:pointer;color:var(--ink);text-align:left}
+.team-pick button.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+.team-pick img{width:34px;height:34px;border-radius:50%;object-fit:contain;background:#fff}
+.at-teams{display:flex;flex-wrap:wrap;gap:6px 14px}
+.home-head .tsw{margin-left:auto;flex:none}
+
+
+.pgs-h{display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;margin-bottom:8px}
+.pgs-h h2{margin:0}
+.pgs-h .muted{font-size:12.5px}
+.pgs-tabs{display:flex;gap:6px;margin:4px 0 10px}
+.pgs-tabs button{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:5px 14px;font-weight:700;font-size:13px;cursor:pointer;color:var(--ink-2)}
+.pgs-tabs button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+.pgs-t{width:100%;border-collapse:collapse;font-size:13.5px}
+.pgs-t th{text-align:left;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding:4px 6px;border-bottom:1px solid var(--line)}
+.pgs-t td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.pgs-t .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pgs-t tr.me td{background:color-mix(in srgb,var(--accent) 12%,var(--surface));font-weight:800}
+.pgs-g{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 4px}
+.pgs-m{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 8px;border-bottom:1px solid var(--line);font-size:13.5px}
+.pgs-m.me{background:color-mix(in srgb,var(--accent) 9%,var(--surface));border-radius:8px}
+.pgs-m .d{font-size:12px;color:var(--muted);line-height:1.25}
+.pgs-m .r{font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+.pgs-m .r small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.pgs-m b{font-weight:800}
+.pgs-cta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pgs-setup label{display:block;margin-top:10px}
+@media (max-width:760px){ .pgs-t .hs{display:none} .pgs-m{grid-template-columns:62px minmax(0,1fr) auto;font-size:13px} }
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -1791,11 +1826,12 @@ let db = {exercises:[], sessions:[], athletes:[], matches:[], trainings:[], sett
 let info = {};
 let offline = false;
 async function api(method, url, body, opts={}){
+  if(typeof teamStamp==='function') teamStamp(method, url, body);
   try{ const r=await Store.api(method, url, body!==undefined ? JSON.parse(JSON.stringify(body)) : undefined); setOffline(false); return r; }
   catch(e){ if(e && /bloccato|annullata|Scrittura/.test(e.message||'')) setOffline(true); throw e; }
 }
 function setOffline(v){ offline=v; const b=$('#offline'); if(b) b.classList.toggle('hidden', !v); }
-async function loadState(){ const st=await api('GET','/api/stato'); db={exercises:st.exercises, sessions:st.sessions, athletes:st.athletes||[], matches:st.matches||[], trainings:st.trainings||[], notes:st.notes||[], settings:st.settings}; info=st.info||{}; }
+async function loadState(){ const st=await api('GET','/api/stato'); db={exercises:st.exercises, sessions:st.sessions, athletes:st.athletes||[], matches:st.matches||[], trainings:st.trainings||[], notes:st.notes||[], settings:st.settings}; info=st.info||{}; teamApply(); }
 function saveFail(e){ console.error(e); toast(offline ? 'Archivio non disponibile: modifica NON salvata' : 'Errore di salvataggio: '+(e && e.message || '')); }
 const persist = {
   ex: e => api('PUT','/api/esercizi/'+encodeURIComponent(e.id), e),
@@ -2595,7 +2631,7 @@ async function saveEx(){
   if(isNew){ d.id=newId('ex'); d.createdAt=Date.now(); }
   d.updatedAt=Date.now();
   try{ await persist.ex(d); }
-  catch(e){ if(isNew) d.id=null; alert('Salvataggio non riuscito.\nControlla che la finestra del programma (avvia.bat) sia ancora aperta e riprova.\n\n'+(e.message||'')); return; }
+  catch(e){ if(isNew) d.id=null; alert('Salvataggio non riuscito. Riprova; se il problema continua, chiudi e riapri l\'app.\n\n'+(e.message||'')); return; }
   const i=db.exercises.findIndex(e=>e.id===d.id);
   if(i>=0) db.exercises[i]=clone(d); else db.exercises.push(clone(d));
   ui.dirty=false;
@@ -2792,7 +2828,7 @@ function viewHome(){
     ['impostazioni','Archivio','#6b7280','Copie e impostazioni'],
   ];
   return `<section class="home">
-  <div class="home-head">${st.logo?`<img src="${st.logo}" alt="">`:''}<div><h1>${esc(st.squadra||'Volleysched')}</h1><p>${esc(new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</p></div></div>
+  <div class="home-head">${st.logo?`<img src="${st.logo}" alt="">`:''}<div><h1>${esc(st.squadra||'Volleysched')}</h1><p>${esc(new Date().toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))}</p></div>${teamMulti()?'<button class="btn sm tsw" data-action="team-pick">⇄ Squadra</button>':''}</div>
   ${matchDay()?matchDayHTML(matchDay()):''}
   ${(nextM||nextT)?`<div class="home-next">
     ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div><div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
@@ -2974,6 +3010,7 @@ function viewImpostazioni(){
   <div class="page-head"><div><h1>Archivio e impostazioni</h1><div style="margin-top:6px">${verBoxHTML()}</div></div><div class="actions"><button class="btn" data-action="guide-open">📖 Come si fa</button></div></div>
 ${syncPanelHTML()}
 ${licPanelHTML()}
+${teamPanelHTML()}
 ${lookPanelHTML()}
 ${gamePanelHTML()}
   <div class="panel">
@@ -3433,7 +3470,7 @@ function openAtModal(id){
     <div class="atf"><h3>Squadra</h3><div class="atf-g">
       <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
       <label class="f">Taglia maglia gara<select name="taglia"><option value="">—</option>${opt([...new Set([...TAGLIE, a.taglia].filter(Boolean))].map(t=>[t,t]),a.taglia)}</select></label>
-      <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>
+      <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>${teamAtFieldHTML(a)}
       <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
       <label class="f w2">Secondo ruolo (se può giocare anche lì)<input type="text" name="ruolo2" list="dl-ruoli" value="${esc(a.ruolo2||'')}" placeholder="Es. Banda"></label>
     </div></div>
@@ -3458,12 +3495,14 @@ async function saveAt(){
   const fd=new FormData($('#at-form')), a=ui.atDraft;
   for(const k of ['nome','cognome','cellulare','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
   a.iscritto=!!fd.get('iscritto');
+  if(teamMulti()){ const sq=[...document.querySelectorAll('#at-form [name=sq]:checked')].map(x=>x.value); a.squadre=sq.length?sq:[teamCur()]; }
   if(!a.nome && !a.cognome){ alert('Inserisci almeno il nome o il cognome.'); $('#at-form [name=nome]').focus(); return; }
   const isNew=!a.id; if(isNew){ a.id=newId('at'); a.createdAt=Date.now(); }
   a.updatedAt=Date.now();
   try{ await persist.ath(a); }
-  catch(e){ if(isNew) a.id=null; alert('Salvataggio non riuscito.\nControlla che la finestra del programma (avvia.bat) sia ancora aperta e riprova.\n\n'+(e.message||'')); return; }
+  catch(e){ if(isNew) a.id=null; alert('Salvataggio non riuscito. Riprova; se il problema continua, chiudi e riapri l\'app.\n\n'+(e.message||'')); return; }
   const i=db.athletes.findIndex(x=>x.id===a.id); if(i>=0) db.athletes[i]=clone(a); else db.athletes.push(clone(a));
+  if(teamMulti() && !atTeams(a).includes(teamCur())) db.athletes=db.athletes.filter(x=>x.id!==a.id);
   closeModal(); render(); toast('Atleta salvato');
 }
 function printAthletes(){
@@ -3631,6 +3670,7 @@ function viewPartite(){
   ${sel===CAMP_NONE&&scope.length?`<div class="warn">Queste partite non hanno il campo «Campionato». Premi «Assegna un campionato» per raggrupparle (es. «Invernale 2026/27»); le prossime che aggiungi da qui lo avranno già compilato.</div>`:''}
   ${!db.matches.length&&!camps.length?`<div class="empty">Nessuna partita in calendario. Crea il campionato con «＋ Campionato» (es. «Invernale 2026/27») e poi aggiungi le partite con «+ Nuova partita».<br><span style="font-size:13px">Dopo la prima partita, usa «Duplica» per le successive.</span></div>`:''}
   ${hero && vm!=='mese'?heroHTML(hero):''}
+  ${pgsPanelHTML()}
   ${vm==='mese'?monthHTML(scope):(rest.length?`<div class="group-title" style="--c:var(--accent)"><span class="bar"></span><h2>${hero?'Dopo':'Prossime partite'}</h2><span class="muted">${rest.length}</span></div>${vm==='compatta'?matchRowsHTML(rest):`<div class="match-list">${rest.map(m=>matchCard(m,false)).join('')}</div>`}`:'')}
   ${past.length?`<div style="margin-top:22px">${recordHTML(past)}</div>`:''}${refSeasonHTML(past)}
   ${scope.length?convSummaryHTML():''}
@@ -4008,7 +4048,7 @@ function liveEndSet(){
   S.sets.push({noi:L.noi, loro:L.loro});
   const won=S.sets.filter(x=>x.noi>x.loro).length, lost=S.sets.length-won;
   L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
-  if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=`${won}-${lost}`;
+  if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=m.inCasa?`${won}-${lost}`:`${lost}-${won}`;
   touchMatch(m); rerenderLive();
   toast(`Set chiuso · risultato ${won}-${lost}. Controlla rotazione e chi batte per il set ${L.set}.`);
 }
@@ -4176,7 +4216,7 @@ function touchMatch(m){
 }
 function newMatch(from){
   const t=Date.now();
-  const m = from ? Object.assign(clone(from), {id:newId('pa'), data:'', risultato:'', numeroGara:'', stats:null, assenti:[], giornata:/^\d+$/.test((from.giornata||'').trim())?String(+from.giornata+1):'', createdAt:t, updatedAt:t})
+  const m = from ? Object.assign(clone(from), {id:newId('pa'), data:'', risultato:'', numeroGara:'', stats:null, assenti:[], pgsId:'', parziali:'', referto:null, giornata:/^\d+$/.test((from.giornata||'').trim())?String(+from.giornata+1):'', createdAt:t, updatedAt:t})
                  : {id:newId('pa'), data:'', ora:'', oraRitrovo:'', avversario:'', inCasa:true, palestra:'', indirizzo:'', competizione:'', giornata:'', numeroGara:'', divisa:'', risultato:'', note:DEFAULT_CONV_NOTE, convocati:[], createdAt:t, updatedAt:t};
   db.matches.push(m); persist.match(m).catch(saveFail); return m;
 }
@@ -4951,6 +4991,17 @@ const GUIDE=[
 <li>Incollala in <b>Archivio → Chiave di attivazione</b> e premi <b>Attiva la chiave</b>.</li>
 <li>Se usi la sincronizzazione, la chiave arriva da sola anche sugli altri dispositivi.</li></ol>
 <div class="tip">Se la prova finisce prima di avere la chiave i dati non si perdono: restano sul dispositivo e tornano visibili appena inserisci la chiave. Dalla schermata di blocco puoi comunque scaricarne una copia.</div>`],
+['🏆','Campionato PGS Milano',`
+<p>Se giocate un campionato PGS Milano, l'app può scaricare dal sito della PGS la <b>classifica</b> e il <b>calendario con i risultati</b> del vostro girone.</p>
+<ol><li>In <b>Partite</b> premi <b>Collega il campionato</b>.</li>
+<li>Scegli campionato, categoria, girone e la vostra squadra, poi <b>Collega</b>.</li>
+<li>L'app inserisce le vostre partite nel calendario (con palestra e indirizzo della squadra di casa).</li></ol>
+<p>Poi i dati si aggiornano da soli quando apri Partite (al massimo ogni 6 ore) oppure con <b>↻ Aggiorna</b>: se la PGS sposta una partita o pubblica un risultato, la partita nell'app si aggiorna. Le partite che avevi già inserito a mano vengono riconosciute dal numero di gara o dalla data, senza doppioni.</p>`],
+['👥','Più squadre',`
+<p>Se alleni più squadre: <b>Archivio → Squadre → Aggiungi una squadra</b>. Esercizi e sessioni restano in comune; atleti, partite, presenze, note, colori, logo e campionato PGS sono di ogni squadra.</p>
+<ul><li>Per cambiare squadra: pulsante <b>⇄ Squadra</b> nella home.</li>
+<li>Un atleta che gioca in più squadre ha <b>una sola scheda</b>: nella sua scheda spunta le squadre in cui gioca.</li></ul>`],
+['🔢','Versione dell’app',`<p>In <b>Archivio</b>, sotto il titolo, c'è il numero della versione che stai usando. <b>Controlla aggiornamenti</b> ti dice se online ce n'è una più nuova; in quel caso compare la barra <b>Aggiorna</b>.</p>`],
 ['🔒','Dove sono i dati',`<p>L'app non ha un server: i dati sono nel dispositivo (nell'archivio del browser) e, se la colleghi, nel <b>tuo</b> archivio privato su GitHub. Chi ti ha passato l'app non può vedere i tuoi dati.</p>`],
 ];
 function viewGuida(){
@@ -5143,7 +5194,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v44-2026-10-06';
+const APP_VERSION='v45-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5159,6 +5210,214 @@ async function checkUpdate(){
   else show('ok', '✓ Stai usando l\'ultima versione pubblicata.');
 }
 function verBoxHTML(){ return `<div class="ver-box"><span>Volleysched</span><span class="vn">versione ${esc(verLabel(APP_VERSION))}</span><button class="btn sm" data-action="ver-check">Controlla aggiornamenti</button><span id="ver-msg" class="ver-msg"></span></div>`; }
+
+/* ===== Più squadre ===== */
+const TEAM_FIELDS=['squadra','allenatore','colore','accento','logo','campionati','opzioni','calendarioAllenamenti'];
+function teamsRaw(){ try{ const v=JSON.parse((db.settings&&db.settings.squadre)||'[]'); return Array.isArray(v)?v.filter(t=>t&&t.id):[]; }catch(e){ return []; } }
+function teamMulti(){ return teamsRaw().length>1; }
+function teamCur(){ const L=teamsRaw(); if(!L.length) return ''; const m=Store.getMeta('squadraAttiva'); return L.some(t=>t.id===m)?m:L[0].id; }
+function teamFirst(){ const L=teamsRaw(); return L.length?L[0].id:''; }
+function teamLabel(t, i){ return (t && t.squadra) || ('Squadra '+((i||0)+1)); }
+const recTeam=r=>(r && r.squadra) || teamFirst();
+const atTeams=a=>(a && Array.isArray(a.squadre) && a.squadre.length) ? a.squadre : [teamFirst()];
+function teamApply(){
+  if(!teamMulti()) return;
+  const cur=teamCur(), t=teamsRaw().find(x=>x.id===cur)||{};
+  TEAM_FIELDS.forEach(k=>{ db.settings[k]=t[k]!=null?t[k]:''; });
+  db.athletes=db.athletes.filter(a=>atTeams(a).includes(cur));
+  db.matches=db.matches.filter(m=>recTeam(m)===cur);
+  db.trainings=db.trainings.filter(x=>recTeam(x)===cur);
+  db.notes=(db.notes||[]).filter(n=>recTeam(n)===cur);
+}
+function teamStamp(method, url, body){
+  if(!body || (method!=='PUT' && method!=='POST') || !teamMulti()) return;
+  const cur=teamCur();
+  if(/^\/api\/atleti\//.test(url)){ if(!body.squadre || !body.squadre.length) body.squadre=[cur]; }
+  else if(/^\/api\/(partite|allenamenti|note)\//.test(url)){ if(!body.squadra) body.squadra=cur; }
+  else if(url==='/api/allenamenti-multipli'){ (body.items||[]).forEach(t=>{ if(!t.squadra) t.squadra=cur; }); }
+  else if(url==='/api/importa' && body.data){ const d=body.data;
+    (d.athletes||[]).forEach(a=>{ if(!a.squadre || !a.squadre.length) a.squadre=[cur]; });
+    ['matches','trainings','notes'].forEach(k=>(d[k]||[]).forEach(x=>{ if(!x.squadra) x.squadra=cur; })); }
+  else if(url==='/api/impostazioni'){ const L=teamsRaw(), e=L.find(t=>t.id===cur); if(e){ TEAM_FIELDS.forEach(k=>{ e[k]=body[k]||''; }); body.squadre=JSON.stringify(L); } }
+}
+async function teamSwitch(id){ await Store.setMeta('squadraAttiva', id); NAV.stack=[]; await loadState(); applyBrand(); go('home'); toast('Squadra: '+(db.settings.squadra||'')); }
+async function teamAdd(){
+  const name=(prompt('Nome della nuova squadra (es. «Under 16 femminile»):')||'').trim(); if(!name) return;
+  let L=teamsRaw();
+  if(!L.length){ const t0={id:'sq1'}; TEAM_FIELDS.forEach(k=>{ t0[k]=db.settings[k]||''; }); if(!t0.squadra) t0.squadra='Squadra 1'; L=[t0]; }
+  const t={id:'sq'+Date.now().toString(36)}; TEAM_FIELDS.forEach(k=>{ t[k]=''; }); t.squadra=name; L.push(t);
+  db.settings.squadre=JSON.stringify(L);
+  try{ await persist.settings(); }catch(e){ saveFail(e); return; }
+  await teamSwitch(t.id);
+}
+function teamCounts(id){ const st=Store.fullState(), first=(teamsRaw()[0]||{}).id;
+  const rt=r=>(r.squadra||first)===id, at=a=>{ const s=(a.squadre&&a.squadre.length)?a.squadre:[first]; return s.length===1 && s[0]===id; };
+  return {at:st.athletes.filter(at).length, ma:st.matches.filter(rt).length, tr:st.trainings.filter(rt).length, no:(st.notes||[]).filter(rt).length}; }
+async function teamRename(id){
+  const L=teamsRaw(), t=L.find(x=>x.id===id); if(!t) return;
+  const name=(prompt('Nuovo nome della squadra:', t.squadra||'')||'').trim(); if(!name) return;
+  t.squadra=name; if(id===teamCur()) db.settings.squadra=name; db.settings.squadre=JSON.stringify(L);
+  try{ await persist.settings(); }catch(e){ saveFail(e); return; } render(); toast('Nome aggiornato');
+}
+async function teamDelete(id){
+  const L=teamsRaw(); if(L.length<2) return; const c=teamCounts(id);
+  if(c.at||c.ma||c.tr||c.no){ alert(`Questa squadra ha ancora ${c.at} atleti solo suoi, ${c.ma} partite, ${c.tr} allenamenti e ${c.no} note. Per eliminarla prima toglili o spostali.`); return; }
+  if(!confirm('Eliminare la squadra «'+(L.find(x=>x.id===id).squadra||'')+'»?')) return;
+  const N=L.filter(x=>x.id!==id); const cur=teamCur();
+  if(N.length===1){ const t0=N[0]; db.settings.squadre=''; if(cur===id) TEAM_FIELDS.forEach(k=>{ db.settings[k]=t0[k]||''; }); }
+  else db.settings.squadre=JSON.stringify(N);
+  try{ await persist.settings(); }catch(e){ saveFail(e); return; }
+  if(cur===id || N.length===1){ await Store.setMeta('squadraAttiva', N[0].id); await loadState(); applyBrand(); }
+  render(); toast('Squadra eliminata');
+}
+function teamPanelHTML(){
+  const L=teamsRaw(), cur=teamCur();
+  if(L.length<2) return `<div class="panel" id="team-panel"><h2>Squadre</h2>
+    <p style="margin-top:0;font-size:14px">Alleni più di una squadra? Aggiungine un'altra: esercizi e sessioni restano in comune, mentre atleti, partite, presenze, note, colori e logo sono di ogni squadra. Un atleta può far parte di più squadre con un'unica scheda.</p>
+    <button class="btn" data-action="team-add">＋ Aggiungi una squadra</button></div>`;
+  return `<div class="panel" id="team-panel"><h2>Squadre</h2>
+    <p class="muted" style="margin-top:0;font-size:13px">Esercizi e sessioni sono in comune; atleti, partite, presenze, note, colori e logo sono di ogni squadra.</p>
+    <div class="team-list">${L.map((t,i)=>`<div class="team-row ${t.id===cur?'on':''}"><b>${esc(teamLabel(t,i))}</b>${t.id===cur?'<span class="muted" style="font-size:12.5px">in uso</span>':`<button class="btn sm primary" data-action="team-sw" data-id="${t.id}">Passa a questa</button>`}<button class="btn sm" data-action="team-ren" data-id="${t.id}">✎</button><button class="btn sm danger" data-action="team-del" data-id="${t.id}" title="Elimina">🗑</button></div>`).join('')}</div>
+    <button class="btn" data-action="team-add">＋ Aggiungi una squadra</button></div>`;
+}
+function openTeamPick(){
+  const L=teamsRaw(), cur=teamCur();
+  openModal(`<div class="modal-box" style="max-width:440px"><div class="modal-head"><h2 style="flex:1">Scegli la squadra</h2><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><div class="team-pick">${L.map((t,i)=>`<button class="${t.id===cur?'on':''}" data-action="team-sw" data-id="${t.id}">${t.logo?`<img src="${t.logo}" alt="">`:'🏐'} ${esc(teamLabel(t,i))}</button>`).join('')}</div>
+    <div class="actions" style="margin-top:12px"><button class="btn" data-action="team-add">＋ Nuova squadra</button></div></div></div>`);
+}
+function teamAtFieldHTML(a){
+  if(!teamMulti()) return '';
+  const L=teamsRaw(), mine=a.id?atTeams(a):[teamCur()];
+  return `<div class="f span3" style="font-size:13px;font-weight:600;color:var(--ink-2)">Squadre<div class="at-teams">${L.map((t,i)=>`<label class="sw" style="font-weight:600"><input type="checkbox" name="sq" value="${t.id}" ${mine.includes(t.id)?'checked':''}> ${esc(teamLabel(t,i))}</label>`).join('')}</div><span class="muted" style="font-weight:500">Un atleta può giocare in più squadre: la scheda (visita, documenti, contatti) resta una sola.</span></div>`;
+}
+
+/* ===== Campionato PGS Milano ===== */
+const PGS_API='https://volley.pgsmilano.org/api/';
+let pgsBusy=false;
+async function pgsGet(path){ const r=await fetch(PGS_API+path, {cache:'no-store'}); if(!r.ok) throw new Error('PGS '+r.status); return r.json(); }
+function pgsCfg(){ const c=opz().pgs; return c && c.teamId ? c : null; }
+function pgsKey(){ return 'pgs:'+(teamCur()||'1'); }
+function pgsData(){ return Store.getMeta(pgsKey())||null; }
+const pgsDate=s=>{ const m=String(s||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); return m?`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`:''; };
+const pgsCampApp=()=>{ const c=pgsCfg(); return c ? (c.campApp || c.campNome || '') : ''; };
+async function pgsRefresh(){
+  const c=pgsCfg(); if(!c || pgsBusy) return null; pgsBusy=true;
+  try{
+    const [cal, cl, isc]=await Promise.all([pgsGet('calendari/campionato/'+c.camp), pgsGet('classifiche/campionato/'+c.camp), pgsGet('iscrizioni/campionato/'+c.camp+'/light')]);
+    const inG=x=>x.categoria===c.cat && String(x.girone)===String(c.girone);
+    const part=cal.filter(inG).map(p=>({id:p.id||p._id, g:String(p.giornata||''), n:String(p.numeroGara||''), data:p.data||'', ora:p.ora||'', casa:p.squadraCasaID, trasf:p.squadraTrasfertaID,
+      sc:p.setVintiCasa, st:p.setVintiTrasferta, pc:p.parzialiCasa||[], pt:p.parzialiTrasferta||[]}));
+    const clas=((cl.find(inG)||{}).squadre||[]).map(s=>({id:s.squadraID, pos:s.ranking, pti:(s.punteggio||0)-(s.penalita||0), v:s.partiteVinte||0, p:s.partitePerse||0, pa:s.partitePareggiate||0, sv:s.setVinti||0, sp:s.setPersi||0, pv:s.puntiVinti||0, pp:s.puntiPersi||0}))
+      .sort((a,b)=>(a.pos||99)-(b.pos||99));
+    const ids=new Set(part.flatMap(p=>[p.casa,p.trasf])); clas.forEach(s=>ids.add(s.id)); ids.add(c.teamId);
+    const names={}; isc.forEach(s=>{ const id=s.id||s._id; if(ids.has(id)) names[id]=s.nomeSquadra; });
+    const old=pgsData()||{}; let gyms=old.gyms||{}, gymsAt=old.gymsAt||0;
+    if(!Object.keys(gyms).length || Date.now()-gymsAt>7*864e5){
+      try{ const full=await pgsGet('iscrizioni/campionato/'+c.camp); gyms={};
+        full.forEach(s=>{ const id=s.id||s._id; if(ids.has(id)) gyms[id]={presso:s.presso||'', indirizzo:s.indirizzo||'', citta:s.citta||''}; }); gymsAt=Date.now(); }catch(e){}
+    }
+    const d={at:Date.now(), part, clas, names, gyms, gymsAt};
+    await Store.setMeta(pgsKey(), d);
+    return d;
+  } finally { pgsBusy=false; }
+}
+function pgsOurs(d,c){ return d.part.filter(p=>p.casa===c.teamId || p.trasf===c.teamId); }
+async function pgsImport(createNew){
+  const c=pgsCfg(), d=pgsData(); if(!c || !d) return {created:0, updated:0};
+  const camp=pgsCampApp(); if(camp && !campDefs().includes(camp)) saveCampDefs([...campDefs(), camp]);
+  let created=0, updated=0;
+  for(const p of pgsOurs(d,c)){
+    const home=p.casa===c.teamId, g=d.gyms[p.casa]||{}, data=pgsDate(p.data);
+    const fields={data, ora:p.ora, avversario:d.names[home?p.trasf:p.casa]||'Avversario', inCasa:home, giornata:p.g, numeroGara:p.n};
+    const place={palestra:(g.presso && g.citta && !g.presso.toUpperCase().includes(g.citta.toUpperCase()))?g.presso+' '+g.citta:(g.presso||g.citta||''), indirizzo:[g.indirizzo,g.citta].filter(Boolean).join(', ')};
+    const hasRes=p.sc!=null && p.st!=null && (p.sc+p.st)>0, res=hasRes?`${p.sc}-${p.st}`:'', parz=hasRes?p.pc.map((x,i)=>x+'-'+(p.pt[i]??'')).join(' '):'';
+    const oppN=String(fields.avversario).toLowerCase().replace(/[^a-z0-9]/g,''), near=x=>{ if(!x.data||!data) return false; const dd=Math.abs((parseISO(x.data)-parseISO(data))/864e5); const on=String(x.avversario||'').toLowerCase().replace(/[^a-z0-9]/g,''); return dd<=21 && on.length>=3 && (oppN.includes(on)||on.includes(oppN)) && !!x.inCasa===home; };
+    let m=db.matches.find(x=>x.pgsId===p.id) || (p.n && db.matches.find(x=>!x.pgsId && x.numeroGara===p.n)) || (data && db.matches.find(x=>!x.pgsId && x.data===data)) || db.matches.find(x=>!x.pgsId && near(x));
+    if(!m){ if(!createNew) continue;
+      m=newMatch(); Object.assign(m, fields, place, {pgsId:p.id, competizione:camp}); if(hasRes){ m.risultato=res; m.parziali=parz; }
+      await persist.match(m); created++; continue; }
+    let ch=false; const set=(k,v)=>{ if(v!=='' && v!=null && m[k]!==v){ m[k]=v; ch=true; } };
+    Object.entries(fields).forEach(([k,v])=>set(k,v));
+    Object.entries(place).forEach(([k,v])=>{ if(!m[k] && v){ m[k]=v; ch=true; } });
+    if(!m.pgsId){ m.pgsId=p.id; ch=true; }
+    if(!m.competizione && camp){ m.competizione=camp; ch=true; }
+    if(hasRes){ set('risultato',res); set('parziali',parz); }
+    if(ch){ m.updatedAt=Date.now(); await persist.match(m); updated++; }
+  }
+  return {created, updated};
+}
+function pgsAuto(){
+  const c=pgsCfg(); if(!c || pgsBusy || !navigator.onLine) return;
+  const d=pgsData(); if(d && Date.now()-d.at<6*3600e3) return;
+  pgsRefresh().then(async r=>{ if(!r) return; await pgsImport(false); if(ui.view==='partite') render(); }).catch(()=>{});
+}
+function pgsAgo(t){ if(!t) return 'mai'; const m=Math.round((Date.now()-t)/60000); return m<2?'adesso':m<60?m+' min fa':m<1440?Math.round(m/60)+' ore fa':fmtAgo(t); }
+function pgsPanelHTML(){
+  const c=pgsCfg();
+  if(!c){ if(opz().pgsNo) return '';
+    return `<div class="panel" style="margin-top:14px"><div class="pgs-cta"><span style="flex:1;min-width:220px">🏆 <b>Giocate un campionato PGS Milano?</b> Collega il tuo girone: classifica e calendario arrivano direttamente nell'app e le vostre partite si inseriscono da sole.</span>
+      <button class="btn primary" data-action="pgs-setup">Collega il campionato</button><button class="btn sm" data-action="pgs-no">No, grazie</button></div></div>`; }
+  setTimeout(pgsAuto, 50);
+  const d=pgsData(), tab=ui.pgsTab||'cl';
+  const name=id=>(d&&d.names[id])||'?', me=id=>id===c.teamId;
+  let body='';
+  if(!d) body=`<p class="muted">${pgsBusy?'Scarico i dati dalla PGS…':'Ancora nessun dato: premi «Aggiorna».'}</p>`;
+  else if(tab==='cl'){
+    body=d.clas.length?`<table class="pgs-t"><thead><tr><th>#</th><th>Squadra</th><th class="n">Punti</th><th class="n">G</th><th class="n">V</th><th class="n">P</th><th class="n hs">Set</th><th class="n hs">Punti fatti</th></tr></thead><tbody>
+      ${d.clas.map(s=>`<tr class="${me(s.id)?'me':''}"><td>${s.pos||''}</td><td>${esc(name(s.id))}</td><td class="n"><b>${s.pti}</b></td><td class="n">${s.v+s.p+s.pa}</td><td class="n">${s.v}</td><td class="n">${s.p}</td><td class="n hs">${s.sv}-${s.sp}</td><td class="n hs">${s.pv}-${s.pp}</td></tr>`).join('')}</tbody></table>`
+      :`<p class="muted" style="margin:4px 0">La classifica comparirà dopo le prime partite giocate. Squadre del girone: ${[...new Set(d.part.flatMap(p=>[p.casa,p.trasf]))].map(id=>me(id)?`<b>${esc(name(id))}</b>`:esc(name(id))).join(', ')}.</p>`;
+  } else {
+    const byG={}; d.part.forEach(p=>{ (byG[p.g]=byG[p.g]||[]).push(p); });
+    const gs=Object.keys(byG).sort((a,b)=>(+a||0)-(+b||0));
+    body=gs.map(g=>`<div class="pgs-g">Giornata ${esc(g)}</div>${byG[g].sort((a,b)=>pgsDate(a.data).localeCompare(pgsDate(b.data))).map(p=>{ const res=p.sc!=null&&p.st!=null&&(p.sc+p.st)>0;
+      return `<div class="pgs-m ${me(p.casa)||me(p.trasf)?'me':''}"><div class="d">${esc(p.data.slice(0,5))}<br>${esc(p.ora)}</div><div>${me(p.casa)?`<b>${esc(name(p.casa))}</b>`:esc(name(p.casa))} – ${me(p.trasf)?`<b>${esc(name(p.trasf))}</b>`:esc(name(p.trasf))}</div>
+        <div class="r">${res?`${p.sc}-${p.st}<small>${esc(p.pc.map((x,i)=>x+'-'+(p.pt[i]??'')).join(' '))}</small>`:'<span class="muted" style="font-weight:500">—</span>'}</div></div>`; }).join('')}`).join('');
+  }
+  const ours=d?pgsOurs(d,c):[], missing=d?ours.filter(p=>!db.matches.some(x=>x.pgsId===p.id)).length:0;
+  return `<div class="panel" style="margin-top:14px" id="pgs-panel"><div class="pgs-h"><h2>🏆 Campionato PGS</h2><span class="muted">${esc(c.catNome||c.cat)} · girone ${esc(c.girone)} · ${esc(c.campNome||'')}${d?' · aggiornato '+pgsAgo(d.at):''}</span><span style="flex:1"></span>
+      <button class="btn sm" data-action="pgs-refresh" ${pgsBusy?'disabled':''}>↻ Aggiorna</button><button class="btn sm" data-action="pgs-setup" title="Cambia campionato, girone o squadra">⚙</button></div>
+    <div class="pgs-tabs"><button class="${tab==='cl'?'on':''}" data-action="pgs-tab" data-v="cl">Classifica</button><button class="${tab==='cal'?'on':''}" data-action="pgs-tab" data-v="cal">Calendario e risultati</button></div>
+    ${body}
+    ${missing?`<div class="pgs-cta" style="margin-top:12px"><span style="flex:1;min-width:200px">${missing} vostr${missing===1?'a partita':'e partite'} PGS non ${missing===1?'è':'sono'} ancora nel calendario dell'app.</span><button class="btn primary sm" data-action="pgs-import">⬇ Inseriscile</button></div>`
+      :(d&&ours.length?`<p class="muted" style="font-size:12px;margin:10px 0 0">Le vostre partite sono nel calendario: date, orari e risultati si aggiornano da soli dalla PGS.</p>`:'')}
+    <p class="muted" style="font-size:11.5px;margin:8px 0 0">Dati dal sito della PGS Milano (volley.pgsmilano.org).</p></div>`;
+}
+async function openPgsSetup(){
+  const c=pgsCfg()||{}; const S=ui.pgsS={camp:c.camp||'', cat:c.cat||'', girone:c.girone||'', teamId:c.teamId||'', campApp:c.campApp||''};
+  openModal(`<div class="modal-box" style="max-width:560px"><div class="modal-head"><h2 style="flex:1">Campionato PGS Milano</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body pgs-setup" id="pgs-setup"><p class="muted">Carico i campionati dalla PGS…</p></div></div>`);
+  try{ const [camps, cats]=await Promise.all([pgsGet('campionati/all'), pgsGet('categorie/all')]); ui.pgsCamps=camps; ui.pgsCats=cats;
+    if(!S.camp){ const open=camps.filter(x=>!x.campionatoChiuso); S.camp=(open[open.length-1]||camps[camps.length-1]||{}).codice||''; }
+    await pgsSetupRender(); }
+  catch(e){ const b=$('#pgs-setup'); if(b) b.innerHTML=`<div class="warn">Non riesco a collegarmi al sito della PGS. Controlla la connessione e riprova.</div>`; }
+}
+async function pgsSetupRender(){
+  const S=ui.pgsS, box=$('#pgs-setup'); if(!box) return;
+  if(!ui.pgsIsc || ui.pgsIscCamp!==S.camp){ box.innerHTML='<p class="muted">Carico le squadre iscritte…</p>'; try{ ui.pgsIsc=await pgsGet('iscrizioni/campionato/'+S.camp+'/light'); ui.pgsIscCamp=S.camp; }catch(e){ ui.pgsIsc=[]; } }
+  const isc=ui.pgsIsc||[], catsUsed=new Set(isc.map(x=>x.categoria));
+  const cats=(ui.pgsCats||[]).filter(x=>catsUsed.has(x.categoria));
+  if(!cats.some(x=>x.categoria===S.cat)) S.cat=(cats.find(x=>/genitori/i.test(x.nome))||cats[0]||{}).categoria||'';
+  const gir=[...new Set(isc.filter(x=>x.categoria===S.cat).map(x=>String(x.girone||'')).filter(Boolean))].sort((a,b)=>(+a||0)-(+b||0));
+  if(!gir.includes(S.girone)) S.girone=gir[0]||'';
+  const teams=isc.filter(x=>x.categoria===S.cat && String(x.girone)===S.girone).sort((a,b)=>a.nomeSquadra.localeCompare(b.nomeSquadra));
+  if(!teams.some(t=>(t.id||t._id)===S.teamId)){ const guess=teams.find(t=>(db.settings.squadra||'').trim() && t.nomeSquadra.toLowerCase().includes((db.settings.squadra||'').toLowerCase().trim())); S.teamId=((guess||teams[0]||{}).id)||''; }
+  const camp=(ui.pgsCamps||[]).find(x=>x.codice===S.camp)||{};
+  const sel=(k,list)=>`<select data-pgs="${k}">${list.map(([v,l])=>`<option value="${esc(v)}" ${S[k]===v?'selected':''}>${esc(l)}</option>`).join('')}</select>`;
+  box.innerHTML=`<p style="margin-top:0;font-size:14px">Scegli il vostro girone: l'app scarica dal sito della PGS la classifica e il calendario, e inserisce le vostre partite nel calendario dell'app.</p>
+    <label class="f">Campionato${sel('camp', [...(ui.pgsCamps||[])].reverse().map(x=>[x.codice, x.nome+(x.campionatoChiuso?' (concluso)':'')]))}</label>
+    <label class="f">Categoria${sel('cat', cats.map(x=>[x.categoria, x.nome]))}</label>
+    <label class="f">Girone${gir.length?sel('girone', gir.map(g=>[g,'Girone '+g])):'<div class="muted">Nessun girone pubblicato per questa categoria.</div>'}</label>
+    <label class="f">La vostra squadra${teams.length?sel('teamId', teams.map(t=>[t.id||t._id, t.nomeSquadra])):'<div class="muted">—</div>'}</label>
+    <label class="f">Nome del campionato nell'app<input type="text" data-pgs="campApp" value="${esc(S.campApp||camp.nome||'')}" placeholder="${esc(camp.nome||'')}"></label>
+    <div class="actions" style="margin-top:14px">${pgsCfg()?'<button class="btn danger" data-action="pgs-off">Scollega</button>':''}<span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="pgs-save" ${S.teamId?'':'disabled'}>Collega</button></div>`;
+}
+async function pgsSave(){
+  const S=ui.pgsS, camp=(ui.pgsCamps||[]).find(x=>x.codice===S.camp)||{}, cat=(ui.pgsCats||[]).find(x=>x.categoria===S.cat)||{}, t=(ui.pgsIsc||[]).find(x=>(x.id||x._id)===S.teamId)||{};
+  const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', campApp:(S.campApp||'').trim()||camp.nome||''};
+  setOpz('pgs', cfg); await Store.setMeta(pgsKey(), null); closeModal(); toast('Scarico i dati dalla PGS…');
+  try{ await pgsRefresh(); const r=await pgsImport(true); render(); toast(`Campionato collegato · ${r.created} partite inserite${r.updated?', '+r.updated+' aggiornate':''}`); }
+  catch(e){ render(); toast('Non riesco a scaricare i dati dalla PGS: riprova più tardi'); }
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -5352,6 +5611,18 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'pgs-setup': ()=>openPgsSetup(),
+  'pgs-save': ()=>pgsSave(),
+  'pgs-no': ()=>{ setOpz('pgsNo', true); render(); },
+  'pgs-off': ()=>{ if(!confirm('Scollegare il campionato PGS? Le partite già inserite restano.')) return; setOpz('pgs', null); closeModal(); render(); },
+  'pgs-tab': b=>{ ui.pgsTab=b.dataset.v; const p=$('#pgs-panel'); if(p) p.outerHTML=pgsPanelHTML(); },
+  'pgs-refresh': async ()=>{ toast('Aggiorno dalla PGS…'); try{ await pgsRefresh(); const r=await pgsImport(false); render(); toast('Dati PGS aggiornati'+(r.updated?' · '+r.updated+' partite aggiornate':'')); }catch(e){ toast('Non riesco a raggiungere il sito della PGS'); } },
+  'pgs-import': async ()=>{ const r=await pgsImport(true); render(); toast(`${r.created} partite inserite nel calendario`); },
+  'team-add': ()=>{ closeModal(); teamAdd(); },
+  'team-sw': b=>{ closeModal(); teamSwitch(b.dataset.id); },
+  'team-ren': b=>teamRename(b.dataset.id),
+  'team-del': b=>teamDelete(b.dataset.id),
+  'team-pick': ()=>openTeamPick(),
   'ver-check': ()=>checkUpdate(),
   'ver-go': ()=>{ go('impostazioni'); setTimeout(checkUpdate, 100); },
   'bk-now': ()=>{ exportBackup(); toast('Copia scaricata: tienila in un posto sicuro'); setTimeout(()=>{ if(ui.view==='home') render(); }, 300); },
@@ -5615,6 +5886,7 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.pgs && ui.pgsS){ ui.pgsS[e.target.dataset.pgs]=e.target.value; if(e.target.dataset.pgs!=='campApp') pgsSetupRender(); return; }
   if(e.target.dataset.opt){ setOpz(e.target.dataset.opt, e.target.checked); toast(e.target.checked?'Fatto: niente libero':'Libero riattivato'); return; }
   if(e.target.dataset.rf!==undefined){ refFormChange(e.target); return; }
   if(e.target.dataset.qm!==undefined){ qmCount(); return; }

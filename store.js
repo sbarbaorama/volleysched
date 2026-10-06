@@ -12,7 +12,7 @@
 const Store = (() => {
   const DBNAME = 'schedario-pallavolo', VERSION = 2;
   const COLS = ['exercises', 'sessions', 'athletes', 'matches', 'trainings', 'notes'];
-  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo', 'campionati', 'preferiti', 'licenza', 'provaDal', 'opzioni'];
+  const SETTING_KEYS = ['squadra', 'allenatore', 'noteGenerali', 'calendarioAllenamenti', 'colore', 'accento', 'logo', 'campionati', 'preferiti', 'licenza', 'provaDal', 'opzioni', 'squadre'];
   const DATE_RE = /^\d{4}-\d{2}-\d{2}$/, TIME_RE = /^\d{1,2}:\d{2}$/;
   let idb = null;
   const mem = { exercises: new Map(), sessions: new Map(), athletes: new Map(), matches: new Map(), trainings: new Map(), notes: new Map() };
@@ -119,6 +119,7 @@ const Store = (() => {
     }
     if (r.avatar.length > 500000) throw new Error("Immagine dell'atleta troppo grande");
     r.iscritto = [true, 1, '1', 'si', 'SI', 'Si', 'Sì', 'true'].includes(a.iscritto);
+    r.squadre = Array.isArray(a.squadre) ? a.squadre.filter(Boolean).map(String) : [];
     r.createdAt = (old && old.createdAt) || a.createdAt || Date.now(); r.updatedAt = a.updatedAt || Date.now();
     return r;
   }
@@ -138,6 +139,7 @@ const Store = (() => {
     r.formazione = (m.formazione && typeof m.formazione === 'object') ? clone(m.formazione) : null;
     r.stats = (m.stats && typeof m.stats === 'object') ? clone(m.stats) : null;
     r.referto = (m.referto && typeof m.referto === 'object') ? clone(m.referto) : null;
+    r.squadra = s(m.squadra); r.pgsId = s(m.pgsId); r.parziali = s(m.parziali);
     r.createdAt = (old && old.createdAt) || m.createdAt || Date.now(); r.updatedAt = m.updatedAt || Date.now();
     return r;
   }
@@ -148,13 +150,13 @@ const Store = (() => {
     if (ora && !TIME_RE.test(ora)) throw new Error('Orario non valido: ' + ora);
     const pres = {};
     if (t.presenze && typeof t.presenze === 'object') for (const [k, v] of Object.entries(t.presenze)) if (['P', 'A', 'G'].includes(v)) pres[s(k)] = v;
-    return { id: s(t.id), data: d, ora, note: s(t.note), annullato: [true, 1, '1', 'true'].includes(t.annullato), presenze: pres,
+    return { id: s(t.id), squadra: s(t.squadra), data: d, ora, note: s(t.note), annullato: [true, 1, '1', 'true'].includes(t.annullato), presenze: pres,
       createdAt: (old && old.createdAt) || t.createdAt || Date.now(), updatedAt: t.updatedAt || Date.now() };
   }
   function normNote(n, old) {
     const testo = s(n.testo), titolo = s(n.titolo).trim();
     if (!titolo && !testo.trim()) throw new Error('La nota è vuota');
-    return { id: s(n.id), titolo, testo, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
+    return { id: s(n.id), squadra: s(n.squadra), titolo, testo, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
       createdAt: (old && old.createdAt) || n.createdAt || Date.now(), updatedAt: n.updatedAt || Date.now() };
   }
   const NORM = { exercises: normEx, sessions: normSess, athletes: normAt, matches: normMatch, trainings: normTr, notes: normNote };
@@ -182,7 +184,7 @@ const Store = (() => {
     const v = settings.values || {};
     return { squadra: v.squadra || '', allenatore: v.allenatore || '',
       noteGenerali: v.noteGenerali ?? (typeof DEFAULT_NOTE !== 'undefined' ? DEFAULT_NOTE : DEFAULT_NOTE_FALLBACK),
-      calendarioAllenamenti: v.calendarioAllenamenti || '', colore: v.colore || '', accento: v.accento || '', logo: v.logo || '', campionati: v.campionati || '', preferiti: v.preferiti || '', licenza: v.licenza || '', provaDal: v.provaDal || '', opzioni: v.opzioni || '' };
+      calendarioAllenamenti: v.calendarioAllenamenti || '', colore: v.colore || '', accento: v.accento || '', logo: v.logo || '', campionati: v.campionati || '', preferiti: v.preferiti || '', licenza: v.licenza || '', provaDal: v.provaDal || '', opzioni: v.opzioni || '', squadre: v.squadre || '' };
   }
   async function saveSettings(st) {
     const t = now(); let changed = false;

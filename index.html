@@ -2342,7 +2342,7 @@ window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault();
 
 function render(){
   if(licLocked()){ document.body.classList.add('locked'); $('#app').innerHTML=viewLock(); return; } document.body.classList.remove('locked');
-  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto') && b.dataset.nav==='partite')));
+  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto'||ui.view==='pgs') && b.dataset.nav==='partite')));
   refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); document.body.classList.toggle('ref-mode', ui.view==='referto'); if(ui.view!=='allena') keepAwake(false);
   const app=$('#app');
   if(ui.view==='esercizi') app.innerHTML = viewEsercizi();
@@ -2361,6 +2361,7 @@ function render(){
   else if(ui.view==='live') app.innerHTML = viewLive();
   else if(ui.view==='referto'){ app.innerHTML = viewReferto(); const t=$('.rf-tl'); if(t) t.scrollLeft=t.scrollWidth; }
   else if(ui.view==='guida') app.innerHTML = viewGuida();
+  else if(ui.view==='pgs') app.innerHTML = viewPgs();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
   document.body.classList.toggle('live-land', ui.view==='live' && isLand());
   renderNavBadge();
@@ -5194,7 +5195,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v45-2026-10-06';
+const APP_VERSION='v46-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5353,7 +5354,7 @@ function pgsAuto(){
   pgsRefresh().then(async r=>{ if(!r) return; await pgsImport(false); if(ui.view==='partite') render(); }).catch(()=>{});
 }
 function pgsAgo(t){ if(!t) return 'mai'; const m=Math.round((Date.now()-t)/60000); return m<2?'adesso':m<60?m+' min fa':m<1440?Math.round(m/60)+' ore fa':fmtAgo(t); }
-function pgsPanelHTML(){
+function pgsFullHTML(){
   const c=pgsCfg();
   if(!c){ if(opz().pgsNo) return '';
     return `<div class="panel" style="margin-top:14px"><div class="pgs-cta"><span style="flex:1;min-width:220px">🏆 <b>Giocate un campionato PGS Milano?</b> Collega il tuo girone: classifica e calendario arrivano direttamente nell'app e le vostre partite si inseriscono da sole.</span>
@@ -5382,6 +5383,22 @@ function pgsPanelHTML(){
     ${missing?`<div class="pgs-cta" style="margin-top:12px"><span style="flex:1;min-width:200px">${missing} vostr${missing===1?'a partita':'e partite'} PGS non ${missing===1?'è':'sono'} ancora nel calendario dell'app.</span><button class="btn primary sm" data-action="pgs-import">⬇ Inseriscile</button></div>`
       :(d&&ours.length?`<p class="muted" style="font-size:12px;margin:10px 0 0">Le vostre partite sono nel calendario: date, orari e risultati si aggiornano da soli dalla PGS.</p>`:'')}
     <p class="muted" style="font-size:11.5px;margin:8px 0 0">Dati dal sito della PGS Milano (volley.pgsmilano.org).</p></div>`;
+}
+function pgsPanelHTML(){
+  const c=pgsCfg(); if(!c) return pgsFullHTML();
+  setTimeout(pgsAuto, 50);
+  const d=pgsData(), name=id=>(d&&d.names[id])||'?';
+  const s=d && d.clas.find(x=>x.id===c.teamId), ours=d?pgsOurs(d,c):[], missing=d?ours.filter(p=>!db.matches.some(x=>x.pgsId===p.id)).length:0;
+  const done=ours.filter(p=>p.sc!=null&&p.st!=null&&(p.sc+p.st)>0).sort((a,b)=>pgsDate(a.data).localeCompare(pgsDate(b.data))), last=done[done.length-1];
+  const lastTxt=last?(()=>{ const home=last.casa===c.teamId, w=home?last.sc>last.st:last.st>last.sc; return `ultima: ${w?'✓ vinta':'✗ persa'} ${last.sc}-${last.st} con ${esc(name(home?last.trasf:last.casa))}`; })():'';
+  const info=!d?(pgsBusy?'Scarico i dati dalla PGS…':'Premi «Aggiorna» per scaricare i dati.'):s?`<b>${s.pos}° posto</b> su ${d.clas.length} · ${s.pti} punti · ${s.v} vinte, ${s.p} perse`:'La classifica comparirà dopo le prime partite.';
+  return `<div class="panel" style="margin-top:14px" id="pgs-panel"><div class="pgs-h"><h2>🏆 Campionato PGS</h2><span class="muted">${esc(c.catNome||c.cat)} · girone ${esc(c.girone)}</span></div>
+    <div style="font-size:14px">${info}${lastTxt?`<div class="muted" style="font-size:13px;margin-top:2px">${lastTxt}</div>`:''}</div>
+    <div class="actions" style="margin-top:10px"><button class="btn" data-action="pgs-open" data-v="cl">📊 Classifica</button><button class="btn" data-action="pgs-open" data-v="cal">📅 Calendario e risultati</button>${missing?`<button class="btn primary" data-action="pgs-import">⬇ Inserisci ${missing} partit${missing===1?'a':'e'}</button>`:''}</div></div>`;
+}
+function viewPgs(){
+  const c=pgsCfg(); if(!c) return `<section><div class="page-head"><div><a href="#" data-nav="partite" class="muted" style="font-size:13.5px;text-decoration:none">← Partite</a><h1 style="margin-top:4px">Campionato PGS</h1></div></div>${pgsFullHTML()}</section>`;
+  return `<section><div class="page-head" style="margin-bottom:6px"><div><a href="#" data-nav="partite" class="muted" style="font-size:13.5px;text-decoration:none">← Partite</a><h1 style="margin-top:4px">Campionato PGS</h1><p class="muted">${esc(c.teamName||'')}</p></div></div>${pgsFullHTML().replace('style="margin-top:14px" id="pgs-panel"','id="pgs-panel"').replace('<h2>🏆 Campionato PGS</h2>','')}</section>`;
 }
 async function openPgsSetup(){
   const c=pgsCfg()||{}; const S=ui.pgsS={camp:c.camp||'', cat:c.cat||'', girone:c.girone||'', teamId:c.teamId||'', campApp:c.campApp||''};
@@ -5615,7 +5632,8 @@ const actions={
   'pgs-save': ()=>pgsSave(),
   'pgs-no': ()=>{ setOpz('pgsNo', true); render(); },
   'pgs-off': ()=>{ if(!confirm('Scollegare il campionato PGS? Le partite già inserite restano.')) return; setOpz('pgs', null); closeModal(); render(); },
-  'pgs-tab': b=>{ ui.pgsTab=b.dataset.v; const p=$('#pgs-panel'); if(p) p.outerHTML=pgsPanelHTML(); },
+  'pgs-tab': b=>{ ui.pgsTab=b.dataset.v; render(); },
+  'pgs-open': b=>go('pgs',{pgsTab:b.dataset.v}),
   'pgs-refresh': async ()=>{ toast('Aggiorno dalla PGS…'); try{ await pgsRefresh(); const r=await pgsImport(false); render(); toast('Dati PGS aggiornati'+(r.updated?' · '+r.updated+' partite aggiornate':'')); }catch(e){ toast('Non riesco a raggiungere il sito della PGS'); } },
   'pgs-import': async ()=>{ const r=await pgsImport(true); render(); toast(`${r.created} partite inserite nel calendario`); },
   'team-add': ()=>{ closeModal(); teamAdd(); },

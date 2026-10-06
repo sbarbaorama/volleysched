@@ -2614,7 +2614,7 @@ function viewEsercizio(){
       <label class="f">Durata (min)<input type="number" name="durata" min="0" max="240" value="${esc(d.durata)}" placeholder="—"></label>
       <label class="f">Intensità<select name="intensita"><option value="">—</option>${['Bassa','Media','Alta'].map(v=>`<option ${d.intensita===v?'selected':''}>${v}</option>`).join('')}</select></label>
       <label class="f">Materiale<input type="text" name="materiale" value="${esc(d.materiale)}" placeholder="Es. 6 palloni, 8 cinesini"></label>
-      <label class="f">Video (link)<input type="url" name="video" value="${esc(d.video||'')}" placeholder="Es. https://youtu.be/…"></label>
+      <label class="f">Video (link)<input type="text" inputmode="url" name="video" value="${esc(d.video||'')}" placeholder="Es. https://youtu.be/…"></label>
     </div>
   </div>
   ${dosPanelHTML(d)}
@@ -5270,7 +5270,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v51-2026-10-06';
+const APP_VERSION='v52-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;

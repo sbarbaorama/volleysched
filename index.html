@@ -3642,7 +3642,7 @@ function heroHTML(m){
     <div class="kick">Prossima partita${campSel()==='__all'&&m.competizione?' · '+esc(m.competizione):''}</div>
     ${pgsVsHTML(m)}<div><h2>${esc(matchTitle(m))} <span class="ha ${m.inCasa?'casa':'trasf'}">${m.inCasa?'Casa':'Trasferta'}</span></h2></div>
     <div class="hm">${m.data?`<span>📅 ${esc(cap(fmtDate(m.data)))}</span>`:''}${m.ora?`<span>⏰ ${esc(m.ora)}${m.oraRitrovo?' · ritrovo '+esc(m.oraRitrovo):''}</span>`:''}${place?`<span>📍 <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}" target="_blank" rel="noopener" data-action="map">${esc(m.palestra||place)}</a></span>`:''}</div>
-    <div class="hs">${conv.length?`<span class="ok">✓ ${conv.length} convocati · ${u} U · ${d} D</span>`:'<span class="ko">Convocazioni da fare</span>'}${ab?`<span>${ab} assent${ab===1?'e':'i'}</span>`:''}${nv?`<span class="ko">${nv} convocat${nv===1?'o':'i'} senza visita valida</span>`:''}${conv.length?(fo?'<span class="ok">Formazione pronta</span>':'<span>Formazione da fare</span>'):''}</div>
+    <div class="hs">${conv.length?`<span class="ok">✓ ${conv.length} convocati${isMixed()?` · ${u} U · ${d} D`:''}</span>`:'<span class="ko">Convocazioni da fare</span>'}${ab?`<span>${ab} assent${ab===1?'e':'i'}</span>`:''}${nv?`<span class="ko">${nv} convocat${nv===1?'o':'i'} senza visita valida</span>`:''}${conv.length?(fo?'<span class="ok">Formazione pronta</span>':'<span>Formazione da fare</span>'):''}</div>
     <div class="hb"><button class="btn primary" data-action="open-match" data-id="${m.id}">${conv.length?'Apri la partita':'Fai le convocazioni'}</button>${conv.length?`<button class="btn" data-action="hero-wa" data-id="${m.id}">Invia con WhatsApp</button><button class="btn" data-action="hero-live" data-id="${m.id}">📊 Statistiche</button>`:''}</div>
   </div>`;
 }
@@ -3729,6 +3729,7 @@ function suggestCandidates(m, o){
     if(!a.iscritto){ excl.push({a, why:'non iscritto'}); continue; }
     if((m.assenti||[]).includes(a.id)){ excl.push({a, why:'assente per impegni personali'}); continue; }
     if(!visitaOk(a,m)){ excl.push({a, why:visitaWhy(a)}); continue; }
+    if(wrongSex(a)){ excl.push({a, why:'squadra '+genLabel()}); continue; }
     const st=absStats(a.id, ref), pres=st.n-st.ass;
     out.push({a, st, pres, played:convCount(a.id, m.data, m.id), sp:seasonPct(a.id)??-1});
   }
@@ -3743,9 +3744,9 @@ function sexOf(a){ return isF(a)?'F':isM(a)?'M':''; }
 function rolesOf(a){ return [roleKey(a.ruolo), roleKey(a.ruolo2)].filter(Boolean); }
 function roleText(a){ return [a.ruolo, a.ruolo2].filter(Boolean).join(' / '); }
 function suggestList(m, o){
-  const {cands, excl}=suggestCandidates(m, o), cap={M:Math.max(0,o.men|0), F:Math.max(0,o.women|0)}, N=cap.M+cap.F, pick=[], warn=[];
+  const mixed=isMixed(), {cands, excl}=suggestCandidates(m, o), cap={M:Math.max(0,o.men|0), F:Math.max(0,o.women|0)}, N=mixed?cap.M+cap.F:Math.max(0,o.tot|0), pick=[], warn=[];
   const cnt=s=>pick.filter(c=>sexOf(c.a)===s).length;
-  const room=c=>{ const s=sexOf(c.a); return !!s && cnt(s)<cap[s]; };
+  const room=c=>{ if(!mixed) return true; const s=sexOf(c.a); return !!s && cnt(s)<cap[s]; };
   const take=(c,why)=>{ c.why=why; pick.push(c); };
   const free=()=>cands.filter(c=>!pick.includes(c));
   cands.forEach(c=>{ c.why=''; });
@@ -3766,7 +3767,7 @@ function suggestList(m, o){
     for(const [r,q,k] of roles) if(need[k]>0){ warn.push(`${r}: ${need[k]} mancant${need[k]===1?'e':'i'}`); need[k]=0; }
   }
   for(const c of free()){ if(pick.length>=N) break; if(room(c)) take(c, o.mode==='ruoli'?'completa la lista':''); }
-  const sF=cap.F-cnt('F'), sM=cap.M-cnt('M');
+  const sF=mixed?cap.F-cnt('F'):0, sM=mixed?cap.M-cnt('M'):0;
   if(sF>0) warn.push(`solo ${cnt('F')} donne disponibili su ${cap.F}`);
   if(sM>0) warn.push(`solo ${cnt('M')} uomini disponibili su ${cap.M}`);
   for(const c of free()){ if(pick.length>=N) break; take(c, !sexOf(c.a)?'sesso non indicato in anagrafica':(sF>0?'al posto di una donna':'al posto di un uomo')); }
@@ -3784,14 +3785,14 @@ function openSuggest(){
   const m=getMatch(ui.matchId); if(!m) return;
   if(!db.athletes.some(a=>a.iscritto)){ alert('Non ci sono atleti iscritti in anagrafica.'); return; }
   const roles=Object.keys(ROLE_QUOTA_DEF);
-  const o=ui.sugg=Object.assign({mode:'presenze', men:6, women:6, noVisita:true, quota:Object.fromEntries(roles.map(r=>[r, ROLE_QUOTA_DEF[r]||0]))}, ui.sugg||{});
+  const o=ui.sugg=Object.assign({mode:'presenze', men:6, women:6, tot:12, noVisita:true, quota:Object.fromEntries(roles.map(r=>[r, ROLE_QUOTA_DEF[r]||0]))}, ui.sugg||{});
   openModal(`<div class="modal-box" style="max-width:860px">
     <div class="modal-head"><div style="flex:1"><h2>Suggerisci i convocati</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${m.data?' · '+esc(fmtDate(m.data)):''}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body">
       <div class="seg" id="sg-mode"><label><input type="radio" name="sgmode" value="presenze" ${o.mode==='presenze'?'checked':''}> In base alle presenze</label><label><input type="radio" name="sgmode" value="ruoli" ${o.mode==='ruoli'?'checked':''}> In base ai ruoli (e alle presenze)</label></div>
       <div class="grid g3" style="margin-bottom:10px">
-        <label class="f">Uomini<input type="number" id="sg-m" min="0" max="20" value="${o.men}"></label>
-        <label class="f">Donne<input type="number" id="sg-w" min="0" max="20" value="${o.women}"></label>
+        ${isMixed()?`<label class="f">Uomini<input type="number" id="sg-m" min="0" max="20" value="${o.men}"></label>
+        <label class="f">Donne<input type="number" id="sg-w" min="0" max="20" value="${o.women}"></label>`:`<label class="f">Quanti convocare<input type="number" id="sg-tot" min="1" max="24" value="${o.tot}"></label><span></span>`}
         <span class="muted" style="align-self:end;font-size:13px">🩺 Sono esclusi in automatico gli assenti e chi non ha la visita medica valida per la data della partita.</span>
       </div>
       <div id="sg-quota" class="${o.mode==='ruoli'?'':'hidden'}" style="margin-bottom:12px"><div class="muted" style="font-size:13px;margin-bottom:6px">Quanti per ruolo (5-1):</div>
@@ -3804,9 +3805,9 @@ function openSuggest(){
   const box=$('#modal .modal-box');
   const draw=()=>{
     const r=suggestList(m,o);
-    $('#sg-qsum').textContent=`Totale per ruolo: ${Object.values(o.quota).reduce((s,q)=>s+(+q||0),0)} su ${o.men+o.women}. Chi ha un secondo ruolo viene usato anche lì se mancano giocatori del ruolo.`;
+    $('#sg-qsum').textContent=`Totale per ruolo: ${Object.values(o.quota).reduce((s,q)=>s+(+q||0),0)} su ${isMixed()?o.men+o.women:o.tot}. Chi ha un secondo ruolo viene usato anche lì se mancano giocatori del ruolo.`;
     $('#sg-out').innerHTML=`${r.warn.length?`<div class="warn" style="margin-bottom:10px">⚠ ${r.warn.map(esc).join(' · ')}</div>`:''}
-      <table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Proposti (${r.pick.length} · ${r.pick.filter(c=>isM(c.a)).length} U · ${r.pick.filter(c=>isF(c.a)).length} D)</th><th>Ultimi 5 all.</th><th style="text-align:center" title="Partite giocate finora da convocato">Conv.</th></tr></thead><tbody>${suggestRows(r.pick,'on')}</tbody></table>
+      <table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Proposti (${r.pick.length}${isMixed()?` · ${r.pick.filter(c=>isM(c.a)).length} U · ${r.pick.filter(c=>isF(c.a)).length} D`:''})</th><th>Ultimi 5 all.</th><th style="text-align:center" title="Partite giocate finora da convocato">Conv.</th></tr></thead><tbody>${suggestRows(r.pick,'on')}</tbody></table>
       ${r.rest.length?`<details style="margin-top:12px"><summary style="cursor:pointer;font-weight:700">Altri disponibili (${r.rest.length})</summary><table class="ctable"><tbody>${suggestRows(r.rest,'off')}</tbody></table></details>`:''}
       ${r.excl.length?`<div class="muted" style="font-size:12.5px;margin-top:10px">Esclusi: ${r.excl.map(x=>esc(fullName(x.a))+' ('+x.why+')').join(', ')}</div>`:''}`;
     const upd=()=>{ $('#sg-count').textContent=$$('#sg-out [data-sg]:checked').length+' selezionati'; };
@@ -3817,6 +3818,7 @@ function openSuggest(){
     if(t.name==='sgmode'){ o.mode=t.value; $('#sg-quota').classList.toggle('hidden', o.mode!=='ruoli'); }
     else if(t.id==='sg-m') o.men=Math.max(0,parseInt(t.value,10)||0);
     else if(t.id==='sg-w') o.women=Math.max(0,parseInt(t.value,10)||0);
+    else if(t.id==='sg-tot') o.tot=Math.max(0,parseInt(t.value,10)||0);
     else if(t.id==='sg-vis') o.noVisita=t.checked;
     else if(t.dataset.quota) o.quota[t.dataset.quota]=Math.max(0,parseInt(t.value,10)||0);
     else return;
@@ -3924,12 +3926,12 @@ function autoForm(m){
   const ref=m.data||'9999-12-31', pres=a=>{ const st=absStats(a.id, ref); return st.n-st.ass; };
   const order=['P','O','C1','C2','B1','B2'];   // prima i ruoli con meno scelta
   let best=null;
-  for(const first of ['F','M']){
-    const sexFor=slot=>{ const i=ORDER.indexOf(slot); return i%2===0?first:(first==='F'?'M':'F'); };
+  for(const first of (isMixed()?['F','M']:[''])){
+    const sexFor=slot=>{ if(!first) return ''; const i=ORDER.indexOf(slot); return i%2===0?first:(first==='F'?'M':'F'); };
     const used=new Set(), res={}; let score=0, miss=0, second=[];
     for(const slot of order){
       const want=SLOT_ROLE[slot], sx=sexFor(slot);
-      const c=pool.filter(a=>!used.has(a.id) && sexOf(a)===sx).map(a=>({a, fit:roleKey(a.ruolo)===want?2:roleKey(a.ruolo2)===want?1:0, p:pres(a)}))
+      const c=pool.filter(a=>!used.has(a.id) && (sx ? sexOf(a)===sx : !wrongSex(a))).map(a=>({a, fit:roleKey(a.ruolo)===want?2:roleKey(a.ruolo2)===want?1:0, p:pres(a)}))
         .sort((x,y)=>(y.fit-x.fit)||(y.p-x.p))[0];
       if(c){ res[slot]=c.a.id; used.add(c.a.id); score+=c.fit*10+c.p; if(c.fit===1) second.push(athShort(c.a.id)+' come '+SLOTS.find(x=>x[0]===slot)[1].replace(/ \d$/,'')); if(!c.fit) miss++; }
       else { res[slot]=''; miss+=2; }
@@ -3946,7 +3948,8 @@ function formWarn(m,f){
   if(new Set(ids).size<ids.length) w.push('la stessa persona è in due posti');
   if(conv.size && ids.some(id=>!conv.has(id))) w.push('c\'è chi non è tra i convocati');
   const miss=SLOTS.filter(([s])=>!f[s]).map(([,l])=>l); if(miss.length) w.push('manca: '+miss.join(', '));
-  if(!miss.length){ const sx=ORDER.map(s=>{ const a=getAt(f[s]); return a?sexOf(a):''; });
+  if(!isMixed()){ const wr=ids.map(getAt).filter(a=>a && wrongSex(a)); if(wr.length) w.push((teamGen()==='F'?'in squadra femminile c\'è un uomo: ':'in squadra maschile c\'è una donna: ')+wr.map(a=>athShort(a.id)).join(', ')); }
+  if(!miss.length && isMixed()){ const sx=ORDER.map(s=>{ const a=getAt(f[s]); return a?sexOf(a):''; });
     if(sx.some(x=>!x)) w.push('a qualcuno manca il sesso in anagrafica');
     else if(!sx.every((x,i)=>x!==sx[(i+1)%6])) w.push('in campo uomini e donne devono essere alternati (3 e 3): nell\'ordine Palleggiatore, Banda 1, Centrale 1, Opposto, Banda 2, Centrale 2 si alternano uomo e donna'); }
   return w;
@@ -4095,7 +4098,7 @@ function liveSub(){
     <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div></div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>Fai il cambio</button></div></div>`);
   $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; const outA=getAt(who(s)), inA=getAt(id);
-    if(outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Fare il cambio lo stesso?')) return;
+    if(isMixed() && outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Fare il cambio lo stesso?')) return;
     { const L=S.live; S.ev.push({id:newId('ev'), t:Date.now(), s:L.set, a:id, k:'sub', v:'', out:who(s), slot:s, prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k, subs:Object.assign({}, L.subs)}, noi:L.noi, loro:L.loro}); }
     S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
 }
@@ -4187,7 +4190,7 @@ function convTable(m){
       <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${(m.disponibili||[]).includes(a.id)?'<span class="disp-tag">sì</span>':''}${ab?'<span class="abs-tag">assente</span>':''}${(a.iscritto && !visitaOk(a,m))?`<span class="abs-tag" style="background:#8a1c2c">${a.scadenzaVisita?'visita scaduta':'senza visita'}</span>`:''}${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
       <td class="muted">${esc(roleText(a))}${a.sesso?' · '+(isF(a)?'D':'U'):''}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
 }
-function convCountText(m){ const L=convocati(m), c=L.length, u=L.filter(isM).length, d=L.filter(isF).length; return `${c} convocat${c===1?'o':'i'}`+(c?` · ${u} U · ${d} D`:'')+(c && (u!==d)?' ⚠':''); }
+function convCountText(m){ const L=convocati(m), c=L.length, u=L.filter(isM).length, d=L.filter(isF).length; return `${c} convocat${c===1?'o':'i'}`+(c && isMixed()?` · ${u} U · ${d} D`+(u!==d?' ⚠':''):''); }
 function matchInfo(m){
   const g=(m.giornata||'').trim(), n=(m.numeroGara||'').trim();
   return [(m.competizione||'').trim(), g?(/^\d+$/.test(g)?g+'ª giornata':g):'', n?'gara n° '+n:''].filter(Boolean).join(' · ');
@@ -4694,7 +4697,7 @@ function matchDayHTML(m){
   const r=readyInfo(m), td=m.data===todayISO();
   return `<div class="mday"><div class="k">${td?'🏐 Oggi si gioca':'🏐 Partita di ieri'}${m.ora&&td?' · ore '+esc(m.ora):''}</div>
     <h2>${esc(matchTitle(m))}</h2>${pgsVsHTML(m)}
-    <div class="chk"><span class="${r.n>=6?'ok':'ko'}">${r.n?`✓ ${r.n} convocati · ${r.u} U · ${r.d} D`:'✗ convocazioni da fare'}</span><span class="${r.form?'ok':'ko'}">${r.form?'✓ formazione pronta':'✗ formazione da fare'}</span>${r.live?`<span>in corso: set ${r.live.set} · ${r.live.noi}–${r.live.loro}</span>`:''}</div>
+    <div class="chk"><span class="${r.n>=6?'ok':'ko'}">${r.n?`✓ ${r.n} convocati${isMixed()?` · ${r.u} U · ${r.d} D`:''}`:'✗ convocazioni da fare'}</span><span class="${r.form?'ok':'ko'}">${r.form?'✓ formazione pronta':'✗ formazione da fare'}</span>${r.live?`<span>in corso: set ${r.live.set} · ${r.live.noi}–${r.live.loro}</span>`:''}</div>
     <div class="bt"><button class="btn big" data-action="quick-stats" data-id="${m.id}">📊 ${r.started?'Riprendi le statistiche':'Statistiche'}</button><button class="btn" data-action="open-match" data-id="${m.id}">Apri la partita</button></div></div>`;
 }
 function openReady(id){
@@ -4703,7 +4706,7 @@ function openReady(id){
   openModal(`<div class="modal-box" style="max-width:560px">
     <div class="modal-head"><div style="flex:1"><h2>Pronti per le statistiche?</h2><div class="muted" style="font-size:13px;margin-top:4px">${esc(matchTitle(m))}</div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
     <div class="modal-body"><div class="rdy">
-      <div class="it ${r.n>=6?'ok':'ko'}"><span class="ic">${r.n>=6?'✅':'⚠️'}</span><div><b>Convocati: ${r.n}</b><small>${r.n>=6?`${r.u} uomini · ${r.d} donne`:'Servono almeno 6 giocatori per seguire le rotazioni.'}</small></div>${r.n>=6?'':`<button class="btn sm primary" data-action="rd-conv">Convoca i disponibili</button>`}</div>
+      <div class="it ${r.n>=6?'ok':'ko'}"><span class="ic">${r.n>=6?'✅':'⚠️'}</span><div><b>Convocati: ${r.n}</b><small>${r.n>=6?`${isMixed()?`${r.u} uomini · ${r.d} donne`:'pronti'}`:'Servono almeno 6 giocatori per seguire le rotazioni.'}</small></div>${r.n>=6?'':`<button class="btn sm primary" data-action="rd-conv">Convoca i disponibili</button>`}</div>
       <div class="it ${r.form?'ok':'ko'}"><span class="ic">${r.form?'✅':'⚠️'}</span><div><b>Formazione di partenza</b><small>${r.form?'Pronta.':'Senza formazione le statistiche funzionano, ma la rotazione e chi batte non vengono seguiti.'}</small></div>${r.form?'':`<button class="btn sm primary" data-action="rd-form" ${r.n?'':'disabled'}>✨ Proponi</button>`}</div>
     </div></div>
     <div class="modal-foot"><button class="btn" data-action="open-match" data-id="${m.id}">Sistema nella partita</button><span style="flex:1"></span><button class="btn primary" data-action="rd-go">▶ Inizia${r.form&&r.n>=6?'':' comunque'}</button></div></div>`);
@@ -4974,7 +4977,7 @@ const GUIDE=[
 <ol><li>Crea il <b>campionato</b> (pulsante ＋ accanto ai campionati) e poi <b>+ Nuova partita</b>: data, orari, avversario, palestra, casa o trasferta.</li>
 <li><b>Assenti</b>: segna chi ha avvisato che non ci sarà.</li>
 <li><b>📨 Disponibilità</b>: manda su WhatsApp la richiesta «chi c'è?» e segna le risposte.</li>
-<li><b>Convocati</b>: <b>✨ Suggerisci</b> propone i convocati (disponibili, presenze, equilibrio tra uomini e donne, visita valida), oppure li scegli tu.</li>
+<li><b>Convocati</b>: <b>✨ Suggerisci</b> propone i convocati (disponibili, presenze, visita valida e, nelle squadre miste, equilibrio tra uomini e donne), oppure li scegli tu. Il tipo di squadra (mista, femminile o maschile) si sceglie in <b>Archivio → Squadra e gioco</b>.</li>
 <li><b>Formazione</b>: <b>✨ Proponi formazione</b> e la rotazione di partenza; puoi stamparla per la panchina.</li>
 <li><b>Invia</b>: messaggio di convocazione per WhatsApp, stampa della convocazione e dell'elenco per l'arbitro.</li></ol>
 <p>Dopo la partita scrivi il risultato (set casa – ospiti, es. 3-1): in <b>Partite</b> trovi l'andamento della stagione.</p>
@@ -5124,6 +5127,7 @@ function setOpz(k,v){ const o=opz(); o[k]=v; db.settings.opzioni=JSON.stringify(
 function noLibero(){ return !!opz().noLibero; }
 function gamePanelHTML(){
   return `<div class="panel"><h2>Squadra e gioco</h2>
+    <label class="f" style="max-width:380px;margin-bottom:10px">Tipo di squadra<select data-optv="genere">${[['misto','Mista (3 uomini e 3 donne alternati)'],['F','Femminile'],['M','Maschile']].map(([v,l])=>`<option value="${v}" ${teamGen()===v?'selected':''}>${l}</option>`).join('')}</select></label>
     <label class="sw" style="min-height:0"><input type="checkbox" data-opt="noLibero" ${noLibero()?'checked':''}> Giochiamo senza libero</label>
     <p class="muted" style="font-size:13px;margin:6px 0 0">Toglie il libero dalla formazione, dalle rotazioni e dalle statistiche. Puoi riattivarlo quando vuoi.</p></div>`;
 }
@@ -5236,7 +5240,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v47-2026-10-06';
+const APP_VERSION='v48-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5472,7 +5476,8 @@ async function pgsSetupRender(){
 async function pgsSave(){
   const S=ui.pgsS, camp=(ui.pgsCamps||[]).find(x=>x.codice===S.camp)||{}, cat=(ui.pgsCats||[]).find(x=>x.categoria===S.cat)||{}, t=(ui.pgsIsc||[]).find(x=>(x.id||x._id)===S.teamId)||{};
   const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', campApp:(S.campApp||'').trim()||camp.nome||''};
-  setOpz('pgs', cfg); await Store.setMeta(pgsKey(), null); closeModal(); toast('Scarico i dati dalla PGS…');
+  setOpz('pgs', cfg);
+  if(opz().genere===undefined){ const nm=(cat.nome||'')+' '+(cat.categoria||''), sx=[...new Set((cat.requirements||[]).map(r=>r.sesso).filter(Boolean))]; const g=/mist|genitori/i.test(nm)?'misto':sx.length===1?sx[0]:/femmin/i.test(nm)?'F':/maschil/i.test(nm)?'M':''; if(g) setOpz('genere', g); } await Store.setMeta(pgsKey(), null); closeModal(); toast('Scarico i dati dalla PGS…');
   try{ await pgsRefresh(); const r=await pgsImport(true); render(); toast(`Campionato collegato · ${r.created} partite inserite${r.updated?', '+r.updated+' aggiornate':''}`); }
   catch(e){ render(); toast('Non riesco a scaricare i dati dalla PGS: riprova più tardi'); }
 }
@@ -5627,6 +5632,12 @@ function viewControlli(){
   return `<section><div class="page-head"><div><a href="#" data-nav="impostazioni" class="muted" style="font-size:13.5px;text-decoration:none">← Archivio</a><h1 style="margin-top:4px">Controllo dati</h1><p class="muted">${n?`${n} cos${n===1?'a':'e'} da sistemare. Tocca una riga per aprirla.`:'Tutto in ordine.'}</p></div></div>
     ${S.map(x=>`<div class="ck-sec panel"><h3>${esc(x.t)} <span class="muted">(${x.items.length})</span></h3>${x.items.map(i=>`<div class="ck-it" data-action="ck-go" data-a="${i.act}" data-id="${i.id}"><b>${esc(i.l)}</b>${i.s?`<span class="muted">${esc(i.s)}</span>`:''}<span>›</span></div>`).join('')}</div>`).join('')||'<div class="ck-ok panel">✓ Nessun problema trovato: atleti, partite, presenze e sessioni sono completi.</div>'}</section>`;
 }
+
+/* ===== Tipo di squadra ===== */
+function teamGen(){ const g=opz().genere; return g==='M'||g==='F'?g:'misto'; }
+const isMixed=()=>teamGen()==='misto';
+const genLabel=()=>({misto:'mista', M:'maschile', F:'femminile'})[teamGen()];
+function wrongSex(a){ const g=teamGen(); return g!=='misto' && !!sexOf(a) && sexOf(a)!==g; }
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -6107,6 +6118,7 @@ document.addEventListener('input', e=>{
 });
 document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
+  if(e.target.dataset.optv){ setOpz(e.target.dataset.optv, e.target.value); toast('Squadra '+genLabel()+': convocazioni e formazione si adeguano'); return; }
   if(e.target.dataset.pgs && ui.pgsS){ ui.pgsS[e.target.dataset.pgs]=e.target.value; if(e.target.dataset.pgs!=='campApp') pgsSetupRender(); return; }
   if(e.target.dataset.opt){ setOpz(e.target.dataset.opt, e.target.checked); toast(e.target.checked?'Fatto: niente libero':'Libero riattivato'); return; }
   if(e.target.dataset.rf!==undefined){ refFormChange(e.target); return; }

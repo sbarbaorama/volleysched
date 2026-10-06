@@ -5051,7 +5051,8 @@ const GUIDE=[
 <ol><li>In <b>Partite</b> premi <b>Collega il campionato</b>.</li>
 <li>Scegli campionato, categoria, girone e la vostra squadra, poi <b>Collega</b>.</li>
 <li>L'app inserisce le vostre partite nel calendario (con palestra e indirizzo della squadra di casa).</li></ol>
-<p>Poi i dati si aggiornano da soli quando apri Partite (al massimo ogni 6 ore) oppure con <b>↻ Aggiorna</b>: se la PGS sposta una partita o pubblica un risultato, la partita nell'app si aggiorna. Le partite che avevi già inserito a mano vengono riconosciute dal numero di gara o dalla data, senza doppioni.</p>`],
+<p>Poi i dati si aggiornano da soli quando apri Partite (al massimo ogni 6 ore) oppure con <b>↻ Aggiorna</b>: se la PGS sposta una partita o pubblica un risultato, la partita nell'app si aggiorna. Le partite che avevi già inserito a mano vengono riconosciute dal numero di gara o dalla data, senza doppioni.</p>
+<p>Nella scheda di una partita (sezione <b>Dati</b>) trovi la classifica dell'avversario e i <b>precedenti</b> delle stagioni passate. L'app riconosce da sola le squadre della stessa società anche se hanno cambiato nome; se non trova qualcosa, con <b>✏️ Vecchi nomi</b> puoi indicare come si chiamava la squadra (la vostra o l'avversaria) negli anni scorsi.</p>`],
 ['👥','Più squadre',`
 <p>Se alleni più squadre: <b>Archivio → Squadre → Aggiungi una squadra</b>. Esercizi e sessioni restano in comune; atleti, partite, presenze, note, colori, logo e campionato PGS sono di ogni squadra.</p>
 <ul><li>Per cambiare squadra: pulsante <b>⇄ Squadra</b> nella home.</li>
@@ -5119,16 +5120,29 @@ function licPanelHTML(){ const i=licInfo();
 function licBadge(){ const i=licInfo(); return i.st==='prova'&&i.left<=7?`<button class="red" data-action="lic-go">🔑 Prova: ${i.left} giorn${i.left===1?'o':'i'}</button>`:''; }
 
 /* ===== Tasto indietro ===== */
-const NAV={stack:[], guard:false, back:false};
+const NAV={stack:[], guard:false, back:false, pushed:false, fwdT:0};
 const NAV_KEYS=['matchId','sessId','mTab','refSet','pDay','gBack','gq','gOpen','noteId'];
 function navSnap(){ const o={view:ui.view}; NAV_KEYS.forEach(k=>{ if(ui[k]!==undefined) o[k]=ui[k]; }); return o; }
 function navNeedsGuard(){ return (ui.view!=='home' && ui.view!=='benvenuto') || !$('#modal').classList.contains('hidden') || !!$('.picker.open'); }
-function navSync(){ try{ if(navNeedsGuard() && !NAV.guard){ history.pushState({vs:Date.now()}, ''); NAV.guard=true; } }catch(e){} }
-window.addEventListener('popstate', ()=>{
+/* La «barriera» è una sola voce nella cronologia sopra quella di partenza. Dopo un «indietro» non se ne crea una nuova
+   (Chrome per Android salterebbe la voce di partenza e chiuderebbe l'app): si torna avanti sulla stessa barriera. */
+function navPush(){ history.pushState({vs:Date.now()}, ''); NAV.guard=true; NAV.pushed=true; }
+function navSync(){ try{
+  if(!navNeedsGuard() || NAV.guard) return;
+  if(NAV.pushed){ NAV.guard=true; history.forward(); clearTimeout(NAV.fwdT); NAV.fwdT=setTimeout(()=>{ if(!(history.state&&history.state.vs)) navPush(); }, 400); }
+  else navPush();
+}catch(e){} }
+window.addEventListener('popstate', e=>{
+  if(e.state && e.state.vs){ NAV.guard=true; clearTimeout(NAV.fwdT); return; }   // siamo tornati sulla barriera
   NAV.guard=false;
   if(document.body.classList.contains('locked')) return;
   if(!$('#modal').classList.contains('hidden')){ closeModal(); navSync(); return; }
   if($('.picker.open')){ actions['pick-close'](); navSync(); return; }
+  // sotto-pagine dentro la stessa pagina: si chiude prima quella
+  { const m=ui.matchId&&getMatch(ui.matchId), se=ui.sessId&&getSess(ui.sessId);
+    if(ui.view==='partita' && ui.mEdit && m && m.data && m.avversario){ ui.mEdit=false; render(); navSync(); return; }
+    if(ui.view==='referto' && ui.refForm && m && refSets(m).length){ ui.refForm=false; ui.refDraft=null; render(); navSync(); return; }
+    if(ui.view==='sessione' && ui.sEdit && se && se.titolo){ ui.sEdit=false; render(); navSync(); return; } }
   if(ui.view==='home' || ui.view==='benvenuto'){ history.back(); return; }
   let prev=NAV.stack.pop();
   while(prev && prev.view===ui.view && prev.matchId===ui.matchId && prev.sessId===ui.sessId) prev=NAV.stack.pop();
@@ -5256,7 +5270,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v49-2026-10-06';
+const APP_VERSION='v50-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5462,7 +5476,7 @@ function viewPgs(){
   return `<section><div class="page-head" style="margin-bottom:6px"><div><a href="#" data-nav="partite" class="muted" style="font-size:13.5px;text-decoration:none">← Partite</a><h1 style="margin-top:4px">Campionato PGS</h1><p class="muted">${esc(c.teamName||'')}</p></div></div>${pgsFullHTML().replace('style="margin-top:14px" id="pgs-panel"','id="pgs-panel"').replace('<h2>🏆 Campionato PGS</h2>','')}</section>`;
 }
 async function openPgsSetup(){
-  const c=pgsCfg()||{}; const S=ui.pgsS={camp:c.camp||'', cat:c.cat||'', girone:c.girone||'', teamId:c.teamId||'', campApp:c.campApp||''};
+  const c=pgsCfg()||{}; const S=ui.pgsS={camp:c.camp||'', cat:c.cat||'', girone:c.girone||'', teamId:c.teamId||'', campApp:c.campApp||'', altNomi:c.altNomi||''};
   openModal(`<div class="modal-box" style="max-width:560px"><div class="modal-head"><h2 style="flex:1">Campionato PGS Milano</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body pgs-setup" id="pgs-setup"><p class="muted">Carico i campionati dalla PGS…</p></div></div>`);
   try{ const [camps, cats]=await Promise.all([pgsGet('campionati/all'), pgsGet('categorie/all')]); ui.pgsCamps=camps; ui.pgsCats=cats;
     if(!S.camp){ const open=camps.filter(x=>!x.campionatoChiuso); S.camp=(open[open.length-1]||camps[camps.length-1]||{}).codice||''; }
@@ -5487,11 +5501,13 @@ async function pgsSetupRender(){
     <label class="f">Girone${gir.length?sel('girone', gir.map(g=>[g,'Girone '+g])):'<div class="muted">Nessun girone pubblicato per questa categoria.</div>'}</label>
     <label class="f">La vostra squadra${teams.length?sel('teamId', teams.map(t=>[t.id||t._id, t.nomeSquadra])):'<div class="muted">—</div>'}</label>
     <label class="f">Nome del campionato nell'app<input type="text" data-pgs="campApp" value="${esc(S.campApp||camp.nome||'')}" placeholder="${esc(camp.nome||'')}"></label>
+    <label class="f">Nomi usati dalla vostra squadra nelle stagioni passate <span class="muted" style="font-weight:400">(facoltativo, separati da virgola)</span><input type="text" data-pgs="altNomi" value="${esc(S.altNomi||'')}" placeholder="es. POLIS CORBETTA, CORBETTA GENITORI"></label>
+    <div class="muted" style="font-size:12.5px;margin-top:-4px">Servono a ritrovare le partite giocate contro gli stessi avversari negli anni scorsi, quando la squadra si chiamava in un altro modo.</div>
     <div class="actions" style="margin-top:14px">${pgsCfg()?'<button class="btn danger" data-action="pgs-off">Scollega</button>':''}<span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="pgs-save" ${S.teamId?'':'disabled'}>Collega</button></div>`;
 }
 async function pgsSave(){
   const S=ui.pgsS, camp=(ui.pgsCamps||[]).find(x=>x.codice===S.camp)||{}, cat=(ui.pgsCats||[]).find(x=>x.categoria===S.cat)||{}, t=(ui.pgsIsc||[]).find(x=>(x.id||x._id)===S.teamId)||{};
-  const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', campApp:(S.campApp||'').trim()||camp.nome||''};
+  const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', soc:t.codiceSocieta||'', altNomi:(S.altNomi||'').trim(), oppAlt:(pgsCfg()||{}).oppAlt||{}, campApp:(S.campApp||'').trim()||camp.nome||''};
   setOpz('pgs', cfg);
   if(opz().genere===undefined){ const nm=(cat.nome||'')+' '+(cat.categoria||''), sx=[...new Set((cat.requirements||[]).map(r=>r.sesso).filter(Boolean))]; const g=/mist|genitori/i.test(nm)?'misto':sx.length===1?sx[0]:/femmin/i.test(nm)?'F':/maschil/i.test(nm)?'M':''; if(g) setOpz('genere', g); } await Store.setMeta(pgsKey(), null); closeModal(); toast('Scarico i dati dalla PGS…');
   try{ await pgsRefresh(); const r=await pgsImport(true); render(); toast(`Campionato collegato · ${r.created} partite inserite${r.updated?', '+r.updated+' aggiornate':''}`); }
@@ -5519,21 +5535,43 @@ function oppCardHTML(m){
     <div class="og">${st?`<div><span>Classifica</span><b>${st.pos}°</b> · ${st.pti} pt</div><div><span>Vinte / perse</span><b>${st.v} / ${st.p}</b></div><div><span>Set</span><b>${st.sv}-${st.sp}</b></div>`:'<div><span>Classifica</span><b>—</b> ancora vuota</div>'}</div>
     ${played.length?`<div style="font-weight:700;font-size:13.5px;margin-top:6px">Ultimi risultati</div><div class="opp-res">${played.slice(0,4).map(p=>pgsResLine(p,opp,d.names)).join('')}</div>`:''}
     <div style="font-weight:700;font-size:13.5px;margin-top:10px">Precedenti tra voi</div>
-    ${P.length?`<div class="opp-res">${P.map(r=>`<div><span class="${r.my>r.th?'w':'l'}">${r.my>r.th?'V':'P'} ${r.my}-${r.th}</span> ${r.home?'in casa':'in trasferta'} <span class="muted" style="font-size:12px">${esc(r.data)} · ${esc(r.camp)}</span></div>`).join('')}</div><div class="muted" style="font-size:12.5px;margin-top:4px">Bilancio: ${vw} vinte, ${P.length-vw} perse</div>`:`<div class="muted" style="font-size:13px">${H?'Nessun precedente trovato nelle stagioni passate.':'Non ancora cercati.'}</div>`}
-    <div class="actions" style="margin-top:8px"><button class="btn sm" data-action="pgs-h2h" data-n="${esc(nm)}">🔎 ${H?'Cerca di nuovo':'Cerca'} i precedenti nelle stagioni passate</button></div></div>`;
+    ${P.length?`<div class="opp-res">${P.map(r=>{ const as=[r.noi&&pgsNorm(r.noi)!==pgsNorm(c.teamName)?'voi «'+r.noi+'»':'', r.loro&&pgsNorm(r.loro)!==pgsNorm(nm)?'loro «'+r.loro+'»':''].filter(Boolean).join(', ');
+      return `<div><span class="${r.my>r.th?'w':'l'}">${r.my>r.th?'V':'P'} ${r.my}-${r.th}</span> ${r.home?'in casa':'in trasferta'} <span class="muted" style="font-size:12px">${esc(r.data)} · ${esc(r.camp)}${as?' · come '+esc(as):''}</span></div>`; }).join('')}</div><div class="muted" style="font-size:12.5px;margin-top:4px">Bilancio: ${vw} vinte, ${P.length-vw} perse</div>`:`<div class="muted" style="font-size:13px">${H?'Nessun precedente trovato nelle stagioni passate. Se negli anni scorsi una delle due squadre si chiamava in un altro modo, aggiungi il vecchio nome qui sotto e cerca di nuovo.':'Non ancora cercati.'}</div>`}
+    ${(()=>{ const an=pgsAltList(c.altNomi), ao=pgsAltList((c.oppAlt||{})[pgsNorm(nm)]); return an.length||ao.length?`<div class="muted" style="font-size:12px;margin-top:6px">Cerco anche come: ${an.length?'voi '+esc(an.join(', ')):''}${an.length&&ao.length?' · ':''}${ao.length?'loro '+esc(ao.join(', ')):''}</div>`:''; })()}
+    <div class="actions" style="margin-top:8px;flex-wrap:wrap"><button class="btn sm" data-action="pgs-h2h" data-n="${esc(nm)}">🔎 ${H?'Cerca di nuovo':'Cerca'} i precedenti</button><button class="btn sm ghost" data-action="pgs-alt" data-w="noi">✏️ Vostri vecchi nomi</button><button class="btn sm ghost" data-action="pgs-alt" data-w="loro" data-n="${esc(nm)}">✏️ Vecchi nomi di ${esc(nm)}</button></div></div>`;
+}
+const pgsAltList=v=>String(v||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);
+function pgsAltEdit(w, oppName){
+  const c=pgsCfg(); if(!c) return; const k=pgsNorm(oppName);
+  const cur=w==='noi'?(c.altNomi||''):((c.oppAlt||{})[k]||'');
+  const v=prompt(w==='noi'?'Nomi usati dalla vostra squadra nelle stagioni passate (separati da virgola), così come comparivano sul sito della PGS:':'Altri nomi usati da '+oppName+' nelle stagioni passate (separati da virgola):', cur);
+  if(v===null) return; const nc=Object.assign({}, c);
+  if(w==='noi') nc.altNomi=v.trim(); else { nc.oppAlt=Object.assign({}, c.oppAlt||{}); if(v.trim()) nc.oppAlt[k]=v.trim(); else delete nc.oppAlt[k]; }
+  setOpz('pgs', nc); render(); toast('Nomi salvati: premi «Cerca» per rifare la ricerca');
 }
 async function pgsH2H(oppName){
-  const c=pgsCfg(); if(!c) return; const me=pgsNorm(c.teamName), op=pgsNorm(oppName); toast('Cerco i precedenti sul sito della PGS…');
+  const c=pgsCfg(); if(!c) return; const op=pgsNorm(oppName);
+  const myN=new Set([c.teamName, ...pgsAltList(c.altNomi)].map(pgsNorm).filter(Boolean));
+  const opN=new Set([oppName, ...pgsAltList((c.oppAlt||{})[op])].map(pgsNorm).filter(Boolean));
+  toast('Cerco i precedenti sul sito della PGS…');
   try{
+    // codice società: resta uguale anche quando la squadra cambia nome
+    let mySoc=c.soc||'', opSoc='';
+    try{ const cur=await pgsGet('iscrizioni/campionato/'+c.camp+'/light'); const me=cur.find(s=>(s.id||s._id)===c.teamId); if(me&&me.codiceSocieta) mySoc=me.codiceSocieta; const o=cur.find(s=>pgsNorm(s.nomeSquadra)===op); if(o&&o.codiceSocieta) opSoc=o.codiceSocieta; }catch(e){}
+    if(opSoc && opSoc===mySoc) opSoc='';
     const camps=(await pgsGet('campionati/all')).filter(x=>x.codice!==c.camp).slice(-8);
-    const list=[];
+    const list=[], seen=new Set();
     for(const cp of camps){
       let isc=[]; try{ isc=await pgsGet('iscrizioni/campionato/'+cp.codice+'/light'); }catch(e){ continue; }
-      const mine=isc.filter(s=>pgsNorm(s.nomeSquadra)===me), opps=new Set(isc.filter(s=>pgsNorm(s.nomeSquadra)===op).map(s=>s.id||s._id));
+      const sameCat=s=>!c.cat || s.categoria===c.cat;
+      const isMe=s=>myN.has(pgsNorm(s.nomeSquadra)) || (!!mySoc && s.codiceSocieta===mySoc && sameCat(s));
+      const isOp=s=>!isMe(s) && (opN.has(pgsNorm(s.nomeSquadra)) || (!!opSoc && s.codiceSocieta===opSoc && sameCat(s)));
+      const mine=isc.filter(isMe), opps=new Map(isc.filter(isOp).map(s=>[s.id||s._id, s.nomeSquadra]));
       if(!mine.length || !opps.size) continue;
-      for(const t of mine){ let cal=[]; try{ cal=await pgsGet('calendari/team/'+(t.id||t._id)); }catch(e){ continue; }
+      for(const t of mine){ const tid=t.id||t._id; let cal=[]; try{ cal=await pgsGet('calendari/team/'+tid); }catch(e){ continue; }
         cal.filter(p=>opps.has(p.squadraCasaID)||opps.has(p.squadraTrasfertaID)).filter(p=>p.setVintiCasa!=null && (p.setVintiCasa+p.setVintiTrasferta)>0).forEach(p=>{
-          const home=p.squadraCasaID===(t.id||t._id); list.push({camp:cp.nome, data:p.data, home, my:home?p.setVintiCasa:p.setVintiTrasferta, th:home?p.setVintiTrasferta:p.setVintiCasa}); }); }
+          const key=p.id||p._id||(p.data+p.squadraCasaID+p.squadraTrasfertaID); if(seen.has(key)) return; seen.add(key);
+          const home=p.squadraCasaID===tid; list.push({camp:cp.nome, data:p.data, home, my:home?p.setVintiCasa:p.setVintiTrasferta, th:home?p.setVintiTrasferta:p.setVintiCasa, noi:t.nomeSquadra, loro:opps.get(home?p.squadraTrasfertaID:p.squadraCasaID)}); }); }
     }
     list.sort((a,b)=>pgsDate(b.data).localeCompare(pgsDate(a.data)));
     const all=Store.getMeta('pgsH2H')||{}; all[op]={at:Date.now(), list}; await Store.setMeta('pgsH2H', all);
@@ -5932,6 +5970,7 @@ const actions={
   'ics-down': ()=>{ const f=icsFile(); if(!f) return; const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; document.body.appendChild(a); a.click(); a.remove(); closeModal(); toast('File del calendario scaricato: aprilo per aggiungere gli eventi'); },
   'ics-share': async ()=>{ const f=icsFile(); if(!f) return; try{ if(navigator.canShare && navigator.canShare({files:[f]})) await navigator.share({files:[f], title:'Calendario '+(db.settings.squadra||'')}); else actions['ics-down'](); }catch(e){} },
   'pgs-h2h': b=>pgsH2H(b.dataset.n),
+  'pgs-alt': b=>pgsAltEdit(b.dataset.w, b.dataset.n||''),
   'ref-goto': b=>go('partita',{matchId:b.dataset.id, mTab:'ref', mEdit:false}),
   'conf-open': ()=>openConflicts(),
   'ag-go': ()=>go('agenda'),
@@ -6219,7 +6258,7 @@ document.addEventListener('input', e=>{
 document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
   if(e.target.dataset.optv){ setOpz(e.target.dataset.optv, e.target.value); toast('Squadra '+genLabel()+': convocazioni e formazione si adeguano'); return; }
-  if(e.target.dataset.pgs && ui.pgsS){ ui.pgsS[e.target.dataset.pgs]=e.target.value; if(e.target.dataset.pgs!=='campApp') pgsSetupRender(); return; }
+  if(e.target.dataset.pgs && ui.pgsS){ ui.pgsS[e.target.dataset.pgs]=e.target.value; if(!['campApp','altNomi'].includes(e.target.dataset.pgs)) pgsSetupRender(); return; }
   if(e.target.dataset.opt){ setOpz(e.target.dataset.opt, e.target.checked); toast(e.target.checked?'Fatto: niente libero':'Libero riattivato'); return; }
   if(e.target.dataset.rf!==undefined){ refFormChange(e.target); return; }
   if(e.target.dataset.qm!==undefined){ qmCount(); return; }

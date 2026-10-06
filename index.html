@@ -1722,6 +1722,16 @@ body.has-upd .help-btn::after{content:'';position:absolute;top:2px;right:2px;wid
 .ck-it b{flex:1}
 .ck-ok{color:#1d8a4f;font-weight:700;font-size:13.5px}
 
+
+.inj-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.inj-it{border:1px solid var(--line);border-left:5px solid #d64a5a;border-radius:10px;padding:8px 10px;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;background:var(--surface)}
+.inj-it.done{border-left-color:#8a94a6;opacity:.75}
+.inj-it .tx{flex:1;min-width:180px;font-size:13.5px}
+.inj-it .tx small{display:block;color:var(--muted);font-size:12.5px}
+.inj-tag{display:inline-block;background:#fdecee;color:#7a1626;border-radius:999px;padding:0 8px;font-size:12px;font-weight:700;margin-left:6px;vertical-align:middle}
+:root[data-theme=dark] .inj-tag{background:#4a1d26;color:#ffd7dc}
+.vid-btn{display:inline-flex;align-items:center;gap:6px;margin:4px 0 10px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2549,7 +2559,7 @@ function openExModal(id, preferSess){
       ${hasSchema(e)?`<div class="detail-schema">${exThumb(e)}</div>`:''}
       ${info?`<div class="exd-info">${info}</div>`:''}
       <div class="exd-used">${EXI.repeat}${u?`Usato in ${u.n} session${u.n===1?'e':'i'}${u.last?' · ultima il '+shortDate(u.last):''}`:'Mai usato in una sessione'}</div>
-      ${secs||'<p class="muted">Nessuna descrizione.</p>'}
+      ${vidBtnHTML(e)}${secs||'<p class="muted">Nessuna descrizione.</p>'}
       ${nb.tot>1?'<div class="exd-swipe">Scorri a destra o a sinistra per passare all\'esercizio vicino</div>':''}
     </div>
     <div class="modal-foot exd-foot">
@@ -2604,6 +2614,7 @@ function viewEsercizio(){
       <label class="f">Durata (min)<input type="number" name="durata" min="0" max="240" value="${esc(d.durata)}" placeholder="—"></label>
       <label class="f">Intensità<select name="intensita"><option value="">—</option>${['Bassa','Media','Alta'].map(v=>`<option ${d.intensita===v?'selected':''}>${v}</option>`).join('')}</select></label>
       <label class="f">Materiale<input type="text" name="materiale" value="${esc(d.materiale)}" placeholder="Es. 6 palloni, 8 cinesini"></label>
+      <label class="f">Video (link)<input type="url" name="video" value="${esc(d.video||'')}" placeholder="Es. https://youtu.be/…"></label>
     </div>
   </div>
   ${dosPanelHTML(d)}
@@ -2651,7 +2662,7 @@ function mountSchemaBox(){
 }
 function readExForm(){
   const fd=new FormData($('#ex-form-edit')), d=ui.draft;
-  for(const k of ['titolo','fondamentale','formazione','durata','intensita','materiale','organizzazione','svolgimento','puntoChiave','variante','note']) d[k]=(fd.get(k)??'').toString().trim();
+  for(const k of ['titolo','fondamentale','formazione','durata','intensita','materiale','video','organizzazione','svolgimento','puntoChiave','variante','note']) d[k]=(fd.get(k)??'').toString().trim();
   d.durata = d.durata==='' ? '' : Math.max(0, Math.round(+d.durata)||0);
   const ef=$('#ex-form-edit');
   d.distretto=(ef.querySelector('[name=distretto]')?.value||'').trim();
@@ -3432,7 +3443,7 @@ function atCards(l){
     const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', roleText(a), a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
     const b=[a.cellulare?`<a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 ${esc(a.cellulare)}</a>`:'', a.dataNascita?`<span><b>Compleanno</b> ${bdayBadge(a,true)}</span>`:'',
       a.scadenzaVisita?`<span><b>Visita</b> ${scadBadge(a.scadenzaVisita)}</span>`:'', a.scadenzaDocumento?`<span><b>Documento</b> ${scadBadge(a.scadenzaDocumento)}</span>`:'', a.taglia?`<span><b>Taglia</b> ${esc(a.taglia)}</span>`:''].filter(Boolean).join('');
-    return `<div class="atc ${a.iscritto?'':'off'}">${avRole(a,40)}<div><div class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}${a.note?' 📝':''}${a.iscritto?'':'<span class="tag-off">non iscritto</span>'}</div><div class="meta">${meta||'&nbsp;'}</div></div>
+    return `<div class="atc ${a.iscritto?'':'off'}">${avRole(a,40)}<div><div class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}${a.note?' 📝':''}${injTagHTML(a)}${a.iscritto?'':'<span class="tag-off">non iscritto</span>'}</div><div class="meta">${meta||'&nbsp;'}</div></div>
       ${b?`<div class="badges">${b}</div>`:''}</div>`; }).join('');
 }
 function atRows(){
@@ -3695,7 +3706,7 @@ function viewPartite(){
   return `<section>
   <div class="page-head">
     <div><h1>Partite</h1><p class="muted">${esc(selName)} · ${scope.length} partit${scope.length===1?'a':'e'} · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
-    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="qm-open" title="Partita veloce">⚡<span class="sl"> Partita veloce</span></button><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
+    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="ics-open" title="Calendario per il telefono">📅<span class="sl"> Sul telefono</span></button><button class="btn" data-action="qm-open" title="Partita veloce">⚡<span class="sl"> Partita veloce</span></button><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
   </div>
   <div class="camp-bar"><div class="chips">${(()=>{ const chip=c=>`<button class="chip ${sel===c.name?'on':''} ${c.active?'':'past'}" data-action="camp-sel" data-v="${esc(c.name)}" title="${c.active?(c.ms.length?'In corso':'Nuovo, senza partite'):'Concluso'}">${c.active&&c===camps[0]&&c.ms.length?'● ':''}${esc(c.name)} <span>${c.ms.length}</span></button>`;
       const act=camps.filter(c=>c.active), old=camps.filter(c=>!c.active);
@@ -3730,6 +3741,7 @@ function suggestCandidates(m, o){
     if((m.assenti||[]).includes(a.id)){ excl.push({a, why:'assente per impegni personali'}); continue; }
     if(!visitaOk(a,m)){ excl.push({a, why:visitaWhy(a)}); continue; }
     if(wrongSex(a)){ excl.push({a, why:'squadra '+genLabel()}); continue; }
+    if(injActive(a, m.data||todayISO()).length){ excl.push({a, why:injWhy(a, m.data||todayISO())}); continue; }
     const st=absStats(a.id, ref), pres=st.n-st.ass;
     out.push({a, st, pres, played:convCount(a.id, m.data, m.id), sp:seasonPct(a.id)??-1});
   }
@@ -4414,7 +4426,7 @@ function openAtProfile(id){
       </div>
       ${a.cellulare?`<div class="atp-contact"><a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span></div>`:''}
       ${a.note?`<div class="atp-note">📝 ${nl2br(a.note)}</div>`:''}
-      ${athleteGamesHTML(id)}${athleteSeasonHTML(id)}${athleteTrendHTML(id)}
+      ${injSectionHTML(a)}${athleteGamesHTML(id)}${athleteSeasonHTML(id)}${athleteTrendHTML(id)}
     </div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Chiudi</button><button class="btn primary" data-action="at-edit" data-id="${a.id}">✎ Modifica</button></div></div>`);
 }
@@ -4472,7 +4484,7 @@ function viewAllena(){
         <h2>${esc(inf.titolo)}</h2>
         <div class="trm-clock"><span class="t" id="trm-clock">${mmss(dur-trElapsed(T))}</span><div class="btns"><button class="btn ${T.t0?'':'primary'}" data-action="tr-play" id="trm-play">${T.t0?'⏸ Pausa':'▶ Via'}</button><button class="btn" data-action="tr-reset" title="Ricomincia il tempo">↺</button><button class="btn" data-action="tr-plus" title="Un minuto in più">+1′</button></div></div>
         <div class="trm-chips"><span>⏱ ${r.d} min</span>${inf.form?`<span>${esc(inf.form)}</span>`:''}${dos?`<span>💪 ${esc(dos)}</span>`:''}${r.start!=null?`<span>${minToHHMM(r.start)}–${minToHHMM(r.end)}</span>`:''}</div>
-        ${e&&e.puntoChiave?`<div class="trm-key">🎯 ${esc(e.puntoChiave)}</div>`:''}
+        ${e?vidBtnHTML(e):''}${e&&e.puntoChiave?`<div class="trm-key">🎯 ${esc(e.puntoChiave)}</div>`:''}
         ${it.nota?`<div class="trm-key" style="--c:#e07b22">📝 ${esc(it.nota)}</div>`:''}
         <div class="trm-txt">${txt.filter(x=>x[1]).map(([k,v])=>`<p style="margin:0 0 8px"><b>${k}.</b> ${esc(v)}</p>`).join('')}</div>
       </div>
@@ -4623,6 +4635,7 @@ function athleteTrendHTML(aid){
 function homeRem(){
   const td=todayISO(), R=[], dd=iso=>Math.round((parseISO(iso)-parseISO(td))/864e5);
   const sessOn=d=>db.sessions.find(s=>s.data===d);
+  { const ih=injHomeRem(); if(ih) R.push(ih); }
   refRemind().slice(0,2).forEach(m=>R.push(`<button data-action="ref-goto" data-id="${m.id}">📝 ${refCanStats(m)?'Crea il referto':'Completa il referto'}: ${esc(m.avversario||'partita')}</button>`));
   { const C=teamConflicts(14); if(C.length) R.push(`<button class="red" data-action="conf-open">⚠ ${C.length===1?'1 impegno sovrapposto':C.length+' impegni sovrapposti'} tra squadre</button>`); }
   { const bd=backupDue(); if(bd) R.push(`<button data-action="bk-now" title="Ultima copia ${bd} giorni fa">💾 Fai la copia di sicurezza del mese</button>`); }
@@ -5047,6 +5060,9 @@ const GUIDE=[
 ['📆','Piano della stagione',`<p>In <b>Sessioni → 📆 Piano</b> dividi la stagione in periodi (preparazione, campionato, scarico, tornei, pausa) con date, temi principali e obiettivi. Quando generi una sessione con <b>✨ Genera</b>, l'app propone i temi del periodo in cui cade l'allenamento.</p>`],
 ['🧹','Controllo dati',`<p>In <b>Archivio → 🧹 Controllo dati</b> trovi in un'unica pagina quello che manca: visite mediche, numeri di maglia, date di nascita, ruoli, risultati delle partite, presenze non segnate e sessioni vuote. Tocca una riga per sistemarla.</p>`],
 ['🗓','Tutte le squadre',`<p>Con più squadre, nella home <b>🗓 Tutte</b> mostra partite e allenamenti di tutte le squadre dei prossimi 60 giorni, con un colore per squadra. Se un atleta che gioca in due squadre ha due impegni lo stesso giorno, l'app lo segnala in home.</p>`],
+['🩹','Infortuni',`<p>Dal <b>profilo dell'atleta</b> (tocca il suo nome) premi <b>＋ Registra un infortunio</b>: cosa, da quando, rientro previsto e note. Finché è in corso, l'atleta ha il bollino 🩹 nell'elenco e non viene proposto nelle convocazioni. Quando torna, premi <b>✓ Rientrato</b>. Nella home vedi quanti sono gli infortunati e chi rientra per primo.</p>`],
+['📅','Calendario sul telefono',`<p>In <b>Partite</b> premi <b>📅 Sul telefono</b>: l'app crea un file con partite e allenamenti (orari, palestra, indirizzo, ritrovo, divisa). Aprilo sul telefono per aggiungerli al calendario di Google o dell'iPhone, oppure mandalo agli atleti. Se lo importi di nuovo dopo dei cambiamenti, gli eventi si aggiornano invece di raddoppiare.</p>`],
+['▶️','Video negli esercizi',`<p>Nella scheda di un esercizio puoi inserire il <b>link a un video</b> (YouTube o altro). Compare il pulsante <b>▶ Guarda il video</b> nella scheda e nella modalità allenamento in palestra.</p>`],
 ['🔒','Dove sono i dati',`<p>L'app non ha un server: i dati sono nel dispositivo (nell'archivio del browser) e, se la colleghi, nel <b>tuo</b> archivio privato su GitHub. Chi ti ha passato l'app non può vedere i tuoi dati.</p>`],
 ];
 function viewGuida(){
@@ -5240,7 +5256,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v48-2026-10-06';
+const APP_VERSION='v49-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5638,6 +5654,81 @@ function teamGen(){ const g=opz().genere; return g==='M'||g==='F'?g:'misto'; }
 const isMixed=()=>teamGen()==='misto';
 const genLabel=()=>({misto:'mista', M:'maschile', F:'femminile'})[teamGen()];
 function wrongSex(a){ const g=teamGen(); return g!=='misto' && !!sexOf(a) && sexOf(a)!==g; }
+
+/* ===== Infortuni ===== */
+function injActive(a, d){ d=d||todayISO(); return (a.infortuni||[]).filter(x=>!x.chiuso && (!x.dal || x.dal<=d) && (!x.rientro || x.rientro>d)); }
+function injWhy(a, d){ const x=injActive(a,d)[0]; return x?('infortunato'+(x.cosa?' ('+x.cosa+')':'')+(x.rientro?', rientro previsto il '+shortDate(x.rientro):'')):''; }
+function injTagHTML(a){ const x=injActive(a)[0]; return x?`<span class="inj-tag" title="${esc(injWhy(a))}">🩹 infortunato${x.rientro?' · rientro '+esc(shortDate(x.rientro).slice(0,5)):''}</span>`:''; }
+function injSectionHTML(a){
+  const L=(a.infortuni||[]).slice().sort((x,y)=>(y.dal||'').localeCompare(x.dal||''));
+  return `<div class="atp-sec"><h3>🩹 Infortuni</h3>${L.length?`<div class="inj-list">${L.map(x=>{ const act=!x.chiuso && (!x.rientro || x.rientro>todayISO());
+    return `<div class="inj-it ${act?'':'done'}"><div class="tx"><b>${esc(x.cosa||'Infortunio')}</b><small>${x.dal?'dal '+esc(shortDate(x.dal)):''}${x.rientro?(x.chiuso?' · rientrato il ':' · rientro previsto il ')+esc(shortDate(x.rientro)):''}${act?' · in corso':''}</small>${x.note?`<small>${esc(x.note)}</small>`:''}</div>
+      ${act?`<button class="btn sm" data-action="inj-back" data-a="${a.id}" data-i="${x.id}">✓ Rientrato</button>`:''}<button class="btn sm" data-action="inj-edit" data-a="${a.id}" data-i="${x.id}">✎</button></div>`; }).join('')}</div>`:'<div class="muted" style="font-size:13px">Nessun infortunio registrato.</div>'}
+    <button class="btn sm" style="margin-top:8px" data-action="inj-edit" data-a="${a.id}">＋ Registra un infortunio</button></div>`;
+}
+function openInjEdit(aid, iid){
+  const a=getAt(aid); if(!a) return; const x=(a.infortuni||[]).find(y=>y.id===iid)||{id:'', cosa:'', dal:todayISO(), rientro:'', note:'', chiuso:false};
+  ui.injDraft={aid, x:clone(x)};
+  openModal(`<div class="modal-box" style="max-width:480px"><div class="modal-head"><h2 style="flex:1">🩹 ${x.id?'Modifica infortunio':'Nuovo infortunio'} · ${esc(fullName(a))}</h2><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><div class="grid g2">
+      <label class="f span2">Cosa<input id="inj-cosa" value="${esc(x.cosa)}" placeholder="Es. distorsione caviglia destra"></label>
+      <label class="f">Dal<input type="date" id="inj-dal" value="${esc(x.dal)}"></label>
+      <label class="f">Rientro previsto<input type="date" id="inj-rientro" value="${esc(x.rientro)}"></label>
+      <label class="f span2">Note (esercizi da evitare, indicazioni del medico…)<textarea id="inj-note" rows="3">${esc(x.note)}</textarea></label></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">Finché l'infortunio è in corso l'atleta non viene proposto nelle convocazioni.</p>
+    <div class="actions" style="margin-top:12px">${x.id?'<button class="btn danger" data-action="inj-del">Elimina</button>':''}<span style="flex:1"></span><button class="btn" data-action="inj-cancel">Annulla</button><button class="btn primary" data-action="inj-save">Salva</button></div></div></div>`);
+}
+async function injSave(del){
+  const D=ui.injDraft, a=getAt(D.aid); if(!a) return; let L=(a.infortuni||[]).slice();
+  if(del){ L=L.filter(y=>y.id!==D.x.id); }
+  else { const x=Object.assign(D.x, {cosa:($('#inj-cosa').value||'').trim(), dal:$('#inj-dal').value||'', rientro:$('#inj-rientro').value||'', note:$('#inj-note').value||''});
+    if(x.rientro && x.dal && x.rientro<x.dal){ alert('Il rientro deve essere dopo l\'inizio.'); return; }
+    if(!x.id){ x.id='inj'+Date.now().toString(36); L.push(x); } else L=L.map(y=>y.id===x.id?x:y); }
+  a.infortuni=L; a.updatedAt=Date.now();
+  try{ await persist.ath(a); }catch(e){ saveFail(e); return; }
+  openAtProfile(a.id); toast(del?'Infortunio eliminato':'Infortunio salvato');
+}
+async function injBack(aid, iid){ const a=getAt(aid); if(!a) return; a.infortuni=(a.infortuni||[]).map(y=>y.id===iid?Object.assign({},y,{chiuso:true, rientro:todayISO()}):y); a.updatedAt=Date.now();
+  try{ await persist.ath(a); }catch(e){ saveFail(e); return; } openAtProfile(aid); toast('Bentornato in squadra!'); }
+function injHomeRem(){ const L=db.athletes.filter(a=>a.iscritto && injActive(a).length); if(!L.length) return '';
+  const soon=L.map(a=>({a, r:injActive(a)[0].rientro})).filter(x=>x.r).sort((x,y)=>x.r.localeCompare(y.r))[0];
+  return `<button data-action="nav-atleti">🩹 ${L.length} infortunat${L.length===1?'o':'i'}${soon?' · rientra '+esc(soon.a.nome||soon.a.cognome)+' il '+esc(shortDate(soon.r).slice(0,5)):''}</button>`; }
+/* ===== Calendario per il telefono (.ics) ===== */
+function icsEsc(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n'); }
+function icsDT(d, t){ return d.replace(/-/g,'')+'T'+(t||'00:00').replace(':','')+'00'; }
+function icsAdd(d, t, min){ const x=new Date(d+'T'+(t||'00:00')+':00'); x.setMinutes(x.getMinutes()+min); const p=n=>String(n).padStart(2,'0'); return `${x.getFullYear()}${p(x.getMonth()+1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`; }
+function icsBuild(o){
+  const now=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z'), td=todayISO(), from=o.past?licAddDays(td,-120):td, team=db.settings.squadra||'Volleysched', E=[];
+  const ev=(uid, d, t, dur, sum, loc, desc)=>{ const allDay=!t; E.push(['BEGIN:VEVENT','UID:'+uid+'@volleysched','DTSTAMP:'+now,
+    allDay?'DTSTART;VALUE=DATE:'+d.replace(/-/g,''):'DTSTART:'+icsDT(d,t), allDay?'DTEND;VALUE=DATE:'+icsAdd(d,'00:00',1440).slice(0,8):'DTEND:'+icsAdd(d,t,dur),
+    'SUMMARY:'+icsEsc(sum), loc?'LOCATION:'+icsEsc(loc):'', desc?'DESCRIPTION:'+icsEsc(desc):'', 'END:VEVENT'].filter(Boolean).join('\r\n')); };
+  if(o.partite) db.matches.filter(m=>m.data && m.data>=from).forEach(m=>{
+    const loc=[m.palestra, m.indirizzo].filter(Boolean).join(', ');
+    const desc=[m.competizione, m.giornata?(/^\d+$/.test(m.giornata)?m.giornata+'ª giornata':m.giornata):'', m.oraRitrovo?'Ritrovo ore '+m.oraRitrovo:'', m.divisa?'Divisa: '+m.divisa:'', m.inCasa?'In casa':'In trasferta', m.risultato?'Risultato: '+m.risultato:'', m.note].filter(Boolean).join('\n');
+    ev('p-'+m.id, m.data, m.oraRitrovo&&o.ritrovo?m.oraRitrovo:m.ora, m.oraRitrovo&&o.ritrovo&&m.ora?120+Math.max(0,(parseInt(m.ora)*60+parseInt(m.ora.slice(3)))-(parseInt(m.oraRitrovo)*60+parseInt(m.oraRitrovo.slice(3)))):120, '🏐 '+matchTitle(m), loc, desc); });
+  if(o.allenamenti) db.trainings.filter(t=>t.data>=from && !t.annullato).forEach(t=>{ const s=db.sessions.find(x=>x.data===t.data); const dur=s&&s.items?Math.max(60,s.items.reduce((a,i)=>a+(+i.durata||0),0)):90;
+    ev('a-'+t.id, t.data, t.ora, dur, '✅ Allenamento '+team, (s&&s.luogo)||'', s&&s.titolo?'Programma: '+s.titolo:''); });
+  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Volleysched//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:'+icsEsc(team), ...E, 'END:VCALENDAR'].join('\r\n')+'\r\n';
+}
+function openIcs(){
+  const o=ui.ics=Object.assign({partite:true, allenamenti:true, past:false, ritrovo:true}, ui.ics||{});
+  const nM=db.matches.filter(m=>m.data && m.data>=todayISO()).length, nA=db.trainings.filter(t=>t.data>=todayISO() && !t.annullato).length;
+  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><h2 style="flex:1">📅 Calendario per il telefono</h2><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><p style="margin-top:0;font-size:14px">Crea un file da aprire sul telefono: partite e allenamenti finiscono nel calendario di Google o dell'iPhone, con orari e indirizzi. Si può mandare anche agli atleti.</p>
+      <label class="sw"><input type="checkbox" id="ics-p" ${o.partite?'checked':''}> Partite (${nM} in programma)</label>
+      <label class="sw"><input type="checkbox" id="ics-a" ${o.allenamenti?'checked':''}> Allenamenti (${nA} in programma)</label>
+      <label class="sw"><input type="checkbox" id="ics-r" ${o.ritrovo?'checked':''}> Per le partite, inizia dall'ora del ritrovo</label>
+      <label class="sw"><input type="checkbox" id="ics-old" ${o.past?'checked':''}> Includi anche gli ultimi 4 mesi</label>
+      <p class="muted" style="font-size:12.5px">Se lo importi di nuovo dopo dei cambiamenti, il calendario aggiorna gli eventi invece di duplicarli (su Google: Impostazioni → Importa).</p>
+      <div class="actions" style="margin-top:10px"><span style="flex:1"></span>${navigator.canShare?'<button class="btn" data-action="ics-share">Condividi…</button>':''}<button class="btn primary" data-action="ics-down">Scarica il file</button></div></div></div>`);
+}
+function icsOpts(){ const o=ui.ics; o.partite=$('#ics-p').checked; o.allenamenti=$('#ics-a').checked; o.ritrovo=$('#ics-r').checked; o.past=$('#ics-old').checked; return o; }
+function icsFile(){ const o=icsOpts(); if(!o.partite && !o.allenamenti){ alert('Scegli partite, allenamenti o entrambi.'); return null; }
+  const name=((db.settings.squadra||'volleysched').replace(/[^\w]+/g,'-').toLowerCase()||'volleysched')+'.ics';
+  return new File([icsBuild(o)], name, {type:'text/calendar'}); }
+/* ===== Video negli esercizi ===== */
+function vidUrl(u){ u=String(u||'').trim(); if(!u) return ''; if(!/^https?:\/\//i.test(u)) u='https://'+u; try{ const x=new URL(u); return /^https?:$/.test(x.protocol)?x.href:''; }catch(e){ return ''; } }
+function vidBtnHTML(e){ const u=vidUrl(e&&e.video); return u?`<a class="btn sm vid-btn" href="${esc(u)}" target="_blank" rel="noopener">▶ Guarda il video</a>`:''; }
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -5831,6 +5922,15 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'inj-edit': b=>openInjEdit(b.dataset.a, b.dataset.i),
+  'inj-save': ()=>injSave(false),
+  'inj-del': ()=>{ if(confirm('Eliminare questo infortunio?')) injSave(true); },
+  'inj-cancel': ()=>openAtProfile(ui.injDraft.aid),
+  'inj-back': b=>injBack(b.dataset.a, b.dataset.i),
+  'nav-atleti': ()=>go('atleti'),
+  'ics-open': ()=>openIcs(),
+  'ics-down': ()=>{ const f=icsFile(); if(!f) return; const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; document.body.appendChild(a); a.click(); a.remove(); closeModal(); toast('File del calendario scaricato: aprilo per aggiungere gli eventi'); },
+  'ics-share': async ()=>{ const f=icsFile(); if(!f) return; try{ if(navigator.canShare && navigator.canShare({files:[f]})) await navigator.share({files:[f], title:'Calendario '+(db.settings.squadra||'')}); else actions['ics-down'](); }catch(e){} },
   'pgs-h2h': b=>pgsH2H(b.dataset.n),
   'ref-goto': b=>go('partita',{matchId:b.dataset.id, mTab:'ref', mEdit:false}),
   'conf-open': ()=>openConflicts(),

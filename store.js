@@ -89,7 +89,7 @@ const Store = (() => {
       id: s(e.id), titolo: s(e.titolo).trim(), fondamentale: s(e.fondamentale), formazione: s(e.formazione),
       durata: toIntOrNull(e.durata) ?? '', intensita: s(e.intensita), materiale: s(e.materiale),
       organizzazione: s(e.organizzazione), svolgimento: s(e.svolgimento), puntoChiave: s(e.puntoChiave),
-      variante: s(e.variante), note: s(e.note), image: e.image || null,
+      variante: s(e.variante), note: s(e.note), video: s(e.video).trim(), image: e.image || null,
       schema: e.schema || null, origine: s(e.origine), distretto: s(e.distretto),
       dosaggio: (e.dosaggio && typeof e.dosaggio === 'object') ? e.dosaggio : null,
       createdAt: (old && old.createdAt) || e.createdAt || Date.now(), updatedAt: e.updatedAt || Date.now()
@@ -120,6 +120,7 @@ const Store = (() => {
     if (r.avatar.length > 500000) throw new Error("Immagine dell'atleta troppo grande");
     r.iscritto = [true, 1, '1', 'si', 'SI', 'Si', 'Sì', 'true'].includes(a.iscritto);
     r.squadre = Array.isArray(a.squadre) ? a.squadre.filter(Boolean).map(String) : [];
+    r.infortuni = Array.isArray(a.infortuni) ? a.infortuni.filter(x => x && typeof x === 'object').map(x => ({ id: s(x.id), cosa: s(x.cosa).trim(), dal: s(x.dal).trim(), rientro: s(x.rientro).trim(), note: s(x.note), chiuso: !!x.chiuso })) : [];
     r.createdAt = (old && old.createdAt) || a.createdAt || Date.now(); r.updatedAt = a.updatedAt || Date.now();
     return r;
   }

@@ -5052,7 +5052,7 @@ const GUIDE=[
 <li>Scegli campionato, categoria, girone e la vostra squadra, poi <b>Collega</b>.</li>
 <li>L'app inserisce le vostre partite nel calendario (con palestra e indirizzo della squadra di casa).</li></ol>
 <p>Poi i dati si aggiornano da soli quando apri Partite (al massimo ogni 6 ore) oppure con <b>↻ Aggiorna</b>: se la PGS sposta una partita o pubblica un risultato, la partita nell'app si aggiorna. Le partite che avevi già inserito a mano vengono riconosciute dal numero di gara o dalla data, senza doppioni.</p>
-<p>Nella scheda di una partita (sezione <b>Dati</b>) trovi la classifica dell'avversario e i <b>precedenti</b> delle stagioni passate. L'app riconosce da sola le squadre della stessa società anche se hanno cambiato nome; se non trova qualcosa, con <b>✏️ Vecchi nomi</b> puoi indicare come si chiamava la squadra (la vostra o l'avversaria) negli anni scorsi.</p>`],
+<p>Nella scheda di una partita (sezione <b>Dati</b>) trovi la classifica dell'avversario e i <b>precedenti</b> delle stagioni passate. L'app riconosce da sola le squadre della stessa società anche se hanno cambiato nome; se non trova qualcosa, con <b>⚙️ Dove cercare</b> scegli in quali categorie cercare (di solito solo la vostra) e puoi indicare come si chiamava la squadra, la vostra o l'avversaria, negli anni scorsi.</p>`],
 ['👥','Più squadre',`
 <p>Se alleni più squadre: <b>Archivio → Squadre → Aggiungi una squadra</b>. Esercizi e sessioni restano in comune; atleti, partite, presenze, note, colori, logo e campionato PGS sono di ogni squadra.</p>
 <ul><li>Per cambiare squadra: pulsante <b>⇄ Squadra</b> nella home.</li>
@@ -5270,7 +5270,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v50-2026-10-06';
+const APP_VERSION='v51-2026-10-06';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5507,7 +5507,7 @@ async function pgsSetupRender(){
 }
 async function pgsSave(){
   const S=ui.pgsS, camp=(ui.pgsCamps||[]).find(x=>x.codice===S.camp)||{}, cat=(ui.pgsCats||[]).find(x=>x.categoria===S.cat)||{}, t=(ui.pgsIsc||[]).find(x=>(x.id||x._id)===S.teamId)||{};
-  const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', soc:t.codiceSocieta||'', altNomi:(S.altNomi||'').trim(), oppAlt:(pgsCfg()||{}).oppAlt||{}, campApp:(S.campApp||'').trim()||camp.nome||''};
+  const cfg={camp:S.camp, campNome:camp.nome||S.camp, cat:S.cat, catNome:cat.nome||S.cat, girone:S.girone, teamId:S.teamId, teamName:t.nomeSquadra||'', soc:t.codiceSocieta||'', altNomi:(S.altNomi||'').trim(), oppAlt:(pgsCfg()||{}).oppAlt||{}, h2hCats:(pgsCfg()||{}).h2hCats, catList:(ui.pgsCats||[]).map(x=>({c:x.categoria, n:x.nome||x.categoria, on:x.isActive!==false})), campApp:(S.campApp||'').trim()||camp.nome||''};
   setOpz('pgs', cfg);
   if(opz().genere===undefined){ const nm=(cat.nome||'')+' '+(cat.categoria||''), sx=[...new Set((cat.requirements||[]).map(r=>r.sesso).filter(Boolean))]; const g=/mist|genitori/i.test(nm)?'misto':sx.length===1?sx[0]:/femmin/i.test(nm)?'F':/maschil/i.test(nm)?'M':''; if(g) setOpz('genere', g); } await Store.setMeta(pgsKey(), null); closeModal(); toast('Scarico i dati dalla PGS…');
   try{ await pgsRefresh(); const r=await pgsImport(true); render(); toast(`Campionato collegato · ${r.created} partite inserite${r.updated?', '+r.updated+' aggiornate':''}`); }
@@ -5537,22 +5537,47 @@ function oppCardHTML(m){
     <div style="font-weight:700;font-size:13.5px;margin-top:10px">Precedenti tra voi</div>
     ${P.length?`<div class="opp-res">${P.map(r=>{ const as=[r.noi&&pgsNorm(r.noi)!==pgsNorm(c.teamName)?'voi «'+r.noi+'»':'', r.loro&&pgsNorm(r.loro)!==pgsNorm(nm)?'loro «'+r.loro+'»':''].filter(Boolean).join(', ');
       return `<div><span class="${r.my>r.th?'w':'l'}">${r.my>r.th?'V':'P'} ${r.my}-${r.th}</span> ${r.home?'in casa':'in trasferta'} <span class="muted" style="font-size:12px">${esc(r.data)} · ${esc(r.camp)}${as?' · come '+esc(as):''}</span></div>`; }).join('')}</div><div class="muted" style="font-size:12.5px;margin-top:4px">Bilancio: ${vw} vinte, ${P.length-vw} perse</div>`:`<div class="muted" style="font-size:13px">${H?'Nessun precedente trovato nelle stagioni passate. Se negli anni scorsi una delle due squadre si chiamava in un altro modo, aggiungi il vecchio nome qui sotto e cerca di nuovo.':'Non ancora cercati.'}</div>`}
-    ${(()=>{ const an=pgsAltList(c.altNomi), ao=pgsAltList((c.oppAlt||{})[pgsNorm(nm)]); return an.length||ao.length?`<div class="muted" style="font-size:12px;margin-top:6px">Cerco anche come: ${an.length?'voi '+esc(an.join(', ')):''}${an.length&&ao.length?' · ':''}${ao.length?'loro '+esc(ao.join(', ')):''}</div>`:''; })()}
-    <div class="actions" style="margin-top:8px;flex-wrap:wrap"><button class="btn sm" data-action="pgs-h2h" data-n="${esc(nm)}">🔎 ${H?'Cerca di nuovo':'Cerca'} i precedenti</button><button class="btn sm ghost" data-action="pgs-alt" data-w="noi">✏️ Vostri vecchi nomi</button><button class="btn sm ghost" data-action="pgs-alt" data-w="loro" data-n="${esc(nm)}">✏️ Vecchi nomi di ${esc(nm)}</button></div></div>`;
+    ${(()=>{ const an=pgsAltList(c.altNomi), ao=pgsAltList((c.oppAlt||{})[pgsNorm(nm)]); return `<div class="muted" style="font-size:12px;margin-top:6px">Cerco in: <b>${esc(h2hCats(c).map(pgsCatName).join(', '))}</b>${an.length?' · voi anche come '+esc(an.join(', ')):''}${ao.length?' · loro anche come '+esc(ao.join(', ')):''}</div>`; })()}
+    <div class="actions" style="margin-top:8px;flex-wrap:wrap"><button class="btn sm" data-action="pgs-h2h" data-n="${esc(nm)}">🔎 ${H?'Cerca di nuovo':'Cerca'} i precedenti</button><button class="btn sm ghost" data-action="h2h-set" data-n="${esc(nm)}">⚙️ Dove cercare</button></div></div>`;
 }
 const pgsAltList=v=>String(v||'').split(/[,;\n]/).map(x=>x.trim()).filter(Boolean);
-function pgsAltEdit(w, oppName){
-  const c=pgsCfg(); if(!c) return; const k=pgsNorm(oppName);
-  const cur=w==='noi'?(c.altNomi||''):((c.oppAlt||{})[k]||'');
-  const v=prompt(w==='noi'?'Nomi usati dalla vostra squadra nelle stagioni passate (separati da virgola), così come comparivano sul sito della PGS:':'Altri nomi usati da '+oppName+' nelle stagioni passate (separati da virgola):', cur);
-  if(v===null) return; const nc=Object.assign({}, c);
-  if(w==='noi') nc.altNomi=v.trim(); else { nc.oppAlt=Object.assign({}, c.oppAlt||{}); if(v.trim()) nc.oppAlt[k]=v.trim(); else delete nc.oppAlt[k]; }
-  setOpz('pgs', nc); render(); toast('Nomi salvati: premi «Cerca» per rifare la ricerca');
+function h2hCats(c){ return c.h2hCats&&c.h2hCats.length?c.h2hCats:[c.cat]; }
+function pgsCatName(k){ const c=pgsCfg()||{}, x=(c.catList||[]).find(y=>y.c===k); return x?x.n:(k===c.cat&&c.catNome)||k; }
+async function openH2HSet(oppName){
+  const c=pgsCfg(); if(!c) return;
+  if(!c.catList || !c.catList.length){ toast('Scarico le categorie dalla PGS…'); try{ await pgsCatLoad(); }catch(e){ toast('Non riesco a raggiungere il sito della PGS: per ora uso solo la vostra categoria'); } }
+  ui.h2hOpp=oppName; h2hSetRender();
+}
+async function pgsCatLoad(){ const c=pgsCfg(), cats=await pgsGet('categorie/all'); const nc=Object.assign({}, c, {catList:cats.map(x=>({c:x.categoria, n:x.nome||x.categoria, on:x.isActive!==false}))}); setOpz('pgs', nc); }
+function h2hSetRender(){
+  const c=pgsCfg(), sel=new Set(h2hCats(c)), nm=ui.h2hOpp||'';
+  const list=[...(c.catList||[])]; if(!list.some(x=>x.c===c.cat)) list.unshift({c:c.cat, n:c.catNome||c.cat, on:true});
+  list.sort((a,b)=>(b.c===c.cat)-(a.c===c.cat) || (b.on-a.on) || a.n.localeCompare(b.n));
+  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><h2 style="flex:1">Dove cercare i precedenti</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body">
+    <p style="margin-top:0;font-size:14px">L'app cerca le partite giocate contro <b>${esc(nm)}</b> nei campionati PGS degli anni passati, solo nelle categorie che spunti qui.</p>
+    <div style="font-weight:700;font-size:13.5px;margin:6px 0 4px">Categorie</div>
+    <div class="h2h-cats" style="display:flex;flex-direction:column;gap:2px;max-height:260px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:6px 10px">
+      ${list.map(x=>`<label class="sw" style="min-height:0;padding:4px 0"><input type="checkbox" data-h2hcat="${esc(x.c)}" ${sel.has(x.c)?'checked':''}> <span>${esc(x.n)}${x.c===c.cat?' <small class="muted" style="font-weight:400">(la vostra di quest\'anno)</small>':''}${x.on?'':' <small class="muted" style="font-weight:400">(non più attiva)</small>'}</span></label>`).join('')}
+    </div>
+    <div class="actions" style="margin:4px 0 10px"><button class="btn sm ghost" data-action="h2h-cats-reload">↻ Aggiorna l'elenco dalla PGS</button></div>
+    <label class="f">Nomi usati dalla vostra squadra negli anni passati <span class="muted" style="font-weight:400">(separati da virgola)</span><input type="text" id="h2h-noi" value="${esc(c.altNomi||'')}" placeholder="es. POLIS CORBETTA"></label>
+    <label class="f">Nomi usati da ${esc(nm)} negli anni passati<input type="text" id="h2h-loro" value="${esc((c.oppAlt||{})[pgsNorm(nm)]||'')}"></label>
+    <div class="muted" style="font-size:12.5px">Le squadre della stessa società vengono riconosciute da sole anche se hanno cambiato nome: i nomi servono solo se l'app non le trova.</div>
+    <div class="actions" style="margin-top:14px"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="h2h-save">Salva e cerca</button></div></div></div>`);
+}
+async function h2hSave(){
+  const c=pgsCfg(); if(!c) return; const nm=ui.h2hOpp||'', k=pgsNorm(nm);
+  const cats=[...document.querySelectorAll('[data-h2hcat]')].filter(i=>i.checked).map(i=>i.dataset.h2hcat);
+  if(!cats.length){ toast('Spunta almeno una categoria'); return; }
+  const nc=Object.assign({}, c, {h2hCats:cats, altNomi:($('#h2h-noi').value||'').trim()}); nc.oppAlt=Object.assign({}, c.oppAlt||{});
+  const lo=($('#h2h-loro').value||'').trim(); if(lo) nc.oppAlt[k]=lo; else delete nc.oppAlt[k];
+  setOpz('pgs', nc); closeModal(); await pgsH2H(nm);
 }
 async function pgsH2H(oppName){
   const c=pgsCfg(); if(!c) return; const op=pgsNorm(oppName);
   const myN=new Set([c.teamName, ...pgsAltList(c.altNomi)].map(pgsNorm).filter(Boolean));
   const opN=new Set([oppName, ...pgsAltList((c.oppAlt||{})[op])].map(pgsNorm).filter(Boolean));
+  const cats=new Set(h2hCats(c)), inCat=s=>cats.has(s.categoria);
   toast('Cerco i precedenti sul sito della PGS…');
   try{
     // codice società: resta uguale anche quando la squadra cambia nome
@@ -5563,9 +5588,8 @@ async function pgsH2H(oppName){
     const list=[], seen=new Set();
     for(const cp of camps){
       let isc=[]; try{ isc=await pgsGet('iscrizioni/campionato/'+cp.codice+'/light'); }catch(e){ continue; }
-      const sameCat=s=>!c.cat || s.categoria===c.cat;
-      const isMe=s=>myN.has(pgsNorm(s.nomeSquadra)) || (!!mySoc && s.codiceSocieta===mySoc && sameCat(s));
-      const isOp=s=>!isMe(s) && (opN.has(pgsNorm(s.nomeSquadra)) || (!!opSoc && s.codiceSocieta===opSoc && sameCat(s)));
+      const isMe=s=>inCat(s) && (myN.has(pgsNorm(s.nomeSquadra)) || (!!mySoc && s.codiceSocieta===mySoc));
+      const isOp=s=>inCat(s) && !isMe(s) && (opN.has(pgsNorm(s.nomeSquadra)) || (!!opSoc && s.codiceSocieta===opSoc));
       const mine=isc.filter(isMe), opps=new Map(isc.filter(isOp).map(s=>[s.id||s._id, s.nomeSquadra]));
       if(!mine.length || !opps.size) continue;
       for(const t of mine){ const tid=t.id||t._id; let cal=[]; try{ cal=await pgsGet('calendari/team/'+tid); }catch(e){ continue; }
@@ -5970,7 +5994,11 @@ const actions={
   'ics-down': ()=>{ const f=icsFile(); if(!f) return; const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; document.body.appendChild(a); a.click(); a.remove(); closeModal(); toast('File del calendario scaricato: aprilo per aggiungere gli eventi'); },
   'ics-share': async ()=>{ const f=icsFile(); if(!f) return; try{ if(navigator.canShare && navigator.canShare({files:[f]})) await navigator.share({files:[f], title:'Calendario '+(db.settings.squadra||'')}); else actions['ics-down'](); }catch(e){} },
   'pgs-h2h': b=>pgsH2H(b.dataset.n),
-  'pgs-alt': b=>pgsAltEdit(b.dataset.w, b.dataset.n||''),
+  'h2h-set': b=>openH2HSet(b.dataset.n||''),
+  'h2h-save': ()=>h2hSave(),
+  'h2h-cats-reload': async ()=>{ const keep=[...document.querySelectorAll('[data-h2hcat]')].filter(i=>i.checked).map(i=>i.dataset.h2hcat), noi=$('#h2h-noi').value, loro=$('#h2h-loro').value;
+    try{ await pgsCatLoad(); }catch(e){ toast('Non riesco a raggiungere il sito della PGS'); return; }
+    h2hSetRender(); document.querySelectorAll('[data-h2hcat]').forEach(i=>i.checked=keep.includes(i.dataset.h2hcat)); $('#h2h-noi').value=noi; $('#h2h-loro').value=loro; toast('Elenco delle categorie aggiornato'); },
   'ref-goto': b=>go('partita',{matchId:b.dataset.id, mTab:'ref', mEdit:false}),
   'conf-open': ()=>openConflicts(),
   'ag-go': ()=>go('agenda'),

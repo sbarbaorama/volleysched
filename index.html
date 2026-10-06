@@ -1649,6 +1649,13 @@ body.locked #nav, body.locked .fab, body.locked .sync-pill{display:none!importan
 #print-area .rf-bar,#print-area .rf-ins li,#print-area .rf-worm,#print-area .rf-kpi div{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 #print-area .rf-t{page-break-inside:avoid}
 
+
+.ver-box{display:flex;gap:8px 12px;align-items:center;flex-wrap:wrap;font-size:13.5px}
+.ver-box .vn{font-weight:800;background:var(--surface-2);border:1px solid var(--line-2);border-radius:999px;padding:2px 10px}
+.ver-msg{font-size:13px}
+.ver-msg.ok{color:#1d8a4f}.ver-msg.new{color:#b25a00;font-weight:700}
+.guide .gver{font-size:12.5px;color:var(--muted);margin-top:2px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2964,7 +2971,7 @@ function newSession(){
 function viewImpostazioni(){
   const st=db.settings;
   return `<section>
-  <div class="page-head"><div><h1>Archivio e impostazioni</h1></div><div class="actions"><button class="btn" data-action="guide-open">📖 Come si fa</button></div></div>
+  <div class="page-head"><div><h1>Archivio e impostazioni</h1><div style="margin-top:6px">${verBoxHTML()}</div></div><div class="actions"><button class="btn" data-action="guide-open">📖 Come si fa</button></div></div>
 ${syncPanelHTML()}
 ${licPanelHTML()}
 ${lookPanelHTML()}
@@ -4949,7 +4956,7 @@ const GUIDE=[
 function viewGuida(){
   const q=(ui.gq||'').trim().toLowerCase(), strip=h=>h.replace(/<[^>]+>/g,' ').toLowerCase();
   const L=GUIDE.map((g,i)=>[g,i]).filter(([g])=>!q || g[1].toLowerCase().includes(q) || strip(g[2]).includes(q));
-  return `<section class="guide"><div class="page-head"><div><a href="#" data-nav="${ui.gBack||'home'}" class="muted" style="font-size:13.5px;text-decoration:none">← Indietro</a><h1 style="margin-top:4px">Come si fa</h1><p class="muted">Guida rapida a Volleysched. Tocca un argomento per aprirlo.</p></div></div>
+  return `<section class="guide"><div class="page-head"><div><a href="#" data-nav="${ui.gBack||'home'}" class="muted" style="font-size:13.5px;text-decoration:none">← Indietro</a><h1 style="margin-top:4px">Come si fa</h1><p class="muted">Guida rapida a Volleysched. Tocca un argomento per aprirlo.</p><div class="gver">Versione ${esc(verLabel(APP_VERSION))} · <a href="#" data-action="ver-go">controlla aggiornamenti</a></div></div></div>
     <input type="search" class="gsearch" id="g-q" placeholder="Cerca nella guida (es. convocazioni, sincronizzare…)" value="${esc(ui.gq||'')}">
     <div id="g-list">${L.map(([g,i])=>`<details ${q||ui.gOpen===i?'open':''}><summary><span class="gi">${g[0]}</span>${g[1]}</summary><div class="gb">${g[2]}</div></details>`).join('')||'<div class="gnone">Nessun argomento trovato.</div>'}</div></section>`;
 }
@@ -5134,6 +5141,24 @@ async function demoClear(){
     db.settings.campionati=JSON.stringify(campDefs().filter(c=>!/\(demo\)/.test(c)));
     await persist.settings(); await loadState(); render(); toast('Dati di prova tolti'); }catch(e){ saveFail(e); }
 }
+
+/* ===== Versione dell'app ===== */
+const APP_VERSION='v44-2026-10-06';
+function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
+const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
+let swReg=null;
+async function checkUpdate(){
+  const box=$('#ver-msg'); const show=(c,t)=>{ if(box){ box.className='ver-msg '+c; box.textContent=t; } };
+  if(!navigator.onLine){ show('', 'Sei offline: non posso controllare adesso.'); return; }
+  show('', 'Controllo…');
+  let online=null;
+  try{ const r=await fetch('sw.js?fresh='+Date.now(), {cache:'no-store'}); const t=await r.text(); const m=t.match(/const VERSION = '([^']+)'/); online=m&&m[1]; }catch(e){}
+  try{ if(swReg) await swReg.update(); }catch(e){}
+  if(!online){ show('', 'Non riesco a leggere la versione online. Riprova più tardi.'); return; }
+  if(verNum(online)>verNum(APP_VERSION)) show('new', `Online c'è la versione ${verLabel(online)}: tra poco compare la barra «Aggiorna» (se non compare, chiudi e riapri l'app).`);
+  else show('ok', '✓ Stai usando l\'ultima versione pubblicata.');
+}
+function verBoxHTML(){ return `<div class="ver-box"><span>Volleysched</span><span class="vn">versione ${esc(verLabel(APP_VERSION))}</span><button class="btn sm" data-action="ver-check">Controlla aggiornamenti</button><span id="ver-msg" class="ver-msg"></span></div>`; }
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -5327,6 +5352,8 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'ver-check': ()=>checkUpdate(),
+  'ver-go': ()=>{ go('impostazioni'); setTimeout(checkUpdate, 100); },
   'bk-now': ()=>{ exportBackup(); toast('Copia scaricata: tienila in un posto sicuro'); setTimeout(()=>{ if(ui.view==='home') render(); }, 300); },
   'ref-fromstats': ()=>{ const m=getMatch(ui.matchId); if(refHas(m) && !confirm('Il referto attuale verrà sostituito con quello ricavato dalle statistiche. Continuare?')) return;
     const r=refFromStats(m); if(!r){ toast('Nelle statistiche non ci sono punti'); return; } m.referto=r; touchMatch(m); ui.mTab='ref'; render(); toast('Referto creato dalle statistiche: '+r.sets.length+' set'); },
@@ -5662,6 +5689,7 @@ document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState=
 /* app installabile: funzionamento senza rete e aggiornamenti */
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   navigator.serviceWorker.register('sw.js').then(reg=>{
+    swReg=reg;
     const offer=w=>{
       if(document.querySelector('.update-bar')) return;
       const bar=document.createElement('div'); bar.className='update-bar';

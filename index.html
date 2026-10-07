@@ -1846,6 +1846,76 @@ body:has(.ls) main{padding-top:8px;padding-bottom:12px}
   .sa-row{grid-template-columns:92px repeat(3,minmax(0,1fr))}
   .ls-bench .pchip{padding:2px 6px 2px 2px}
 }
+/* telefono in verticale (e schermi stretti): «Cambio» accanto alla panchina, «Annulla» con la scritta, avversario su una riga */
+@media (orientation: portrait), (max-width: 799px){
+  .ls-bench{display:grid;grid-template-columns:76px repeat(3,minmax(0,1fr));grid-auto-rows:34px;gap:6px}
+  .ls-bench .lbl{display:none}
+  .ls-cambio{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;grid-row:span 2;grid-column:1;font-size:19px;font-weight:800;border-radius:11px;background:var(--bar);color:#fff;border-color:var(--bar);padding:2px;min-height:0}
+  .ls-cambio span{font-size:13px}
+  .ls-bench .pchip{font-size:12.5px;padding:2px 6px 2px 2px;border-radius:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;justify-content:flex-start}
+  .ls-bench .pchip .nr{min-width:22px;height:22px;font-size:10.5px}
+  .ls-f-sub{display:none!important}
+  .ls-foot{grid-template-columns:1fr 1fr}
+  .ls-head .r{flex-wrap:wrap}
+  .ls-head .opp{order:-1;flex-basis:100%;text-align:center;margin-bottom:2px}
+  .ls-head .sc-switch{order:1;margin-right:auto}
+  .ls-head .ls-undo{order:2;font-size:21px;padding:6px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:6px;line-height:1}
+  .ls-head .ls-undo span{display:inline;font-size:14px;font-weight:800}
+}
+/* telefono in orizzontale: tabellone sottile in alto, campo a sinistra, azioni a destra */
+@media (orientation: landscape) and (max-height: 479px){
+  .ls-bench{display:grid;grid-template-columns:64px repeat(3,minmax(0,1fr));grid-auto-rows:24px;gap:4px;margin-top:4px}
+  .ls-bench .lbl{display:none}
+  .ls-cambio{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;grid-row:span 2;grid-column:1;font-size:15px;font-weight:800;border-radius:9px;background:var(--bar);color:#fff;border-color:var(--bar);padding:2px;min-height:0;line-height:1.05}
+  .ls-cambio span{font-size:11.5px}
+  .ls-bench .pchip{font-size:11.5px;padding:1px 5px 1px 2px;border-radius:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;justify-content:flex-start;gap:4px}
+  .ls-bench .pchip .nr{min-width:18px;height:18px;font-size:9.5px}
+  .ls-f-sub{display:none!important}
+  .ls-foot{grid-template-columns:1fr 1fr}
+  .ls-foot .btn{padding:3px 6px;min-height:0;font-size:13.5px}
+  .sa-err{min-height:30px;font-size:13.5px}
+  .ls{grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"h h" "c a";gap:6px}
+  .ls>div:first-child{display:contents}
+  .ls-head{grid-area:h;padding:4px 10px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;column-gap:10px}
+  .ls-head .r{display:contents}
+  .ls-head .r .btn[data-action=live-close]{grid-column:1;grid-row:1 / span 2}
+  .ls-head .opp{display:none}
+  .ls-head .sc-switch{grid-column:3;grid-row:1;justify-self:end}
+  .ls-head .sc-switch button{padding:3px 9px;font-size:12px}
+  .ls-head .ls-undo{grid-column:3;grid-row:2;justify-self:end;font-size:17px;padding:3px 10px;border-radius:9px;display:inline-flex;align-items:center;gap:5px;line-height:1}
+  .ls-head .ls-undo span{display:inline;font-size:12.5px;font-weight:800}
+  .ls-score{grid-column:2;grid-row:1 / span 2;margin:0;grid-template-columns:1fr auto 1fr}
+  .ls-score .side{flex-direction:row;gap:12px;justify-content:center}
+  .ls-score .side:last-child{flex-direction:row-reverse}
+  .ls-score .n{font-size:38px}
+  .ls-score .plus{padding:4px 14px;font-size:15px}
+  .ls-score .mid{gap:3px}
+  .ls-court{grid-area:c;display:flex;flex-direction:column;min-height:0;padding:5px}
+  .ls-court .net{margin-bottom:4px}
+  .ls-tiles{flex:1;grid-template-rows:1fr 1fr;gap:5px}
+  .st-tile{min-height:0}
+  .ls>div:last-child{grid-area:a}
+}
+/* schermi molto piccoli (es. iPhone SE) */
+@media (orientation: portrait) and (max-width: 380px){
+  .ls-head .ls-undo span{display:none}
+  .ls-head .ls-undo{font-size:22px;padding:5px 14px}
+  .sc-switch button{padding:4px 9px}
+}
+@media (orientation: landscape) and (max-height: 479px) and (max-width: 720px){
+  .ls-head{padding:3px 8px;column-gap:6px}
+  .ls-head .ls-undo span{display:none}
+  .ls-head .sc-switch button{padding:2px 7px;font-size:11px}
+  .ls-score .n{font-size:30px}
+  .ls-score .t{font-size:10px}
+  .ls-score .side{gap:7px}
+  .ls-score .plus{padding:3px 10px;font-size:14px}
+  .ls-head .serve{font-size:11px;padding:2px 7px;white-space:nowrap}
+  .sbtn{font-size:12.5px}
+  .sa-row{grid-template-columns:70px repeat(3,minmax(0,1fr))}
+  .sa-row h4{font-size:12.5px}
+  .sa-err span{display:none}
+}
 
 #print-area{display:none}
 
@@ -5388,7 +5458,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v56-2026-10-07';
+const APP_VERSION='v57-2026-10-07';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;

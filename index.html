@@ -1950,6 +1950,28 @@ body.scout .brand small{display:none}
 .sc-steps{margin:6px 0 10px;padding-left:20px;font-size:13.5px}
 .sc-steps li{margin-bottom:4px}
 
+
+.rot-t td.best{background:rgba(34,160,90,.14);font-weight:800}
+.rot-t td.worst{background:rgba(214,74,90,.14);font-weight:800}
+.trend{margin-top:6px}
+.trend svg{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.trend .tl{font-size:12.5px;color:var(--muted);margin:2px 0 8px}
+.st-sec{margin-top:18px}
+.st-sec>h3{font-size:16px;margin:0 0 6px}
+.weak{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;background:color-mix(in srgb,var(--accent) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:12px;padding:10px 12px}
+.weak .tx{flex:1;min-width:220px;font-size:14px}
+.weak ul{margin:4px 0 0;padding-left:18px;font-size:13.5px}
+.pt-list{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.pt-row{display:grid;grid-template-columns:minmax(110px,190px) 1fr 74px;gap:8px;align-items:center;font-size:13.5px}
+.pt-row .bar{height:10px;border-radius:5px;background:var(--surface-2,#eee);overflow:hidden}
+.pt-row .bar i{display:block;height:100%;background:#2f6fb8;border-radius:5px}
+.pt-row.low .bar i{background:#e07b22}
+.pt-row.low b{color:#c25a10}
+.inj-s{border-left:5px solid #d64a5a}
+.inj-s .ex-sug{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);padding:6px 0;font-size:13.5px}
+.inj-s .ex-sug:first-of-type{border-top:0}
+.inj-s .ex-sug span{flex:1;min-width:180px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -3140,7 +3162,7 @@ function viewSessione(){
       <button class="btn danger" data-action="del-sess" data-id="${s.id}">Elimina</button>
     </div>
   </div>
-  ${sSumHTML(s)}<div class="panel ${sFormOpen(s)?'':'hidden'}" id="s-form">
+  ${sSumHTML(s)}${sessInjHTML(s)}<div class="panel ${sFormOpen(s)?'':'hidden'}" id="s-form">
     <div class="grid g3">
       <label class="f">Titolo<input type="text" data-sf="titolo" value="${esc(s.titolo)}" placeholder="Es. Battuta e ricezione"></label>
       <div class="grid g2"><label class="f">Data<input type="date" data-sf="data" value="${esc(s.data)}"></label>
@@ -4198,8 +4220,8 @@ function formPanelHTML(m){
       ${f.libero?`<label class="fslot" style="flex-direction:row;align-items:center;gap:8px"><span><i style="background:${ROLE_COL.L}"></i>Libero</span><select data-fs="L" style="width:auto">${formOptions(m,f,'L')}</select></label>`:''}
       <label class="fslot" style="flex-direction:row;align-items:center;gap:8px">Si parte in<select data-fs="start" style="width:auto">${ROTNAME.map((n,i)=>`<option value="${i}" ${+f.start===i?'selected':''}>${n} (palleggiatore in zona ${n.slice(1)})</option>`).join('')}</select></label>
     </div>
-    ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}${refStartHint(f)}
-    <div class="actions" style="margin-top:12px"><button class="btn" data-action="form-auto">✨ Proponi formazione</button><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
+    ${w.length?`<div class="cwarn" style="margin-top:8px">⚠ ${w.join(' · ')}</div>`:''}${refStartHint(f)||statStartHint(f)}
+    <div class="actions" style="margin-top:12px">${preMatchBtn()}<button class="btn" data-action="form-auto">✨ Proponi formazione</button><button class="btn" data-action="rot-view" ${formOk(f)?'':'disabled'}>Vedi le 6 rotazioni</button><button class="btn" data-action="rot-print" ${formOk(f)?'':'disabled'}>Stampa per la panchina</button>
       <button class="btn primary" data-action="live-open">📊 ${st?'Riprendi le statistiche':'Statistiche in partita'}</button>${st?`<button class="btn" data-action="stats-match">Riepilogo statistiche</button>`:''}</div>`;
 }
 function rotCardsHTML(m, f){
@@ -4363,8 +4385,8 @@ function openMatchStats(){
   const m=getMatch(ui.matchId), S=getStats(m);
   const team={pt:S.ev.filter(OUR_PT).length, err:S.ev.filter(e=>THEIR_PT(e) && e.k!=='pl').length};
   openModal(`<div class="modal-box" style="max-width:1000px"><div class="modal-head"><div style="flex:1"><h2>Statistiche della partita</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${S.sets.length?' · set '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''} · punti nostri ${S.ev.filter(e=>OUR_PT(e)).length} (di cui ${S.ev.filter(e=>e.k==='pt').length} su errore avversario) · errori nostri ${team.err}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
-    <div class="modal-body">${statTable(S.ev, playedCount(m))}</div>
-    <div class="modal-foot"><button class="btn danger" data-action="stats-reset">Azzera le statistiche</button><span style="flex:1"></span><button class="btn" data-action="stats-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
+    <div class="modal-body">${statTable(S.ev, playedCount(m))}${rotTableHTML(S.ev)?`<div class="st-sec"><h3>Per rotazione</h3>${rotTableHTML(S.ev)}</div>`:''}${trendHTML(m)}${weakHTML([m],'In questa partita')}</div>
+    <div class="modal-foot"><button class="btn danger" data-action="stats-reset">Azzera le statistiche</button><span style="flex:1"></span><button class="btn wa" data-action="rep-quick">📲 Resoconto</button><button class="btn" data-action="stats-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
 }
 function seasonStatsHTML(){
   const ms=campScope().filter(m=>m.stats && m.stats.ev && m.stats.ev.length);
@@ -4372,7 +4394,7 @@ function seasonStatsHTML(){
   const ev=ms.flatMap(m=>m.stats.ev), played={};
   ms.forEach(m=>{ for(const [id,n] of Object.entries(playedCount(m))) played[id]=(played[id]||0)+n; });
   return `<details class="panel" id="stats-sum" ${ui.ssOpen?'open':''} style="margin-top:16px"><summary><b style="font-size:18px">Statistiche della stagione</b> <span class="muted">· ${ms.length} partit${ms.length===1?'a':'e'} con statistiche</span></summary>
-    <div style="margin-top:12px">${statTable(ev, played)}</div></details>`;
+    <div style="margin-top:12px">${statTable(ev, played)}</div>${rotTableHTML(ev)?`<div class="st-sec"><h3>Per rotazione (stagione)</h3>${rotTableHTML(ev)}</div>`:''}${weakHTML(lastStatMatches(3),'Nelle ultime '+Math.min(3,lastStatMatches(3).length)+' partite')}</details>`;
 }
 document.addEventListener('toggle', e=>{ if(e.target.id==='stats-sum') ui.ssOpen=e.target.open; }, true);
 
@@ -4463,6 +4485,7 @@ function viewPartita(){
         <button class="btn sm" data-action="disp-open">📨 Disponibilità</button><button class="btn sm primary" data-action="conv-suggest">✨ Suggerisci</button><button class="btn sm" data-action="conv-all">Tutti gli iscritti</button><button class="btn sm" data-action="conv-none">Nessuno</button></div>
       <div id="conv-box">${convTable(m)}</div>
     </div>
+    ${playtimeHTML(m)}
     <div class="panel" id="form-panel" data-mt="form">${formPanelHTML(m)}</div>
     <div class="panel" id="ref-panel" data-mt="ref">${refPanelHTML(m)}</div>
   </div>
@@ -4782,7 +4805,7 @@ function genMake(){
   genRead(); const o=ui.gen, P=genBuild(); if(!P.length){ alert('Non ci sono esercizi adatti con queste scelte.'); return; }
   const t=o.data?getTr(o.data):null, s=newSession();
   s.titolo='Allenamento: '+o.tema+(o.tema2?' e '+o.tema2:''); s.data=t?t.data:''; s.oraInizio=t?(t.ora||''):'';
-  s.obiettivo='Lavoro su '+o.tema.toLowerCase()+(o.tema2?' e '+o.tema2.toLowerCase():'')+'.';
+  s.obiettivo='Lavoro su '+o.tema.toLowerCase()+(o.tema2?' e '+o.tema2.toLowerCase():'')+'.'+(o.why?' '+o.why:''); o.why='';
   s.items=P.map(x=>({uid:newId('it'), type:'ex', exId:x.e.id, durata:x.d, nota:'', dosaggio:x.e.dosaggio||null}));
   persist.sess(s).catch(saveFail); closeModal(); go('sessione',{sessId:s.id, sEdit:false, pickOpen:false}); toast('Sessione creata: controllala e modificala se serve');
 }
@@ -4835,7 +4858,13 @@ function matchReport(m){
   if(bt) B.push(`• Attacco: ${nm(bt.id)} (${bt.v} punti)`);
   if(bm) B.push(`• Muro: ${nm(bm.id)} (${bm.v} punti)`);
   if(bd) B.push(`• Difesa: ${nm(bd.id)} (${bd.v} difese)`);
+  { const T=teamFund(ev), P=Object.entries(by).map(([id,b])=>[id,b.ace+b.att+b.mur]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3), N=[];
+    if(T.ricN) N.push(`ricezione positiva ${pct(T.ricP,T.ricN)}%`); if(T.batN) N.push(`${T.batA} ace e ${T.batE} errori in battuta`); if(T.attN) N.push(`${T.attP} punti in attacco`);
+    if(N.length){ L.push('', '📊 *La squadra*: '+N.join(' · ')); }
+    if(P.length) L.push('🔝 *Punti*: '+P.map(([id,v])=>`${nm(id)} ${v}`).join(', ')); }
   if(B.length){ L.push('', '⭐ *I migliori*'); L.push(...B); }
+  { const nx=db.matches.filter(x=>x.data && x.data>(m.data||'') && x.data>=todayISO() && x.id!==m.id).sort((a,b)=>(a.data+(a.ora||'')).localeCompare(b.data+(b.ora||'')))[0];
+    if(nx) L.push('', `📅 Prossima: ${cap(fmtDate(nx.data,{weekday:'long',day:'numeric',month:'long'}))}${nx.ora?' ore '+nx.ora:''} · ${matchTitle(nx)}`); }
   L.push('', ms && ms.noi>ms.loro ? 'Bravi tutti! 💪' : 'Grazie a tutti, alla prossima! 💪');
   return L.join('\n');
 }
@@ -5233,6 +5262,14 @@ const GUIDE=[
 <li><b>Con un file</b>: «Manda il calendario allo scoutman» e invialo (per esempio su WhatsApp). Lui apre l'app, sceglie <b>Sono lo scoutman</b> e apre il file. A fine partita ti manda il file delle statistiche e tu premi «Importa le sue statistiche» (oppure Archivio → Importa).</li>
 <li><b>In automatico</b>: crei su GitHub un secondo archivio privato e un codice di accesso valido solo per quello (i passi sono nel pannello). Lo scoutman incolla il codice che ti dà l'app: il calendario gli arriva da solo e le sue statistiche arrivano a te quando apri Partite.</li></ol>
 <div class="tip">Se su una partita hai già delle statistiche tue, l'app ti chiede prima di sostituirle.</div>`],
+['📈','Analisi delle statistiche',`
+<ul><li><b>Per rotazione</b>: nel riepilogo di una partita e nelle statistiche della stagione vedi, per ognuna delle 6 rotazioni, punti fatti e subiti, <b>cambio palla</b> (scambi vinti quando batte l'avversario) e <b>punti in battuta</b>.</li>
+<li><b>Andamento dei set</b>: il grafico punto per punto e la serie più lunga di punti di fila, vostri e loro.</li>
+<li><b>Punti deboli</b>: se ricezione, battuta o attacco sono sotto soglia, il pulsante <b>✨ Prepara una sessione</b> apre il generatore già impostato su quel fondamentale.</li>
+<li><b>Formazione</b>: se non ci sono referti, l'app suggerisce da quale rotazione partire in base alle statistiche.</li>
+<li><b>Tempo in campo</b>: nella scheda Convocati vedi quanti set ha giocato ognuno nelle ultime partite e chi ha giocato poco.</li>
+<li><b>Resoconto</b>: 📲 Resoconto manda su WhatsApp risultato, numeri della squadra, migliori e prossima partita.</li></ul>
+<p>Nelle sessioni, se qualcuno è infortunato in quella data, l'app propone esercizi di recupero adatti da fargli fare a parte. Nel <b>Piano della stagione</b>, «📦 Ciclo di 4 settimane» inserisce un periodo e copia le 8 sessioni del ciclo nelle date dei vostri allenamenti. Il <b>🔥 Riscaldamento prepartita</b> si apre dalla formazione della partita.</p>`],
 ['📝','Referto e analisi',`
 <p>Nei giorni dopo la partita puoi ricopiare il referto ufficiale: nella partita apri la scheda <b>Referto</b> → <b>Inserisci il referto</b>.</p>
 <ol><li>Formazione di partenza nelle posizioni I–VI (I è chi batte per primo), il palleggiatore e chi batte per primo nel set.</li>
@@ -5504,7 +5541,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v59-2026-10-08';
+const APP_VERSION='v60-2026-10-08';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5890,7 +5927,7 @@ async function autoVerCheck(){
     if(m && verNum(m[1])>verNum(APP_VERSION)){ document.body.classList.add('has-upd'); window.APP_ONLINE_VER=m[1]; try{ if(swReg) await swReg.update(); }catch(e){} } }catch(e){}
 }
 /* ===== Piano della stagione ===== */
-const PL_TIPI={prep:['Preparazione','#e07b22'], camp:['Campionato','#2f6fb8'], scar:['Scarico','#22a05a'], torn:['Torneo / fasi finali','#7b5cc4'], paus:['Pausa','#8a94a6']};
+const PL_TIPI={prep:['Preparazione','#e07b22'], camp:['Campionato','#2f6fb8'], scar:['Scarico','#22a05a'], torn:['Torneo / fasi finali','#7b5cc4'], tec:['Ciclo tecnico','#d64a5a'], paus:['Pausa','#8a94a6']};
 function piano(){ const p=opz().piano; return Array.isArray(p)?p.slice().sort((a,b)=>(a.dal||'').localeCompare(b.dal||'')):[]; }
 function pianoAt(d){ return piano().find(p=>p.dal && p.al && p.dal<=d && d<=p.al)||null; }
 function viewPiano(){
@@ -5898,7 +5935,7 @@ function viewPiano(){
   const min=P.length?P[0].dal:'', max=P.length?P[P.length-1].al:'', span=min&&max?Math.max(1,(parseISO(max)-parseISO(min))/864e5):1;
   const bar=P.length?`<div class="pl-bar">${P.map(p=>`<i title="${esc(p.nome)}" style="width:${Math.max(1,((parseISO(p.al)-parseISO(p.dal))/864e5+1)/span*100)}%;background:${PL_TIPI[p.tipo]?PL_TIPI[p.tipo][1]:'#888'}"></i>`).join('')}</div><div class="muted" style="font-size:12px;display:flex;justify-content:space-between"><span>${esc(shortDate(min))}</span><span>${esc(shortDate(max))}</span></div>`:'';
   return `<section><div class="page-head"><div><a href="#" data-nav="sessioni" class="muted" style="font-size:13.5px;text-decoration:none">← Sessioni</a><h1 style="margin-top:4px">Piano della stagione</h1><p class="muted">${now?`Ora siete in <b>${esc(now.nome)}</b> (fino al ${esc(shortDate(now.al))})`:'Dividi la stagione in periodi con i loro obiettivi: il generatore di sessioni ne terrà conto.'}</p></div>
-    <div class="actions"><button class="btn primary" data-action="pl-edit">＋ Periodo</button></div></div>
+    <div class="actions"><button class="btn" data-action="cy-open">📦 Ciclo di 4 settimane</button><button class="btn primary" data-action="pl-edit">＋ Periodo</button></div></div>
     ${bar}
     <div class="pl-list">${P.map(p=>`<div class="pl-it ${p===now?'now':''}" style="--c:${PL_TIPI[p.tipo]?PL_TIPI[p.tipo][1]:'#888'}"><div class="tx"><b>${esc(p.nome)}</b><small>${esc(PL_TIPI[p.tipo]?PL_TIPI[p.tipo][0]:'')} · dal ${esc(shortDate(p.dal))} al ${esc(shortDate(p.al))}</small>
       <small>Temi: ${esc([p.tema,p.tema2].filter(Boolean).join(', ')||'—')}${p.fis?' · con preparazione fisica':''}</small>${p.note?`<div style="font-size:13.5px;margin-top:4px">${nl2br(p.note)}</div>`:''}</div>
@@ -6318,6 +6355,137 @@ async function scrConnect(){
   try{ const cc=await scProbe(c); await Store.setMeta(scKey('scoutRepo'), cc); await Store.setMeta(scKey('scRepoState'), {}); $('#sc-coach').innerHTML=scCoachHTML(); await coachScoutSync(true); actions['scr-code'](); }
   catch(e){ toast('Non riesco a collegarmi: '+e.message); }
 }
+
+/* ===== Statistiche per rotazione ===== */
+function rotStats(evs){
+  const R=Array.from({length:6},()=>({w:0,l:0,soW:0,soN:0,brW:0,brN:0}));
+  for(const e of evs||[]){ if(!e.prev || e.prev.k==null) continue; const our=OUR_PT(e), th=!our && THEIR_PT(e); if(!our && !th) continue;
+    const r=R[((+e.prev.k)%6+6)%6]; if(our) r.w++; else r.l++;
+    if(e.prev.servo){ r.brN++; if(our) r.brW++; } else { r.soN++; if(our) r.soW++; } }
+  return R;
+}
+const pct=(a,b)=>b?Math.round(100*a/b):null;
+function rotTableHTML(evs){
+  const R=rotStats(evs), tot=R.reduce((n,r)=>n+r.w+r.l,0); if(tot<6) return '';
+  const net=R.map(r=>r.w+r.l>=4?(r.w-r.l)/(r.w+r.l):null), ok=net.filter(x=>x!=null);
+  const bi=ok.length>1?net.indexOf(Math.max(...ok)):-1, wi=ok.length>1?net.indexOf(Math.min(...ok)):-1;
+  const T=R.reduce((o,r)=>({w:o.w+r.w,l:o.l+r.l,soW:o.soW+r.soW,soN:o.soN+r.soN,brW:o.brW+r.brW,brN:o.brN+r.brN}),{w:0,l:0,soW:0,soN:0,brW:0,brN:0});
+  const cell=(a,b)=>b?`${pct(a,b)}% <span class="muted" style="font-size:11.5px">(${a}/${b})</span>`:'—';
+  return `<div style="overflow:auto"><table class="atable rot-t"><thead><tr><th>Rotazione</th><th class="n">Punti fatti – subiti</th><th class="n" title="Punti vinti quando batte l'avversario">Cambio palla</th><th class="n" title="Punti vinti quando battiamo noi">Punti in battuta</th></tr></thead><tbody>
+    ${R.map((r,i)=>`<tr><td class="${i===bi?'best':i===wi?'worst':''}"><b>${ROTNAME[i]}</b> <span class="muted" style="font-size:12px">palleggiatore in zona ${ROTNAME[i].slice(1)}</span>${i===bi?' · la migliore':i===wi?' · la più difficile':''}</td><td class="n">${r.w} – ${r.l}</td><td class="n">${cell(r.soW,r.soN)}</td><td class="n">${cell(r.brW,r.brN)}</td></tr>`).join('')}
+    <tr><td><b>Totale</b></td><td class="n"><b>${T.w} – ${T.l}</b></td><td class="n"><b>${cell(T.soW,T.soN)}</b></td><td class="n"><b>${cell(T.brW,T.brN)}</b></td></tr></tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:4px 0 0">Cambio palla: quante volte vincete lo scambio quando batte l'avversario. Punti in battuta: quante volte vincete lo scambio quando battete voi.</p>`;
+}
+/* ===== Andamento del set ===== */
+function setRallies(evs, s){ return (evs||[]).filter(e=>(e.s||1)===s && (OUR_PT(e) || THEIR_PT(e))).map(e=>OUR_PT(e)?1:-1); }
+function runs(seq){ let best={n:0},worst={n:0},cur=0,len=0,noi=0,loro=0,at={};
+  seq.forEach((v,i)=>{ if(v>0) noi++; else loro++; if(v===cur) len++; else { cur=v; len=1; at={noi:noi-(v>0?1:0), loro:loro-(v<0?1:0)}; }
+    if(v>0 && len>best.n) best={n:len, from:at, to:{noi,loro}}; if(v<0 && len>worst.n) worst={n:len, from:at, to:{noi,loro}}; });
+  return {best,worst}; }
+function trendSVG(seq){
+  const W=640, H=130, pad=8, n=seq.length; if(n<2) return '';
+  let d=0; const pts=[[0,0]]; seq.forEach((v,i)=>{ d+=v; pts.push([i+1,d]); });
+  const mx=Math.max(3,...pts.map(p=>Math.abs(p[1]))), X=i=>pad+(W-2*pad)*i/n, Y=v=>H/2-(H/2-pad)*v/mx;
+  const line=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  const area=line+` L${X(n).toFixed(1)} ${Y(0).toFixed(1)} L${X(0).toFixed(1)} ${Y(0).toFixed(1)} Z`;
+  const u='tr'+(trendSVG.n=(trendSVG.n||0)+1);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Andamento del set"><defs><clipPath id="${u}u"><rect x="0" y="0" width="${W}" height="${Y(0)}"/></clipPath><clipPath id="${u}d"><rect x="0" y="${Y(0)}" width="${W}" height="${H}"/></clipPath></defs>
+    <path d="${area}" fill="rgba(34,160,90,.22)" clip-path="url(#${u}u)"/><path d="${area}" fill="rgba(214,74,90,.22)" clip-path="url(#${u}d)"/>
+    <line x1="${pad}" x2="${W-pad}" y1="${Y(0)}" y2="${Y(0)}" stroke="#999" stroke-dasharray="4 4"/>
+    <path d="${line}" fill="none" stroke="#1f2a44" stroke-width="2.4" stroke-linejoin="round"/>
+    <text x="${pad+4}" y="16" font-size="12" fill="#1d6b3c" font-weight="700">avanti noi</text><text x="${pad+4}" y="${H-6}" font-size="12" fill="#b3263a" font-weight="700">avanti loro</text></svg>`;
+}
+function trendHTML(m){
+  const S=m.stats||{}, evs=S.ev||[]; const sets=[...new Set(evs.map(e=>e.s||1))].sort((a,b)=>a-b); if(!sets.length) return '';
+  const blocks=sets.map(s=>{ const q=setRallies(evs,s); if(q.length<4) return ''; const r=runs(q), fin=(S.sets||[])[s-1], noi=q.filter(v=>v>0).length, loro=q.length-noi;
+    return `<div class="trend"><b>Set ${s}</b> <span class="muted" style="font-size:12.5px">${fin?fin.noi+'-'+fin.loro:noi+'-'+loro}</span>${trendSVG(q)}
+      <div class="tl">Serie più lunga: <b style="color:#1d6b3c">noi ${r.best.n} di fila</b>${r.best.n?` (da ${r.best.from.noi}-${r.best.from.loro} a ${r.best.to.noi}-${r.best.to.loro})`:''} · <b style="color:#b3263a">loro ${r.worst.n} di fila</b>${r.worst.n?` (da ${r.worst.from.noi}-${r.worst.from.loro} a ${r.worst.to.noi}-${r.worst.to.loro})`:''}</div></div>`; }).join('');
+  return blocks?`<div class="st-sec"><h3>Andamento dei set</h3>${blocks}</div>`:'';
+}
+/* ===== Punti deboli e sessione suggerita ===== */
+function teamFund(evs){ const c=(k,f)=>evs.filter(e=>e.k===k && (!f || f(e.v))).length;
+  return {ricN:c('ric'), ricP:c('ric',v=>v==='#'||v==='+'), ricE:c('ric',v=>v==='='), batN:c('bat'), batE:c('bat',v=>v==='='), batA:c('bat',v=>v==='#'), attN:c('att'), attP:c('att',v=>v==='#'), attE:c('att',v=>v==='='), err:c('err')}; }
+function weakness(ms){
+  const evs=ms.flatMap(m=>(m.stats&&m.stats.ev)||[]), t=teamFund(evs), W=[];
+  if(t.ricN>=12){ const p=pct(t.ricP,t.ricN); if(p<55) W.push({tema:'Ricezione', s:55-p, txt:`ricezione positiva solo al ${p}% (${t.ricP} su ${t.ricN})`}); }
+  if(t.batN>=12){ const p=pct(t.batE,t.batN); if(p>15) W.push({tema:'Battuta', s:(p-15)*1.2, txt:`battute sbagliate il ${p}% (${t.batE} su ${t.batN})`}); }
+  if(t.attN>=10){ const e=Math.round(100*(t.attP-t.attE)/t.attN); if(e<20) W.push({tema:'Attacco', s:(20-e)*.8, txt:`efficacia in attacco ${e}% (${t.attP} punti, ${t.attE} errori su ${t.attN})`}); }
+  const R=rotStats(evs), rr=R.map((r,i)=>({i, n:r.w+r.l, v:r.w+r.l?(r.w-r.l)/(r.w+r.l):0})).filter(x=>x.n>=6).sort((a,b)=>a.v-b.v);
+  return {W:W.sort((a,b)=>b.s-a.s), t, worstRot:rr.length>1 && rr[0].v<0 ? ROTNAME[rr[0].i] : ''};
+}
+function weakHTML(ms, label){
+  if(!ms.length) return ''; const w=weakness(ms);
+  if(!w.W.length) return `<div class="st-sec"><h3>Punti deboli</h3><p class="muted" style="margin:0;font-size:13.5px">${label}: nessun fondamentale sotto le soglie (ricezione 55%, errori in battuta 15%, efficacia in attacco 20%).${w.worstRot?` La rotazione più difficile è <b>${w.worstRot}</b>.`:''}</p></div>`;
+  const tema=w.W[0].tema, tema2=w.W[1]?w.W[1].tema:'';
+  return `<div class="st-sec"><h3>Punti deboli</h3><div class="weak"><div class="tx">${label}:<ul>${w.W.map(x=>`<li>${esc(x.txt)}</li>`).join('')}${w.worstRot?`<li>rotazione più difficile: <b>${w.worstRot}</b></li>`:''}</ul></div>
+    <button class="btn primary" data-action="gen-weak" data-t="${esc(tema)}" data-t2="${esc(tema2)}" data-why="${esc('Dalle ultime partite: '+w.W.map(x=>x.txt).join('; ')+'.')}">✨ Prepara una sessione su ${esc(tema.toLowerCase())}${tema2?' e '+esc(tema2.toLowerCase()):''}</button></div></div>`;
+}
+function lastStatMatches(n){ return db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.some(e=>OUR_PT(e)||THEIR_PT(e))).sort((a,b)=>(b.data||'').localeCompare(a.data||'')).slice(0,n); }
+/* ===== Formazione di partenza dalle statistiche ===== */
+function statStartHint(f){
+  const ms=lastStatMatches(12).filter(m=>m.stats.ev.some(e=>e.prev && e.prev.k!=null)).slice(0,6); if(!ms.length) return ''; const R=rotStats(ms.flatMap(m=>m.stats.ev));
+  const rows=R.map((r,i)=>({i, n:r.w+r.l, p:r.w+r.l?r.w/(r.w+r.l):0})).filter(x=>x.n>=8); if(rows.length<4) return '';
+  rows.sort((a,b)=>b.p-a.p); const best=rows[0], pc=Math.round(best.p*100), nm=ms.length;
+  if(+f.start===best.i) return `<div class="rhint ok">✓ Partite già dalla vostra rotazione migliore secondo le statistiche: <b>${ROTNAME[best.i]}</b> (${pc}% di scambi vinti).</div>`;
+  return `<div class="rhint"><span>📊 Dalle statistiche delle ultime ${nm} partit${nm===1?'a':'e'} la vostra rotazione migliore è <b>${ROTNAME[best.i]}</b>: ci vincete il ${pc}% degli scambi. Partendo da lì la giocate più spesso.</span><button class="btn sm" data-action="rot-best" data-k="${best.i}">Parti in ${ROTNAME[best.i]}</button></div>`;
+}
+/* ===== Tempo in campo ===== */
+function playtimeHTML(m){
+  const ms=db.matches.filter(x=>x.id!==m.id && x.stats && x.stats.live && x.stats.live.played && Object.keys(x.stats.live.played).length).sort((a,b)=>(b.data||'').localeCompare(a.data||'')).slice(0,5);
+  if(!ms.length) return '';
+  const setsTot={}, played={};
+  ms.forEach(x=>{ const n=Object.keys(x.stats.live.played).length; (x.convocati||[]).forEach(id=>{ setsTot[id]=(setsTot[id]||0)+n; }); for(const [id,c] of Object.entries(playedCount(x))) played[id]=(played[id]||0)+c; });
+  const rows=Object.keys(setsTot).map(id=>({a:getAt(id), tot:setsTot[id], p:played[id]||0})).filter(r=>r.a && (r.a.iscritto || (m.convocati||[]).includes(r.a.id))).map(r=>Object.assign(r,{q:r.tot?r.p/r.tot:0})).sort((a,b)=>a.q-b.q);
+  if(!rows.length) return '';
+  const med=rows.map(r=>r.q).sort((a,b)=>a-b)[Math.floor(rows.length/2)], low=rows.filter(r=>r.q<Math.min(.5,med*.6));
+  return `<details class="panel" data-mt="conv" ${ui.ptOpen?'open':''} id="pt-panel"><summary><b style="font-size:17px">⏱️ Tempo in campo</b> <span class="muted">· ultime ${ms.length} partite con statistiche${low.length?` · <b style="color:#c25a10">${low.length} hanno giocato poco</b>`:''}</span></summary>
+    ${low.length?`<div class="cwarn" style="margin-top:8px">Hanno giocato meno degli altri: ${low.map(r=>`<b>${esc(athShort(r.a.id))}</b> (${r.p} set su ${r.tot})`).join(', ')}. Se sono disponibili, valuta di farli partire o entrare prima.</div>`:''}
+    <div class="pt-list">${rows.map(r=>`<div class="pt-row ${low.includes(r)?'low':''}"><b>${esc(fullName(r.a))}</b><span class="bar"><i style="width:${Math.round(r.q*100)}%"></i></span><span class="muted">${r.p} su ${r.tot} set</span></div>`).join('')}</div>
+    <p class="muted" style="font-size:12px;margin:6px 0 0">Set giocati (anche solo in parte) sul totale dei set delle partite in cui era convocato.</p></details>`;
+}
+document.addEventListener('toggle', e=>{ if(e.target.id==='pt-panel') ui.ptOpen=e.target.open; }, true);
+/* ===== Esercizi per gli infortunati nella sessione ===== */
+const INJ_MAP=[[/ginocch|menisc|crociat|rotul/i,'Ginocchia'],[/spall|cuffia|clavic/i,'Spalle'],[/cavigl|distors|polpacc|achille|tallon|piede/i,'Caviglie'],[/schien|lomb|dorsal|ernia|collo|cervic/i,'Schiena'],[/cosc|femoral|flessor|stiram|quadric|adduttor|inguin/i,'Gambe'],[/dito|dita|polso|mano|gomito/i,'Mani e polsi']];
+function injDistretto(t){ for(const [re,d] of INJ_MAP) if(re.test(t||'')) return d; return ''; }
+function sessInjHTML(s){
+  if(typeof injActive!=='function') return ''; const d=s.data||todayISO();
+  const L=db.athletes.filter(a=>a.iscritto).map(a=>({a, inj:injActive(a,d)})).filter(x=>x.inj.length); if(!L.length) return '';
+  const inSess=new Set(s.items.filter(i=>i.type==='ex').map(i=>i.exId));
+  const blocks=L.map(({a,inj})=>{ const what=inj.map(x=>x.cosa).filter(Boolean).join(', '), dist=injDistretto(what);
+    const pool=db.exercises.filter(e=>e.fondamentale==='Recupero infortuni' && (!dist || (e.distretto||'')===dist));
+    const pick=pool.filter(e=>!inSess.has(e.id)).sort((x,y)=>{ const fx=/Fase: iniziale/i.test(x.organizzazione||'')?0:1, fy=/Fase: iniziale/i.test(y.organizzazione||'')?0:1; return fx-fy || x.titolo.localeCompare(y.titolo); }).slice(0,3);
+    return `<div style="margin-top:8px"><b>${esc(fullName(a))}</b> <span class="muted">· ${esc(what||'infortunio')}${dist?' · '+esc(dist.toLowerCase()):''}</span>
+      ${pick.length?pick.map(e=>`<div class="ex-sug"><span>${esc(e.titolo)} <span class="muted" style="font-size:12px">${esc(dosFull(e.dosaggio)||((e.durata||'')+'′'))}</span></span><button class="btn sm" data-action="open-ex" data-id="${e.id}">Vedi</button><button class="btn sm" data-action="inj-add" data-ex="${e.id}" data-a="${a.id}">＋ Aggiungi</button></div>`).join(''):`<div class="muted" style="font-size:13px">Nessun esercizio di recupero adatto nello schedario.</div>`}</div>`; }).join('');
+  return `<details class="panel inj-s" ${ui.injSOpen!==false?'open':''} id="inj-s"><summary><b style="font-size:16px">🩹 Infortunati in questa data</b> <span class="muted">· ${L.length}</span></summary>
+    <p class="muted" style="margin:6px 0 0;font-size:13px">Esercizi di recupero da fargli fare a parte, scelti in base all'infortunio. Prima sempre il parere del medico o del fisioterapista.</p>${blocks}</details>`;
+}
+document.addEventListener('toggle', e=>{ if(e.target.id==='inj-s') ui.injSOpen=e.target.open; }, true);
+/* ===== Riscaldamento prepartita ===== */
+const PRE_ID='se_prepartita';
+function preMatchBtn(){ return getSess(PRE_ID) ? `<button class="btn" data-action="tr-start" data-id="${PRE_ID}">🔥 Riscaldamento prepartita</button>` : ''; }
+/* ===== Ciclo di 4 settimane nel piano ===== */
+const CYCLE_IDS=['se_ciclo4_1','se_ciclo4_2','se_ciclo4_3','se_ciclo4_4','se_ciclo4_5','se_ciclo4_6','se_ciclo4_7','se_ciclo4_8'];
+function openCycle(){
+  if(!CYCLE_IDS.every(id=>getSess(id))){ alert('Prima importa il file con le sessioni del ciclo di 4 settimane (Archivio → Importa).'); return; }
+  const d0=(()=>{ const d=parseISO(todayISO()); const dd=(8-d.getDay())%7||7; d.setDate(d.getDate()+dd); return toISO(d); })();
+  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><h2 style="flex:1">📦 Ciclo di 4 settimane</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body">
+    <p style="margin-top:0;font-size:14px">L'app aggiunge al piano un periodo di 4 settimane e prepara le 8 sessioni del ciclo (2 a settimana) nelle date dei vostri allenamenti, partendo dal giorno che scegli. Le sessioni originali restano come modello.</p>
+    <label class="f">Inizio del ciclo<input type="date" id="cy-dal" value="${d0}"></label>
+    <div class="actions" style="margin-top:12px"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" data-action="cy-go">Inserisci nel piano</button></div></div></div>`);
+}
+function cycleGo(){
+  const dal=$('#cy-dal').value; if(!dal){ toast('Scegli la data di inizio'); return; } const al=licAddDays(dal,27);
+  const tr=trainingsSorted().filter(t=>t.data>=dal && t.data<=al && !t.annullato);
+  let days=[];
+  for(let w=0; w<4; w++){ const a0=licAddDays(dal,7*w), a1=licAddDays(dal,7*w+6);
+    const wk=tr.filter(t=>t.data>=a0 && t.data<=a1).slice(0,2).map(t=>({data:t.data, ora:t.ora||''}));
+    for(const n of [1,3]){ if(wk.length>=2) break; const d=licAddDays(dal,7*w+n); if(!wk.some(x=>x.data===d)) wk.push({data:d, ora:''}); }
+    days=days.concat(wk.sort((x,y)=>x.data.localeCompare(y.data)).slice(0,2)); }
+  CYCLE_IDS.forEach((id,i)=>{ const src=getSess(id), s=newSession(); Object.assign(s, clone(src), {id:s.id, data:days[i].data, oraInizio:days[i].ora||src.oraInizio||'', createdAt:Date.now(), updatedAt:Date.now()});
+    s.items=s.items.map(it=>Object.assign({}, it, {uid:newId('it')})); const k=db.sessions.findIndex(x=>x.id===s.id); db.sessions[k]=s; persist.sess(s).catch(saveFail); });
+  const L=piano(); L.push({id:'pl'+Date.now().toString(36), nome:'Ciclo tecnico di 4 settimane', tipo:'tec', dal, al, tema:'Ricezione', tema2:'Gioco', fis:true, note:'Settimana 1 ricezione e battuta, 2 alzata e attacco, 3 muro e difesa, 4 gioco di squadra. Sessioni già pronte nel calendario.'});
+  setOpz('piano', L.sort((a,b)=>(a.dal||'').localeCompare(b.dal||''))); closeModal(); render(); toast('Ciclo inserito: 8 sessioni dal '+shortDate(days[0].data)+' al '+shortDate(days[7].data));
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -6511,6 +6679,12 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'rep-quick': ()=>{ const m=getMatch(ui.matchId); window.open('https://wa.me/?text='+encodeURIComponent(matchReport(m)),'_blank'); },
+  'gen-weak': b=>{ closeModal(); const t=b.dataset.t, t2=b.dataset.t2||''; ui.gen=Object.assign(ui.gen||{}, {tema:t, tema2:t2}); openGen(''); const s1=$('#gen-tema'), s2=$('#gen-tema2'); if(s1) s1.value=t; if(s2) s2.value=t2; genRead(); ui.gen.why=b.dataset.why||''; ui.gen.fromPlan='__weak';
+    const p=$('#gen-prev'); if(p) p.innerHTML=genPreviewHTML(); const mb=$('#modal .modal-body'); if(mb) mb.insertAdjacentHTML('afterbegin', `<div class="rhint" style="margin:0 0 10px">📈 ${esc(b.dataset.why||'')}</div>`); },
+  'inj-add': b=>{ const s=getSess(ui.sessId), e=getEx(b.dataset.ex), a=getAt(b.dataset.a); if(!s||!e) return; s.items.push({uid:newId('it'), type:'ex', exId:e.id, durata:+e.durata||5, nota:'Per '+(a?fullName(a):'l\'infortunato')+', a parte', dosaggio:e.dosaggio||null}); touchSess(s,'items'); render(); toast('Esercizio aggiunto alla sessione'); },
+  'cy-open': ()=>openCycle(),
+  'cy-go': ()=>cycleGo(),
   'sc-start': ()=>openScoutLink(true),
   'sc-link': ()=>openScoutLink(false),
   'sc-link-go': ()=>scoutLinkGo(),

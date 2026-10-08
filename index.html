@@ -1917,6 +1917,31 @@ body:has(.ls) main{padding-top:8px;padding-bottom:12px}
   .sa-err span{display:none}
 }
 
+
+body.scout .nav, body.scout .fab, body.scout #syncPill, body.scout .help-btn{display:none!important}
+body.scout .brand small{display:none}
+.sc-banner{display:flex;gap:10px;align-items:center;background:var(--bar);color:#fff;border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.sc-banner b{font-size:17px}.sc-banner small{display:block;opacity:.8;font-size:12.5px}
+.sc-list{display:flex;flex-direction:column;gap:8px}
+.sc-match{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-left:6px solid #9fb6d6;background:var(--surface);border-radius:12px;padding:10px 12px;cursor:pointer;color:var(--ink);font:inherit}
+.sc-match.today{border-left-color:var(--accent);box-shadow:0 0 0 2px rgba(224,123,34,.25)}
+.sc-match.done{border-left-color:#7cc99a}
+.sc-match .d{min-width:74px;font-size:12.5px;color:var(--muted);font-weight:700;line-height:1.25}
+.sc-match .d b{display:block;color:var(--ink);font-size:14px}
+.sc-match .t{flex:1;min-width:0}
+.sc-match .t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-match .t small{color:var(--muted);font-size:12.5px}
+.sc-match .go{font-size:22px;color:var(--muted)}
+.sc-h{font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:16px 0 6px;font-weight:800}
+.sc-sync{display:flex;flex-direction:column;gap:8px}
+.sc-sync .st{font-size:13.5px}
+.sc-sync .st.err{color:#b3263a}
+.sc-conv{display:flex;flex-wrap:wrap;gap:6px}
+.sc-conv .pchip{cursor:default}
+.sc-code{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:84px;word-break:break-all}
+.sc-steps{margin:6px 0 10px;padding-left:20px;font-size:13.5px}
+.sc-steps li{margin-bottom:4px}
+
 #print-area{display:none}
 
 /* ---------- PRINT ---------- */
@@ -2567,6 +2592,7 @@ function go(view, params={}){
 window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault(); e.returnValue=''; } });
 
 function render(){
+  if(scoutOn()){ renderScout(); renderNavBadge(); return; } document.body.classList.remove('scout');
   if(licLocked()){ document.body.classList.add('locked'); $('#app').innerHTML=viewLock(); return; } document.body.classList.remove('locked');
   $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto'||ui.view==='pgs') && b.dataset.nav==='partite')));
   refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); document.body.classList.toggle('ref-mode', ui.view==='referto'); if(ui.view!=='allena') keepAwake(false);
@@ -3371,6 +3397,7 @@ function viewBenvenuto(){
   <p class="muted">Su questo dispositivo non ci sono ancora dati. Da dove vuoi partire?</p>
   <button type="button" class="choice" data-action="w-sync"><span class="ic">☁️</span><span><b>Collego il mio archivio online</b><span class="muted" style="font-size:13.5px">Se hai già usato l'app su un altro dispositivo, o vuoi gli stessi dati su telefono, tablet e computer.</span></span></button>
   <button type="button" class="choice" data-action="import"><span class="ic">📥</span><span><b>Importo un file</b><span class="muted" style="font-size:13.5px">Una copia dei tuoi dati, o gli esercizi ricevuti da un altro allenatore (.json).</span></span></button>
+  <button type="button" class="choice" data-action="sc-start"><span class="ic">🎥</span><span><b>Sono lo scoutman</b><span class="muted" style="font-size:13.5px">Uso l'app solo per le statistiche delle partite, con il codice o il file che mi ha dato l'allenatore.</span></span></button>
   <button type="button" class="choice" data-action="guide-open"><span class="ic">📖</span><span><b>Prima leggo la guida</b><span class="muted" style="font-size:13.5px">Come funziona l'app, passo per passo.</span></span></button>
   <button type="button" class="choice" data-action="w-empty"><span class="ic">✏️</span><span><b>Parto da zero</b><span class="muted" style="font-size:13.5px">Schedario vuoto: gli esercizi li inserisci tu, o li importi più avanti.</span></span></button>
   </section>`;
@@ -3437,6 +3464,9 @@ function importBackup(){
     const f=inp.files[0]; if(!f) return;
     const r=new FileReader();
     r.onload=()=>{
+      { let j0=null; try{ j0=JSON.parse(r.result); }catch(e){}
+        if(j0 && j0.kind==='vs-scout-stats'){ coachApplyStats(j0,{ask:true}).then(async res=>{ await loadState(); render(); toast(scStatsMsg(res)||'Nessuna statistica nuova nel file'); }).catch(e=>alert('Importazione non riuscita: '+e.message)); return; }
+        if(j0 && j0.kind==='vs-scout-pack'){ alert('Questo è il calendario per lo scoutman: va aperto sul suo dispositivo, nella modalità scoutman.'); return; } }
       let d; try{ const j=JSON.parse(r.result); d=j.data||j; if(j.demoBase) d=demoShift(d, j.demoBase); if(!Array.isArray(d.exercises)||!Array.isArray(d.sessions)) throw 0; }catch(e){ alert('Il file non è un backup valido dello schedario.'); return; }
       openModal(`<div class="modal-box" style="max-width:560px">
         <div class="modal-head"><div style="flex:1"><h2>Importa</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${d.exercises.length} esercizi, ${d.sessions.length} sessioni${Array.isArray(d.athletes)&&d.athletes.length?', '+d.athletes.length+' atleti':''}${Array.isArray(d.matches)&&d.matches.length?', '+d.matches.length+' partite':''}${Array.isArray(d.trainings)&&d.trainings.length?', '+d.trainings.length+' allenamenti':''} nel file.</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
@@ -3891,7 +3921,7 @@ function viewPartite(){
   return `<section>
   <div class="page-head">
     <div><h1>Partite</h1><p class="muted">${esc(selName)} · ${scope.length} partit${scope.length===1?'a':'e'} · ${past.length} giocat${past.length===1?'a':'e'}</p></div>
-    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="ics-open" title="Calendario per il telefono">📅<span class="sl"> Sul telefono</span></button><button class="btn" data-action="qm-open" title="Partita veloce">⚡<span class="sl"> Partita veloce</span></button><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
+    <div class="actions">${db.matches.length?segMatchHTML():''}<span class="cb-mob">${campBtns}</span><button class="btn" data-action="ics-open" title="Calendario per il telefono">📅<span class="sl"> Sul telefono</span></button><button class="btn" data-action="sc-coach" title="Scoutman">🎥<span class="sl"> Scoutman</span></button><button class="btn" data-action="qm-open" title="Partita veloce">⚡<span class="sl"> Partita veloce</span></button><button class="btn" data-action="print-cal">Stampa<span class="sl"> calendario</span></button><button class="btn primary" data-action="new-match">+ Nuova partita</button></div>
   </div>
   <div class="camp-bar"><div class="chips">${(()=>{ const chip=c=>`<button class="chip ${sel===c.name?'on':''} ${c.active?'':'past'}" data-action="camp-sel" data-v="${esc(c.name)}" title="${c.active?(c.ms.length?'In corso':'Nuovo, senza partite'):'Concluso'}">${c.active&&c===camps[0]&&c.ms.length?'● ':''}${esc(c.name)} <span>${c.ms.length}</span></button>`;
       const act=camps.filter(c=>c.active), old=camps.filter(c=>!c.active);
@@ -4136,7 +4166,7 @@ function autoForm(m){
     score-=miss*25;
     if(!best || score>best.score) best={res, score, second, miss};
   }
-  Object.assign(f, best.res); m.formazione=f; touchMatch(m);
+  Object.assign(f, best.res); m.formazione=f; scMarkForm(m); touchMatch(m);
   { const fp=$('#form-panel'); if(fp) fp.innerHTML=formPanelHTML(m); }
   toast(best.miss ? 'Formazione proposta: controlla i posti segnalati' : 'Formazione proposta'+(best.second.length?' · '+best.second.join(', '):''));
 }
@@ -4448,6 +4478,7 @@ function refreshMatch(m, field){
   { const b=$('#mt-conv-n'), n=convocati(m).length; if(b){ b.textContent=n; b.hidden=!n; } }
 }
 function touchMatch(m){
+  if(typeof scoutOn==='function' && scoutOn()) scoutSoon();
   m.updatedAt=Date.now(); clearTimeout(touchMatch._t);
   touchMatch._t=setTimeout(()=>persist.match(m).then(()=>{ const s=$('#m-saved'); if(s){ s.textContent='✓ Salvato'; setTimeout(()=>{ s.textContent=''; },1500); } }).catch(saveFail), 400);
 }
@@ -5188,6 +5219,12 @@ const GUIDE=[
 <li>+1 noi / +1 loro aggiornano punteggio, rotazione e battuta; <b>Cambio</b> per le sostituzioni, <b>Fine set</b> a fine set, <b>↶</b> per annullare.</li></ol>
 <p>Girando il telefono in orizzontale hai una vista più comoda. <b>⚡ Partita veloce</b> crea al volo un'amichevole e parte subito.</p>
 <p>In alto puoi scegliere tra statistiche <b>Complete</b> (tutti i fondamentali) e <b>Semplici</b>: solo battuta, ricezione e attacco, con tre esiti ciascuno, più un pulsante per gli altri errori. Nella versione semplice, quando battete voi basta toccare l'esito: la battuta va a chi è in zona 1. L'app ricorda la scelta per le partite successive.</p>`],
+['🎥','Scoutman',`
+<p>Lo scoutman può fare le statistiche con il suo telefono o tablet, vedendo solo le partite: calendario, convocati (nome, numero, ruolo), formazione e statistiche. Può cambiare la formazione ma non i convocati; gli altri dati non arrivano mai sul suo dispositivo. Non serve nessuna chiave di prova.</p>
+<ol><li>In <b>Partite</b> premi <b>🎥 Scoutman</b>.</li>
+<li><b>Con un file</b>: «Manda il calendario allo scoutman» e invialo (per esempio su WhatsApp). Lui apre l'app, sceglie <b>Sono lo scoutman</b> e apre il file. A fine partita ti manda il file delle statistiche e tu premi «Importa le sue statistiche» (oppure Archivio → Importa).</li>
+<li><b>In automatico</b>: crei su GitHub un secondo archivio privato e un codice di accesso valido solo per quello (i passi sono nel pannello). Lo scoutman incolla il codice che ti dà l'app: il calendario gli arriva da solo e le sue statistiche arrivano a te quando apri Partite.</li></ol>
+<div class="tip">Se su una partita hai già delle statistiche tue, l'app ti chiede prima di sostituirle.</div>`],
 ['📝','Referto e analisi',`
 <p>Nei giorni dopo la partita puoi ricopiare il referto ufficiale: nella partita apri la scheda <b>Referto</b> → <b>Inserisci il referto</b>.</p>
 <ol><li>Formazione di partenza nelle posizioni I–VI (I è chi batte per primo), il palleggiatore e chi batte per primo nel set.</li>
@@ -5287,6 +5324,7 @@ function licInfo(){
   return left>0?{st:'prova', end, left}:{st:'finita', end};
 }
 function licLocked(){
+  if(typeof scoutOn==='function' && scoutOn()) return false;
   if(!LIC.ready) return false;
   if((db.settings.licenza||'').trim()!==LIC.raw){ licRefresh().then(render); return false; }
   const i=licInfo(); return i.st==='finita'||i.st==='scaduta';
@@ -5458,7 +5496,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v57-2026-10-07';
+const APP_VERSION='v58-2026-10-08';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6031,6 +6069,247 @@ function viewLiveSimple(){
     <div class="ls-last">${e?`Ultima: <b>${e.a?esc(athShort(e.a)):'squadra'}</b> · ${esc(evLabel(e))} (${e.noi}-${e.loro})`:''}</div>
   </div></div>`;
 }
+
+/* ===== Scoutman ===== */
+function scoutOn(){ const s=Store.getMeta('scoutMode'); return !!(s && s.on); }
+function scoutCfg(){ return (Store.getMeta('scoutMode')||{}).cfg || null; }
+const scKey=k=>k+':'+(teamCur()||'1');
+function coachScoutCfg(){ return Store.getMeta(scKey('scoutRepo')) || null; }
+const scHasEv=m=>!!(m && m.stats && m.stats.ev && m.stats.ev.some(e=>e.k!=='sub'));
+const scSig=m=>{ const s=m.stats||{}, ev=s.ev||[]; return ev.length+':'+((ev[ev.length-1]||{}).id||'')+':'+JSON.stringify(s.sets||[])+':'+(m.risultato||'')+':'+JSON.stringify(m.formazione||{}).length; };
+/* --- archivio GitHub (solo i file della cartella scout/) --- */
+const SC_API=()=>self.SYNC_API_OVERRIDE||'https://api.github.com';
+const scB64=str=>{ const b=new TextEncoder().encode(str); let s=''; for(let i=0;i<b.length;i+=0x8000) s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000)); return btoa(s); };
+const scUnB64=b=>new TextDecoder().decode(Uint8Array.from(atob(String(b||'').replace(/\s/g,'')),c=>c.charCodeAt(0)));
+async function scGh(c, path, opts={}){
+  let r;
+  try{ r=await fetch(SC_API()+'/repos/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+path, {method:opts.method||'GET', cache:'no-store',
+    headers:Object.assign({Authorization:'Bearer '+c.token, Accept:'application/vnd.github+json', 'X-GitHub-Api-Version':'2022-11-28'}, opts.body?{'Content-Type':'application/json'}:{}), body:opts.body?JSON.stringify(opts.body):undefined}); }
+  catch(e){ const er=new Error('nessuna connessione a internet'); er.status=0; throw er; }
+  if(r.ok) return r.status===204?null:r.json();
+  let msg=''; try{ msg=(await r.json()).message||''; }catch(_){}
+  const er=new Error(r.status===401?'codice di accesso non valido o scaduto':r.status===404?'archivio non trovato, oppure il codice non dà accesso a questo archivio':r.status===403?'GitHub ha rifiutato l\'accesso ('+(msg||'permessi insufficienti')+')':(msg||'errore GitHub '+r.status));
+  er.status=r.status; throw er;
+}
+const scRef=c=>'?ref='+encodeURIComponent(c.branch||'main');
+async function scGetFile(c, path){ try{ const j=await scGh(c,'/contents/'+path+scRef(c)); return {sha:j.sha, text:scUnB64(j.content)}; }catch(e){ if(e.status===404) return null; throw e; } }
+async function scPutFile(c, path, text, msg){
+  const old=await scGetFile(c, path); if(old && old.text===text) return old.sha;
+  const j=await scGh(c,'/contents/'+path,{method:'PUT', body:Object.assign({message:msg, branch:c.branch||'main', content:scB64(text)}, old?{sha:old.sha}:{})});
+  return j && j.content && j.content.sha;
+}
+async function scList(c, dir){ try{ const r=await scGh(c,'/contents/'+dir+scRef(c)); return Array.isArray(r)?r:[]; }catch(e){ if(e.status===404) return []; throw e; } }
+async function scProbe(c){
+  const r=await scGh(c,'');
+  if(r.permissions && r.permissions.push===false) throw new Error('il codice permette solo di leggere: serve il permesso «Contents: Read and write»');
+  if(r.private===false) throw new Error('l\'archivio è pubblico: deve essere privato');
+  return Object.assign({}, c, {branch:r.default_branch||'main'});
+}
+const scEncode=o=>'VSC1-'+btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+function scDecode(s){ const m=/VSC1-([A-Za-z0-9_-]+)/.exec(String(s||'')); if(!m) return null; try{ let b=m[1].replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='='; const o=JSON.parse(decodeURIComponent(escape(atob(b)))); return o && o.o && o.r && o.t ? {owner:o.o, repo:o.r, token:o.t, branch:o.b||'main', team:o.n||''} : null; }catch(e){ return null; } }
+/* --- pacchetto per lo scoutman: solo quello che gli serve --- */
+const SC_AT=['nome','cognome','numeroMaglia','ruolo','ruolo2','sesso'];
+function scoutPackage(){
+  const from=licAddDays(todayISO(), -60);
+  const ms=db.matches.filter(m=>m.data && m.data>=from).sort((a,b)=>((a.data||'')+(a.ora||'')).localeCompare((b.data||'')+(b.ora||'')));
+  const ids=new Set(ms.flatMap(m=>m.convocati||[]));
+  const athletes=db.athletes.filter(a=>ids.has(a.id)).map(a=>{ const o={id:a.id}; SC_AT.forEach(k=>o[k]=a[k]||''); return o; });
+  const matches=ms.map(m=>({id:m.id, data:m.data, ora:m.ora||'', avversario:m.avversario||'', inCasa:!!m.inCasa, competizione:m.competizione||'', giornata:m.giornata||'',
+    convocati:(m.convocati||[]).filter(id=>ids.has(id)), formazione:m.formazione||null, stats:m.stats||null, risultato:m.risultato||''}));
+  const o=opz();
+  return {kind:'vs-scout-pack', v:1, at:Date.now(), team:{nome:db.settings.squadra||'', genere:teamGen(), noLibero:!!o.noLibero}, athletes, matches};
+}
+async function scoutApplyPack(p){
+  if(!p || p.kind!=='vs-scout-pack') throw new Error('il file non è un calendario per lo scoutman');
+  const edited=Store.getMeta('scEdited')||{};
+  const pushed=Store.getMeta('scPushed')||{};
+  for(const a of p.athletes||[]){ const cur=db.athletes.find(x=>x.id===a.id);
+    if(!cur || SC_AT.some(k=>(cur[k]||'')!==(a[k]||''))) await persist.ath(Object.assign(cur?clone(cur):{iscritto:true}, a, {updatedAt:Date.now()})); }
+  const keep=new Set();
+  for(const pm of p.matches||[]){ keep.add(pm.id); const cur=db.matches.find(x=>x.id===pm.id);
+    const r=cur?clone(cur):{id:pm.id, assenti:[], disponibili:[], note:'', risultato:''};
+    Object.assign(r, {data:pm.data, ora:pm.ora, avversario:pm.avversario, inCasa:pm.inCasa, competizione:pm.competizione, giornata:pm.giornata, convocati:pm.convocati||[]});
+    if(!cur || !edited[pm.id]) r.formazione=pm.formazione||null;
+    if(!scHasEv(cur) && scHasEv(pm)){ r.stats=pm.stats; if(pm.risultato) r.risultato=pm.risultato; pushed[pm.id]=scSig(r); }
+    if(!cur || JSON.stringify(cur)!==JSON.stringify(r)){ r.updatedAt=Date.now(); await persist.match(r); }
+  }
+  for(const m of db.matches) if(!keep.has(m.id) && !scHasEv(m)) await api('DELETE','/api/partite/'+encodeURIComponent(m.id));
+  await Store.setMeta('scPushed', pushed);
+  const o=opz(); o.genere=(p.team&&p.team.genere)||'misto'; o.noLibero=!!(p.team&&p.team.noLibero);
+  db.settings.opzioni=JSON.stringify(o); db.settings.squadra=(p.team&&p.team.nome)||db.settings.squadra||''; await persist.settings();
+  const sm=Store.getMeta('scoutMode')||{on:true}; sm.team=(p.team&&p.team.nome)||sm.team||''; sm.packAt=p.at||Date.now(); await Store.setMeta('scoutMode', sm);
+  await loadState();
+}
+function scoutStatsPayload(ms){ return {kind:'vs-scout-stats', v:1, at:Date.now(), matches:ms.map(m=>({id:m.id, data:m.data||'', avversario:m.avversario||'', formazione:m.formazione||null, stats:m.stats||null, risultato:m.risultato||''}))}; }
+/* --- l'allenatore riceve le statistiche --- */
+async function coachApplyStats(p, opt={}){
+  if(!p || p.kind!=='vs-scout-stats') throw new Error('il file non contiene statistiche dello scoutman');
+  const imp=Store.getMeta(scKey('scImported'))||{}; const res={n:0, miss:0, skip:[]};
+  for(const sm of p.matches||[]){
+    const m=db.matches.find(x=>x.id===sm.id); if(!m){ res.miss++; continue; }
+    if(!scHasEv(sm)) continue;
+    const inc=scSig(sm); if(imp[m.id]===inc || (scHasEv(m) && scSig(m)===inc)) continue;
+    if(scHasEv(m) && imp[m.id]!==scSig(m)){
+      if(!opt.ask || !confirm(`${matchTitle(m)}: su questo dispositivo ci sono già delle statistiche. Le sostituisco con quelle dello scoutman?`)){ res.skip.push(m); continue; }
+    }
+    m.stats=sm.stats; if(sm.formazione) m.formazione=sm.formazione; if(!m.risultato && sm.risultato) m.risultato=sm.risultato;
+    m.updatedAt=Date.now(); await persist.match(m); imp[m.id]=inc; res.n++;
+  }
+  await Store.setMeta(scKey('scImported'), imp); return res;
+}
+function scStatsMsg(r){ const t=[]; if(r.n) t.push(`statistiche di ${r.n} partit${r.n===1?'a':'e'} ricevute dallo scoutman`); if(r.skip.length) t.push(`non sostituite per ${r.skip.map(m=>m.avversario||'una partita').join(', ')} (hai già le tue: importa a mano dal pannello Scoutman)`); if(r.miss) t.push(`${r.miss} partit${r.miss===1?'a':'e'} non trovat${r.miss===1?'a':'e'} in questa squadra`); return t.join(' · '); }
+let scCoachBusy=false;
+async function coachScoutSync(manual){
+  const c=coachScoutCfg(); if(!c || scoutOn() || scCoachBusy) return;
+  if(!manual && Date.now()-(coachScoutSync.t||0)<90000) return;
+  coachScoutSync.t=Date.now(); scCoachBusy=true; const k=scKey('scRepoState'), st=Store.getMeta(k)||{};
+  try{
+    const pack=scoutPackage(), sig=JSON.stringify([pack.team, pack.athletes, pack.matches]);
+    if(st.sig!==sig){ await scPutFile(c, 'scout/calendario.json', JSON.stringify(pack), 'Calendario per lo scoutman'); st.sig=sig; st.pubAt=Date.now(); }
+    const seen=st.seen||{}; let tot={n:0, miss:0, skip:[]};
+    for(const f of (await scList(c,'scout/statistiche')).filter(x=>x.type==='file' && /\.json$/.test(x.name))){
+      if(seen[f.name]===f.sha) continue;
+      const g=await scGetFile(c, 'scout/statistiche/'+f.name); if(!g) continue;
+      const r=await coachApplyStats(JSON.parse(g.text), {ask:manual}); tot.n+=r.n; tot.miss+=r.miss; tot.skip.push(...r.skip);
+      if(!r.miss && !r.skip.length) seen[f.name]=f.sha;
+    }
+    st.seen=seen; st.recAt=Date.now(); st.err=''; await Store.setMeta(k, st);
+    if(tot.n){ await loadState(); render(); }
+    if(tot.n || tot.skip.length || (manual && tot.miss)) toast(scStatsMsg(tot)); else if(manual) toast('Scoutman: calendario pubblicato, nessuna statistica nuova');
+  }catch(e){ st.err=e.message; await Store.setMeta(k, st); if(manual) toast('Scoutman: '+e.message); }
+  finally{ scCoachBusy=false; const box=$('#sc-coach'); if(box) box.innerHTML=scCoachHTML(); }
+}
+/* --- lo scoutman si sincronizza --- */
+let scBusy=false, scSoonT=null;
+function scoutSoon(){ clearTimeout(scSoonT); scSoonT=setTimeout(()=>scoutSync(false), 6000); }
+async function scoutSync(manual){
+  const c=scoutCfg(); if(!c || scBusy) return; scBusy=true; scStatus('…');
+  try{
+    const g=await scGetFile(c, 'scout/calendario.json');
+    let sm=Store.getMeta('scoutMode')||{on:true};
+    if(g && g.sha!==sm.packSha){ await scoutApplyPack(JSON.parse(g.text)); sm=Store.getMeta('scoutMode')||sm; sm.packSha=g.sha; }
+    const pushed=Store.getMeta('scPushed')||{};
+    for(const m of db.matches){ if(!scHasEv(m)) continue; const h=scSig(m); if(pushed[m.id]===h) continue;
+      await scPutFile(c, 'scout/statistiche/'+m.id+'.json', JSON.stringify(scoutStatsPayload([m])), 'Statistiche '+(m.avversario||'')+' '+(m.data||'')); pushed[m.id]=h; }
+    await Store.setMeta('scPushed', pushed);
+    sm.at=Date.now(); sm.err=''; await Store.setMeta('scoutMode', sm);
+    if(manual) toast('Sincronizzato: calendario aggiornato e statistiche inviate');
+  }catch(e){ const sm=Store.getMeta('scoutMode')||{on:true}; sm.err=e.message; await Store.setMeta('scoutMode', sm); if(manual) toast('Sincronizzazione non riuscita: '+e.message); }
+  finally{ scBusy=false; if(ui.view==='home' && scoutOn()) render(); }
+}
+function scStatus(t){ const s=$('#sc-st'); if(s) s.textContent=t==='…'?'Sincronizzo…':t; }
+function scMarkForm(m){ if(!scoutOn() || !m) return; const e=Store.getMeta('scEdited')||{}; e[m.id]=Date.now(); Store.setMeta('scEdited', e); }
+/* --- file --- */
+function scPick(cb){ const inp=$('#filepick'); inp.value=''; inp.accept='.json,application/json'; inp.onchange=()=>{ const f=inp.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ let j; try{ j=JSON.parse(r.result); }catch(e){ alert('Il file non è leggibile.'); return; } cb(j); }; r.readAsText(f); }; inp.click(); }
+async function scShareFile(name, obj, title){
+  const f=new File([JSON.stringify(obj)], name, {type:'application/json'});
+  try{ if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title}); return; } }catch(e){ if(e && e.name==='AbortError') return; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=name; document.body.appendChild(a); a.click(); a.remove(); toast('File salvato: '+name);
+}
+const scFileDate=()=>todayISO();
+/* --- viste dello scoutman --- */
+function renderScout(){
+  document.body.classList.add('scout'); document.body.classList.remove('locked','train-mode','ref-mode','wide');
+  if(!['home','partita','live'].includes(ui.view) || (ui.view!=='home' && !getMatch(ui.matchId))) ui.view='home';
+  document.body.classList.toggle('live-land', ui.view==='live' && isLand());
+  const app=$('#app');
+  if(ui.view==='live') app.innerHTML=viewLive();
+  else if(ui.view==='partita') app.innerHTML=viewScoutMatch();
+  else app.innerHTML=viewScoutHome();
+}
+function scWhen(t){ if(!t) return 'mai'; const d=new Date(t), td=new Date(); const hm=d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}); return d.toDateString()===td.toDateString()?'oggi alle '+hm:d.toLocaleDateString('it-IT',{day:'numeric',month:'short'})+' alle '+hm; }
+function viewScoutHome(){
+  const sm=Store.getMeta('scoutMode')||{}, c=scoutCfg(), td=todayISO();
+  const ms=[...db.matches].sort((a,b)=>((a.data||'')+(a.ora||'')).localeCompare((b.data||'')+(b.ora||'')));
+  const next=ms.filter(m=>(m.data||'')>=td), past=ms.filter(m=>(m.data||'')<td).reverse();
+  const card=m=>{ const n=(m.convocati||[]).length, ev=m.stats&&m.stats.ev?m.stats.ev.filter(e=>e.k!=='sub').length:0;
+    return `<button class="sc-match ${m.data===td?'today':''} ${ev?'done':''}" data-action="sc-open" data-id="${m.id}"><span class="d"><b>${esc(fmtDate(m.data,{weekday:'short',day:'numeric',month:'short'}))}</b>${esc(m.ora||'')}</span>
+      <span class="t"><b>${esc(matchTitle(m))}</b><small>${m.inCasa?'in casa':'in trasferta'} · ${n} convocat${n===1?'o':'i'}${ev?` · ${ev} azioni registrate`:''}${m.risultato?' · '+esc(m.risultato):''}</small></span><span class="go">›</span></button>`; };
+  return `<section style="max-width:760px;margin:0 auto">
+  <div class="sc-banner"><span style="font-size:26px">🎥</span><div><b>Scouting${sm.team?' · '+esc(sm.team):''}</b><small>Modalità scoutman: calendario, convocati, formazione e statistiche</small></div></div>
+  ${next.length?`<div class="sc-h">Prossime partite</div><div class="sc-list">${next.map(card).join('')}</div>`:''}
+  ${past.length?`<div class="sc-h">Già giocate</div><div class="sc-list">${past.map(card).join('')}</div>`:''}
+  ${!ms.length?`<div class="panel"><p style="margin:0">Non ci sono ancora partite. ${c?'Premi «Sincronizza ora».':'Apri il file del calendario che ti ha mandato l\'allenatore, oppure collega l\'archivio con il codice.'}</p></div>`:''}
+  <div class="panel" style="margin-top:16px"><h2 style="margin:0 0 8px">Sincronizzazione</h2><div class="sc-sync">
+    ${c?`<div class="st ${sm.err?'err':''}" id="sc-st">${sm.err?'⚠ Ultimo tentativo non riuscito: '+esc(sm.err):'☁️ Collegato · ultimo aggiornamento '+esc(scWhen(sm.at))}</div>
+      <div class="muted" style="font-size:12.5px">Le statistiche partono da sole qualche secondo dopo ogni azione, se c'è rete; il calendario si aggiorna quando apri l'app.</div>
+      <div class="actions"><button class="btn primary" data-action="sc-sync">↻ Sincronizza ora</button></div>`
+     :`<div class="st" id="sc-st">Non collegato a un archivio: calendario e statistiche passano con un file.</div><div class="actions"><button class="btn" data-action="sc-link">🔗 Collega con il codice</button></div>`}
+    <div class="actions"><button class="btn" data-action="sc-pack-in">📥 Carica il calendario da un file</button><button class="btn" data-action="sc-stats-out">📤 Manda le statistiche con un file</button></div>
+  </div></div>
+  <div style="text-align:center;margin:18px 0 6px"><button class="btn sm ghost" data-action="sc-exit" style="color:#b3263a">Esci dalla modalità scoutman</button></div>
+  </section>`;
+}
+function viewScoutMatch(){
+  const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
+  const conv=convocati(m);
+  return `<section style="max-width:900px;margin:0 auto">
+  <div class="page-head"><div><a href="#" data-nav="home" class="muted" style="font-size:13.5px;text-decoration:none">← Partite</a><h1 style="margin-top:4px">${esc(matchTitle(m))}</h1>
+    <p class="muted">${esc(fmtDate(m.data))}${m.ora?' · ore '+esc(m.ora):''} · ${m.inCasa?'in casa':'in trasferta'}${m.risultato?' · risultato '+esc(m.risultato):''}</p></div></div>
+  <div class="panel"><h2 style="margin:0 0 8px">Convocati (${conv.length})</h2>
+    <div class="sc-conv">${conv.map(a=>`<span class="pchip"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(fullName(a))}${roleText(a)?` <small class="muted" style="font-weight:600">${esc(roleText(a))}</small>`:''}</span>`).join('')||'<span class="muted">L\'allenatore non ha ancora scelto i convocati.</span>'}</div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">I convocati li sceglie l'allenatore: se cambiano, arrivano con il prossimo aggiornamento.</p></div>
+  <div class="panel" id="form-panel">${formPanelHTML(m)}</div></section>`;
+}
+function openScoutLink(intro){
+  openModal(`<div class="modal-box" style="max-width:560px"><div class="modal-head"><h2 style="flex:1">🎥 Modalità scoutman</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body">
+    ${intro?`<p style="margin-top:0">In questa modalità l'app mostra solo le partite: calendario, convocati, formazione e statistiche. Il resto (atleti, esercizi, allenamenti, impostazioni) non c'è.</p>`:''}
+    <h3 style="margin:8px 0 4px;font-size:15px">Con il codice dell'allenatore</h3>
+    <p class="muted" style="margin:0 0 6px;font-size:13px">Il calendario arriva da solo e le statistiche partono in automatico.</p>
+    <textarea id="sc-code-in" class="sc-code" placeholder="Incolla qui il codice che inizia con VSC1-"></textarea>
+    <div class="actions" style="margin-top:8px"><button class="btn primary" data-action="sc-link-go">Collega</button></div>
+    <h3 style="margin:16px 0 4px;font-size:15px">Con un file</h3>
+    <p class="muted" style="margin:0 0 6px;font-size:13px">Apri il file del calendario che ti ha mandato l'allenatore (per esempio su WhatsApp).</p>
+    <div class="actions"><button class="btn" data-action="sc-pack-in">📥 Scegli il file</button></div>
+  </div></div>`);
+}
+async function scoutStart(){ const sm=Store.getMeta('scoutMode')||{}; sm.on=true; await Store.setMeta('scoutMode', sm); await Store.setMeta('avviato', true); }
+async function scoutLinkGo(){
+  const c=scDecode(($('#sc-code-in')||{}).value); if(!c){ toast('Codice non valido: deve iniziare con VSC1-'); return; }
+  toast('Collego l\'archivio…');
+  try{ const cc=await scProbe(c); await scoutStart(); const sm=Store.getMeta('scoutMode')||{}; sm.cfg={owner:cc.owner, repo:cc.repo, token:cc.token, branch:cc.branch}; sm.team=c.team||sm.team||''; sm.err=''; await Store.setMeta('scoutMode', sm);
+    closeModal(); ui.view='home'; render(); await scoutSync(true); }
+  catch(e){ toast('Non riesco a collegarmi: '+e.message); }
+}
+async function scoutExit(){
+  if(!confirm('Uscire dalla modalità scoutman? Su questo dispositivo vengono cancellati calendario e statistiche (quelle già inviate all\'allenatore restano a lui).')) return;
+  if(db.matches.some(m=>scHasEv(m) && (Store.getMeta('scPushed')||{})[m.id]!==scSig(m)) && !confirm('Ci sono statistiche non ancora inviate all\'allenatore. Uscire lo stesso?')) return;
+  const empty={tombs:{}, settings:{}}; Store.COLS.forEach(k=>empty[k]=[]); await Store.replaceAll(empty);
+  for(const k of ['scoutMode','scPushed','scEdited','avviato']) await Store.setMeta(k, null);
+  location.reload();
+}
+/* --- pannello dell'allenatore --- */
+function scCoachHTML(){
+  const c=coachScoutCfg(), st=Store.getMeta(scKey('scRepoState'))||{}, mc=Sync.config()||{};
+  if(!c) return `<p class="muted" style="margin:0 0 6px;font-size:13.5px">Il calendario arriva allo scoutman da solo e le sue statistiche arrivano a te, attraverso un archivio GitHub privato <b>diverso dal tuo</b>.</p>
+    <ol class="sc-steps"><li>Su GitHub crea un nuovo archivio <b>privato</b>, per esempio <b>volleysched-scout</b> (vuoto va bene).</li>
+    <li>Crea un codice di accesso solo per quell'archivio: <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b>. In «Repository access» scegli <b>Only select repositories</b> e solo il nuovo archivio; in «Permissions» dai <b>Contents: Read and write</b>. Come scadenza metti la fine della stagione.</li>
+    <li>Scrivi qui sotto i dati e premi <b>Collega</b>. Poi manda allo scoutman il codice che compare.</li></ol>
+    <div class="grid g2"><label class="f">Nome utente GitHub<input type="text" id="scr-owner" value="${esc(mc.owner||'')}" autocapitalize="off"></label><label class="f">Nome dell'archivio<input type="text" id="scr-repo" value="volleysched-scout" autocapitalize="off"></label></div>
+    <label class="f">Codice di accesso (solo per questo archivio)<input type="password" id="scr-token" autocomplete="off" placeholder="github_pat_…"></label>
+    <div class="muted" style="font-size:12.5px;margin:-4px 0 8px">Non usare il codice del tuo archivio principale: questo lo darai allo scoutman.</div>
+    <div class="actions"><button class="btn primary" data-action="scr-connect">Collega</button></div>`;
+  return `<div class="sc-sync"><div class="st ${st.err?'err':''}">${st.err?'⚠ '+esc(st.err):'☁️ Collegato a <b>'+esc(c.owner+'/'+c.repo)+'</b>'}</div>
+    <div class="muted" style="font-size:12.5px">Calendario pubblicato: ${esc(scWhen(st.pubAt))} · statistiche controllate: ${esc(scWhen(st.recAt))}. Si aggiorna da solo quando apri Partite.</div>
+    <div class="actions"><button class="btn primary" data-action="scr-code">🔑 Codice per lo scoutman</button><button class="btn" data-action="scr-sync">↻ Aggiorna ora</button><button class="btn danger" data-action="scr-off">Scollega</button></div></div>`;
+}
+function openScoutCoach(){
+  openModal(`<div class="modal-box" style="max-width:640px"><div class="modal-head"><h2 style="flex:1">🎥 Scoutman</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body">
+    <p style="margin-top:0;font-size:14px">Lo scoutman usa questa stessa app in <b>modalità scoutman</b>: vede solo le partite degli ultimi due mesi e le prossime, con convocati (nome, numero e ruolo), formazione e statistiche. Può cambiare la formazione, non i convocati. Gli altri dati non lasciano mai questo dispositivo.</p>
+    <h3 style="margin:12px 0 6px;font-size:16px">Con un file</h3>
+    <div class="actions"><button class="btn" data-action="scf-out">📤 Manda il calendario allo scoutman</button><button class="btn" data-action="scf-in">📥 Importa le sue statistiche</button></div>
+    <h3 style="margin:18px 0 6px;font-size:16px">In automatico</h3>
+    <div id="sc-coach">${scCoachHTML()}</div>
+  </div></div>`);
+}
+async function scrConnect(){
+  const c={owner:($('#scr-owner').value||'').trim(), repo:($('#scr-repo').value||'').trim(), token:($('#scr-token').value||'').trim()};
+  if(!c.owner || !c.repo || !c.token){ toast('Compila nome utente, archivio e codice'); return; }
+  const mc=Sync.config(); if(mc && mc.owner.toLowerCase()===c.owner.toLowerCase() && mc.repo.toLowerCase()===c.repo.toLowerCase()){ toast('Questo è il tuo archivio principale: per lo scoutman serve un archivio diverso'); return; }
+  toast('Controllo l\'archivio…');
+  try{ const cc=await scProbe(c); await Store.setMeta(scKey('scoutRepo'), cc); await Store.setMeta(scKey('scRepoState'), {}); $('#sc-coach').innerHTML=scCoachHTML(); await coachScoutSync(true); actions['scr-code'](); }
+  catch(e){ toast('Non riesco a collegarmi: '+e.message); }
+}
 function viewPresenze(){
   const c=getCal(), rec=db.trainings.filter(isRecorded).length;
   return `<section>
@@ -6224,6 +6503,27 @@ function distSelectHTML(){
    Eventi
    ============================================================ */
 const actions={
+  'sc-start': ()=>openScoutLink(true),
+  'sc-link': ()=>openScoutLink(false),
+  'sc-link-go': ()=>scoutLinkGo(),
+  'sc-open': b=>go('partita',{matchId:b.dataset.id}),
+  'sc-sync': ()=>scoutSync(true),
+  'sc-exit': ()=>scoutExit(),
+  'sc-pack-in': ()=>scPick(async j=>{ try{ if(!scoutOn()) await scoutStart(); await scoutApplyPack(j); closeModal(); ui.view='home'; render(); toast('Calendario aggiornato: '+db.matches.length+' partite'); }catch(e){ alert('Non riesco a leggere il calendario: '+e.message); } }),
+  'sc-stats-out': ()=>{ const ms=db.matches.filter(scHasEv); if(!ms.length){ toast('Non ci sono ancora statistiche da mandare'); return; } scShareFile('statistiche-scoutman-'+scFileDate()+'.json', scoutStatsPayload(ms), 'Statistiche dello scoutman'); },
+  'sc-coach': ()=>openScoutCoach(),
+  'scf-out': ()=>{ const p=scoutPackage(); if(!p.matches.length){ toast('Non ci sono partite da mandare'); return; } scShareFile('calendario-scoutman-'+(db.settings.squadra||'squadra').replace(/[^\w]+/g,'-').toLowerCase()+'-'+scFileDate()+'.json', p, 'Calendario per lo scoutman'); },
+  'scf-in': ()=>scPick(async j=>{ try{ const r=await coachApplyStats(j,{ask:true}); await loadState(); render(); closeModal(); toast(scStatsMsg(r)||'Nessuna statistica nuova nel file'); }catch(e){ alert('Importazione non riuscita: '+e.message); } }),
+  'scr-connect': ()=>scrConnect(),
+  'scr-sync': ()=>coachScoutSync(true),
+  'scr-off': async ()=>{ if(!confirm('Scollegare l\'archivio dello scoutman? Puoi ricollegarlo quando vuoi.')) return; await Store.setMeta(scKey('scoutRepo'), null); $('#sc-coach').innerHTML=scCoachHTML(); },
+  'scr-code': ()=>{ const c=coachScoutCfg(); if(!c) return; const code=scEncode({o:c.owner, r:c.repo, t:c.token, b:c.branch, n:db.settings.squadra||''});
+    openModal(`<div class="modal-box" style="max-width:560px"><div class="modal-head"><h2 style="flex:1">🔑 Codice per lo scoutman</h2><button class="iconbtn" data-action="close-modal">✕</button></div><div class="modal-body">
+      <p style="margin-top:0;font-size:14px">Mandalo allo scoutman in privato. Lui apre l'app, sceglie <b>Sono lo scoutman</b> e lo incolla. Il codice apre solo l'archivio dello scoutman, non il tuo.</p>
+      <textarea class="sc-code" readonly id="scr-code-t">${esc(code)}</textarea>
+      <div class="actions" style="margin-top:8px"><button class="btn primary" data-action="scr-copy">Copia</button><button class="btn" data-action="scr-share">Condividi</button><span style="flex:1"></span><button class="btn" data-action="sc-coach">Indietro</button></div></div></div>`); },
+  'scr-copy': async ()=>{ const t=$('#scr-code-t'); try{ await navigator.clipboard.writeText(t.value); toast('Codice copiato'); }catch(e){ t.select(); document.execCommand('copy'); toast('Codice copiato'); } },
+  'scr-share': async ()=>{ const t=$('#scr-code-t'); try{ await navigator.share({text:'Codice per Volleysched (modalità scoutman):\n'+t.value}); }catch(e){} },
   'live-mode': b=>{ const m=getMatch(ui.matchId); if(!m) return; const L=getStats(m).live; L.mode=b.dataset.v; setOpz('scout', b.dataset.v); ui.livePick=null; touchMatch(m); rerenderLive(); toast(b.dataset.v==='simple'?'Statistiche semplici: battuta, ricezione, attacco':'Statistiche complete'); },
   'inj-edit': b=>openInjEdit(b.dataset.a, b.dataset.i),
   'inj-save': ()=>injSave(false),
@@ -6545,7 +6845,7 @@ document.addEventListener('change', e=>{
     if(t.checked){ const a0=getAt(t.dataset.conv); if(a0 && !visitaOk(a0,m) && !confirm(`${fullName(a0)}: ${visitaWhy(a0)}. Convocarlo comunque?`)){ t.checked=false; return; } } const s=new Set(m.convocati||[]); if(t.checked) s.add(t.dataset.conv); else s.delete(t.dataset.conv);
     m.convocati=db.athletes.filter(a=>s.has(a.id)).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); return; }
   if(t.dataset.fs){ const m=getMatch(ui.matchId); if(!m) return; const f=getForm(m); const k=t.dataset.fs;
-    f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
+    f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; scMarkForm(m); touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
   if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; markPlayed(m); touchMatch(m); rerenderLive(); return; }
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if(t.id==='p-all'){ ui.pAll=t.checked; $('#reg').innerHTML=regTable(); return; }
@@ -6588,6 +6888,9 @@ $('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
     if(Store.isEmpty() && !Sync.config() && !Store.getMeta('avviato')) ui.view='benvenuto';
     await licInit();
     render(); navSync(); setTimeout(autoVerCheck, 3000);
+    setTimeout(()=>{ if(scoutOn()) scoutSync(false); else coachScoutSync(false); }, 1500);
+    setInterval(()=>{ if(document.visibilityState==='visible'){ if(scoutOn()) scoutSync(false); else if(['partite','partita','home'].includes(ui.view)) coachScoutSync(false); } }, 60000);
+    document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible'){ if(scoutOn()) scoutSync(false); else coachScoutSync(false); } });
   }catch(e){
     console.error(e);
     $('#app').innerHTML=`<div class="empty" style="text-align:left;max-width:640px;margin:40px auto"><h2 style="margin-bottom:8px">Volleysched non si è aperto</h2>

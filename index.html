@@ -1916,6 +1916,14 @@ body:has(.ls) main{padding-top:8px;padding-bottom:12px}
   .sa-row h4{font-size:12.5px}
   .sa-err span{display:none}
 }
+/* tema notte: giocatore selezionato e battitore leggibili */
+:root[data-theme=dark] .st-tile.on{background:#e07b22;border-color:#ffb46b;color:#fff;box-shadow:0 0 0 3px rgba(240,138,44,.4)}
+:root[data-theme=dark] .st-tile.on .z{color:rgba(255,255,255,.85)}
+:root[data-theme=dark] .st-tile.srv{background:#3a3220;border-color:#f6c344;color:#ffe08a}
+:root[data-theme=dark] .st-tile.srv .z{color:#f6c344}
+:root[data-theme=dark] .st-tile.srv.on{background:#e07b22;border-color:#ffb46b;color:#fff}
+:root[data-theme=dark] .pchip.on{background:#e07b22;border-color:#ffb46b;color:#fff;box-shadow:0 0 0 2px rgba(240,138,44,.35)}
+:root[data-theme=dark] .pchip.on .nr{background:#1f2a44;color:#fff}
 
 
 body.scout .nav, body.scout .fab, body.scout #syncPill, body.scout .help-btn{display:none!important}
@@ -5496,7 +5504,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v58-2026-10-08';
+const APP_VERSION='v59-2026-10-08';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;

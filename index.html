@@ -5927,6 +5927,15 @@ async function autoVerCheck(){
   try{ const r=await fetch('sw.js?fresh='+Date.now(), {cache:'no-store'}); const t=await r.text(); const m=t.match(/const VERSION = '([^']+)'/);
     if(m && verNum(m[1])>verNum(APP_VERSION)){ document.body.classList.add('has-upd'); window.APP_ONLINE_VER=m[1]; try{ if(swReg) await swReg.update(); }catch(e){} } }catch(e){}
 }
+/* Toglie una volta sola "Portare la carta d'identità." dalle note delle partite già inserite (tutte le squadre). */
+async function cleanConvNote(){
+  if(scoutOn() || Store.getMeta('pulitoCartaId')) return;
+  const RE=/Portare la carta d['’]identità\.?[ \t]*/gi;
+  const ms=(Store.fullState().matches||[]).filter(m=>/Portare la carta d['’]identità/i.test(m.note||''));
+  for(const m of ms){ m.note=m.note.replace(RE,'').replace(/^[ \t]+/,''); m.updatedAt=Date.now(); await persist.match(m); }
+  await Store.setMeta('pulitoCartaId', true);
+  if(ms.length) await loadState();
+}
 /* ===== Registro degli utilizzi =====
    All'avvio manda una riga al Foglio Google del registro (vedi la cartella registro-utilizzi).
    LOG_URL vuoto = registro spento. */
@@ -7092,6 +7101,7 @@ $('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
     await loadState();
     if(Store.isEmpty() && !Sync.config() && !Store.getMeta('avviato')) ui.view='benvenuto';
     await licInit();
+    await cleanConvNote().catch(e=>console.error(e));
     render(); navSync(); setTimeout(autoVerCheck, 3000);
     setTimeout(()=>{ if(scoutOn()) scoutSync(false); else coachScoutSync(false); }, 1500);
     setInterval(()=>{ if(document.visibilityState==='visible'){ if(scoutOn()) scoutSync(false); else if(['partite','partita','home'].includes(ui.view)) coachScoutSync(false); } }, 60000);

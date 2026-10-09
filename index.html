@@ -323,7 +323,9 @@ td.canc{color:var(--muted);text-align:center;background:repeating-linear-gradien
 .av.emo-av{background:#f1efe9}
 .avpick{display:flex;gap:16px;align-items:flex-start;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
 .avpick .av{margin:0}
-.emogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px;margin-top:10px;max-width:520px}
+.emogrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:4px;margin-top:10px;max-width:520px;max-height:320px;overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+.emo-h{grid-column:1/-1;font-size:12px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em;margin:8px 0 2px;position:sticky;top:0;background:var(--surface,#fff);padding:2px 0;z-index:1}
+.emo-h:first-child{margin-top:0}
 .emo{font-size:22px;background:var(--surface);border:1px solid var(--line);border-radius:8px;height:40px;cursor:pointer;padding:0}
 .emo:hover,.emo.on{border-color:var(--accent);background:#fff7ee}
 
@@ -6610,7 +6612,8 @@ function printRegister(){
 /* ============================================================
    Avatar degli atleti (iniziali, icona o foto)
    ============================================================ */
-const AV_EMOJI=['⭐','🔥','⚡','💪','🏐','👑','💎','🎯','🚀','⚓','🍀','🌈','☀️','🌙','❄️','🌊','🌻','🌵','🍕','🍉','🍒','🍋','☕','🎸','🎧','🎲','🦁','🐯','🦊','🐻','🐼','🐨','🐸','🐵','🐺','🦄','🦅','🦉','🐬','🦈','🐢','🐝','🦋','🐙','🐧','🐞','🦖','🤖','👻','😎','🤠','🥷','🧙','👽'];
+const AV_GROUPS=[["Sport",["🏐", "🏀", "⚽", "🎾", "🏈", "⚾", "🏓", "🏸", "🥊", "🏊", "🚴", "⛷️", "🏄", "🤸", "🏋️", "🏆", "🥇", "🥈", "🥉", "🏅", "🎖️", "⏱️", "📣", "🎽"]],["Simboli",["⭐", "🌟", "✨", "🔥", "⚡", "💥", "💪", "👑", "💎", "🎯", "🚀", "⚓", "🍀", "🌈", "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "♾️", "☮️", "☯️", "🔱", "⚜️", "🛡️", "⚔️", "🗝️", "🧿", "🎈"]],["Natura",["☀️", "🌙", "❄️", "🌊", "🌋", "⛰️", "🌪️", "☁️", "⛄", "🌻", "🌹", "🌸", "🌺", "🌷", "🌵", "🌴", "🌲", "🍁", "🍄", "🌍", "🪐", "☄️"]],["Animali",["🦁", "🐯", "🐆", "🦊", "🐺", "🐻", "🐼", "🐨", "🐸", "🐵", "🐶", "🐱", "🐰", "🐹", "🐭", "🐷", "🐮", "🐴", "🦄", "🦓", "🦒", "🐘", "🦏", "🦛", "🐊", "🦖", "🦕", "🐉", "🦅", "🦉", "🦜", "🦩", "🐧", "🐥", "🦆", "🐬", "🐳", "🦈", "🐠", "🐙", "🦀", "🐢", "🦎", "🐍", "🐝", "🦋", "🐞", "🕷️", "🦂", "🐌"]],["Cibo",["🍕", "🍔", "🍟", "🌭", "🌮", "🍝", "🍣", "🍩", "🍪", "🎂", "🍦", "🍫", "🍿", "🍉", "🍓", "🍒", "🍋", "🍊", "🍌", "🍍", "🥑", "🌶️", "🥕", "🍇", "🍎", "🥥", "☕", "🧃", "🥤"]],["Musica e giochi",["🎸", "🎹", "🥁", "🎺", "🎻", "🎷", "🎤", "🎧", "🎵", "🎲", "🎮", "🧩", "♟️", "🎳", "🎨", "🎭", "🎬", "📷", "🪁", "🛹", "🛼", "🎪"]],["Personaggi",["😎", "🤠", "🥳", "🤩", "😜", "🤓", "🧐", "😇", "🤖", "👻", "👽", "👾", "🤡", "💀", "🎃", "🥷", "🧙", "🧛", "🧜", "🧚", "🦸", "🦹", "🧞", "🧟", "👸", "🤴"]],["Viaggi",["🚗", "🏎️", "🏍️", "🚲", "🛴", "🚂", "✈️", "🚁", "⛵", "🚤", "🛸", "🗽", "🗼", "🏰", "🏝️", "🎡", "🎢", "⛺"]],["Bandiere",["🇮🇹", "🇪🇸", "🇫🇷", "🇩🇪", "🇬🇧", "🇵🇹", "🇳🇱", "🇧🇪", "🇨🇭", "🇦🇹", "🇵🇱", "🇷🇴", "🇺🇦", "🇬🇷", "🇹🇷", "🇺🇸", "🇧🇷", "🇦🇷", "🇨🇴", "🇵🇪", "🇲🇽", "🇨🇺", "🇲🇦", "🇪🇬", "🇳🇬", "🇸🇳", "🇨🇳", "🇯🇵", "🇮🇳", "🇵🇭", "🏳️‍🌈", "🏴‍☠️", "🏁"]]];
+const AV_EMOJI=[...new Set(AV_GROUPS.flatMap(g=>g[1]))];
 const AV_COLORS=['#2f6fb8','#1f9d8a','#7b5cc4','#d64a5a','#e07b22','#2c8a3e','#b0527f','#4f7d9c'];
 function avEmoji(a){ return (a && (a.avatar||'').startsWith('emoji:')) ? a.avatar.slice(6) : ''; }
 function avatarHTML(a, size=28){
@@ -6631,7 +6634,7 @@ function avPickerHTML(a){
       <button type="button" class="btn sm" data-action="av-paste" title="Oppure premi Ctrl+V">Incolla</button>
       <button type="button" class="btn sm ghost" data-action="av-clear" id="av-clear" ${a.avatar?'':'disabled'}>Rimuovi</button></div>
       <div class="muted" style="font-size:12.5px;margin-top:6px">Utile per distinguere gli omonimi. Senza icona né foto compaiono le iniziali.</div>
-      <div class="emogrid hidden" id="emogrid">${AV_EMOJI.map(e=>`<button type="button" class="emo ${avEmoji(a)===e?'on':''}" data-action="av-set" data-e="${e}">${e}</button>`).join('')}</div>
+      <div class="emogrid hidden" id="emogrid">${AV_GROUPS.map(([n,L])=>`<div class="emo-h">${esc(n)}</div>`+L.map(e=>`<button type="button" class="emo ${avEmoji(a)===e?'on':''}" data-action="av-set" data-e="${e}">${e}</button>`).join('')).join('')}</div>
     </div></div>`;
 }
 function refreshAvatar(){

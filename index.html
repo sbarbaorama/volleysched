@@ -2017,6 +2017,77 @@ table.p-sched tfoot td{font-weight:700;border-top:1pt solid #1f2a44;border-botto
 .p-notes h3{font-size:11pt;margin:0 0 4pt}
 .p-legend svg{width:100%;max-width:170mm;display:block;margin-top:6pt}
 .p-footer{margin-top:10pt;font-size:8pt;color:#888}
+/* ===== v63: correzioni grafiche ===== */
+/* G1 scheda atleta: pulsanti e icone dentro lo schermo */
+.avpick>div{min-width:0}
+.avpick .actions{flex-wrap:wrap}
+/* G8 tema scuro: pallini vuoti più visibili */
+:root[data-theme=dark] .dot{background:#6b7280}
+@media (max-width:760px){
+  /* G2 home: avvisi rossi per primi */
+  .home-alerts .red{order:-1}
+  /* G3 partite: pulsanti con la scritta sotto il simbolo */
+  .page-head:has([data-action=ics-open]){flex-wrap:wrap}
+  .page-head .actions:has([data-action=ics-open]){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:6px}
+  .page-head .actions:has([data-action=ics-open]) .vseg{grid-column:1/-1;justify-self:start}
+  .page-head .actions:has([data-action=ics-open]) .btn{flex-direction:column;gap:2px;padding:6px 2px;font-size:18px;line-height:1.1;justify-content:center}
+  .page-head .actions:has([data-action=ics-open]) .btn.sm{font-size:18px}
+  .page-head .actions:has([data-action=ics-open]) .btn .sl{display:block;font-size:11px;font-weight:600}
+  .page-head .actions:has([data-action=ics-open]) [data-action=print-cal]{font-size:13px}
+  /* G4 partite: andamento su una riga, tabelle larghe scorrono nel loro riquadro */
+  .rec{gap:6px;flex-wrap:nowrap}
+  .rec .k{min-width:0;flex:1 1 0;padding:6px 8px}
+  .rec .k b{font-size:19px}
+  .rec .k span{font-size:10.5px;letter-spacing:.02em}
+  #conv-sum .atable,.rf-t{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* G5 + G9 convocazioni: linguette tutte visibili, una riga per atleta */
+  .mtabs{gap:3px}
+  .mtabs button{flex:1 1 auto;min-width:0;padding:8px 3px;font-size:11.5px;gap:3px}
+  .mtabs .b{font-size:9.5px;padding:0 4px;min-width:14px;line-height:14px}
+  .mt-conv .ctable td{padding:6px 4px}
+  .mt-conv .ctable td:nth-child(3){width:100%;max-width:0}
+  .mt-conv .ctable td label{display:flex;align-items:center;flex-wrap:wrap;line-height:1.2;min-width:0}
+  .mt-conv .ctable td label b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto;max-width:calc(100% - 32px)}
+  .mt-conv .ctable td label>span:not(.av){margin-left:32px;margin-top:2px}
+  .mt-conv .ctable thead th:nth-child(4),.mt-conv .ctable tbody td:nth-child(4){display:none}
+  .mt-conv .ctable .num{width:28px}
+  /* G6 presenze: nomi interi, pulsante «Aggiungi allenamento» in alto */
+  .pd-row{gap:8px;padding:8px}
+  .pd-row>.av{width:30px!important;height:30px!important;font-size:12px!important}
+  .pd-seg{gap:4px}
+  .pd-seg button{width:40px}
+  .pd-row.s0 .nm b::after{content:''}
+  body:has(#pday) .fab{display:none}
+  body:has(#pday) .page-head .btn.primary{display:inline-flex}
+}
+/* ===== v63: calendario e presenze ===== */
+.dayopt{min-width:150px}
+.dayopt .dayt{display:flex;align-items:center;gap:4px}
+.dayopt .dayt input[type=time]{width:84px}
+.dayopt input[type=text]{width:100%;padding:4px 8px;font-size:13px}
+.dot.dR{background:#2f6fb8}
+.pbtn.sR{background:#e3edf9;border-color:#93b6e0;color:#1f4f8a}
+.pbtn.why{position:relative}
+.pbtn.why::after{content:'';position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.7}
+.pd-seg .sR.on{background:#2f6fb8;border-color:#2f6fb8;color:#fff}
+.pd-count .cR{background:#e3edf9;color:#1f4f8a}
+.pd-why{grid-column:2/-1;width:100%;padding:5px 9px;font-size:13px;border-radius:8px;margin-top:-2px}
+.pd-row.sA .pd-why,.pd-row.sG .pd-why,.pd-row.sR .pd-why{background:var(--surface-2)}
+th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
+.tr-tipo{font-style:normal;font-weight:700;color:var(--tc);}
+:root[data-theme=dark] .pbtn.sR{background:rgba(47,111,184,.25);color:#a9c8f0}
+:root[data-theme=dark] .pd-count .cR{background:rgba(47,111,184,.22);color:#a9c8f0}
+:root[data-theme=dark] .dayopt input[type=text]{background:var(--surface-2)}
+@media (max-width:760px){
+  .dayopt{min-width:0;flex:1 1 100%;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:6px 10px}
+  .dayopt label{min-width:62px}
+  .dayopt .dayt input[type=time]{width:96px}
+  .dayopt input[type=text]{flex:1 1 140px;width:auto}
+  .pd-seg button{width:34px;font-size:16px}
+  .pd-seg{gap:3px}
+  .pd-row .nm b{font-size:14.5px}
+  #pday.panel{padding-left:10px;padding-right:10px}
+}
 </style>
 <script>try{var _t=localStorage.getItem('vs-theme')||'auto';document.documentElement.dataset.theme=(_t==='dark'||(_t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';}catch(e){}</script>
 </head>
@@ -3102,7 +3173,7 @@ function viewHome(){
   const t=todayISO(), st=db.settings||{};
   const nextM=[...db.matches].filter(m=>m.data && m.data>=t).sort((a,b)=>matchDT(a).localeCompare(matchDT(b)))[0];
   const nextT=[...(db.trainings||[])].filter(x=>x.data && x.data>=t && !x.annullato).sort((a,b)=>(a.data+(a.ora||'')).localeCompare(b.data+(b.ora||'')))[0];
-  const iscr=db.athletes.filter(a=>a.iscritto), noVis=iscr.filter(a=>!a.scadenzaVisita || daysTo(a.scadenzaVisita)<=SCAD_DAYS).length;
+  const iscr=db.athletes.filter(a=>a.iscritto), noVis=iscr.filter(a=>!a.scadenzaVisita || daysTo(a.scadenzaVisita)<=SCAD_DAYS).length, noTes=iscr.filter(a=>a.scadenzaTessera && daysTo(a.scadenzaTessera)<=SCAD_DAYS).length;
   const bd=upcomingBdays(), bdToday=bd.filter(x=>x.nb.days===0);
   const lastS=[...db.sessions].sort((a,b)=>(b.data||'').localeCompare(a.data||''))[0];
   const ddBox=iso=>{ const d=parseISO(iso); return `<div class="dd"><span>${d.toLocaleDateString('it-IT',{weekday:'short'})}</span><b>${d.getDate()}</b><span style="color:var(--muted)">${d.toLocaleDateString('it-IT',{month:'short'})}</span></div>`; };
@@ -3123,7 +3194,7 @@ function viewHome(){
     ${nextM&&nextM!==matchDay()?`<div class="hn" data-action="open-match" data-id="${nextM.id}">${ddBox(nextM.data)}<div class="tx"><div class="k">Prossima partita · ${rel(nextM.data)}</div><div class="t">${esc(matchTitle(nextM))}</div>${pgsVsHTML(nextM)}<div class="s">${[nextM.ora?'ore '+nextM.ora:'', nextM.inCasa?'in casa':'in trasferta', convocati(nextM).length?convocati(nextM).length+' convocati':'convocazioni da fare'].filter(Boolean).map(esc).join(' · ')}</div></div></div>`:''}
     ${nextT?`<div class="hn" data-nav="presenze">${ddBox(nextT.data)}<div class="tx"><div class="k">Prossimo allenamento · ${rel(nextT.data)}</div><div class="t">${nextT.ora?'ore '+esc(nextT.ora):'Allenamento'}</div><div class="s">${nextT.note?esc(nextT.note):'Tocca per segnare le presenze'}</div></div></div>`:''}
   </div>`:''}
-  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button>${licBadge()}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}</div>`:''}
+  ${true?`<div class="home-alerts">${homeRem().join('')}<button data-action="qm-open">⚡ Partita veloce</button>${licBadge()}${bdToday.map(x=>`<button class="ora" data-action="edit-at" data-id="${x.a.id}">🎂 Oggi compie gli anni ${esc(fullName(x.a))}</button>`).join('')}${noVis?`<button class="red" data-nav="atleti">🩺 ${noVis} visit${noVis===1?'a medica':'e mediche'} da sistemare</button>`:''}${noTes?`<button class="red" data-nav="atleti">🎫 ${noTes} tesser${noTes===1?'a':'e'} PGS da rinnovare</button>`:''}</div>`:''}
   <div class="tiles">${tiles.map(([v,l,c,sub])=>`<button class="tile" data-nav="${v}" style="--c:${c}"><span class="ic">${ICO[v]}</span><b>${l}</b><small>${sub}</small></button>`).join('')}</div>
   </section>`;
 }
@@ -3677,7 +3748,7 @@ function renderNavBadge(){
 }
 function filteredAt(){
   const f=ui.af, q=f.q.toLowerCase().trim();
-  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento].join(' ').toLowerCase().includes(w)))
+  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.email,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento,a.tessera].join(' ').toLowerCase().includes(w)))
       && (!f.ruolo || a.ruolo===f.ruolo || a.ruolo2===f.ruolo) && (!f.rk || rolesOf(a).includes(f.rk)) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
     .sort((x,y)=>{ const byName=(x.cognome||'').localeCompare(y.cognome||'','it') || (x.nome||'').localeCompare(y.nome||'','it');
       if(f.sort==='numero') return byNumber(x,y); if(f.sort==='presenze') return ((seasonPct(y.id)??-1)-(seasonPct(x.id)??-1)) || byName; return byName; });
@@ -3689,15 +3760,15 @@ function atCards(l){
   return l.map(a=>{ const age=ageOf(a), p=seasonPct(a.id);
     const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', roleText(a), a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
     const b=[a.cellulare?`<a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 ${esc(a.cellulare)}</a>`:'', a.dataNascita?`<span><b>Compleanno</b> ${bdayBadge(a,true)}</span>`:'',
-      a.scadenzaVisita?`<span><b>Visita</b> ${scadBadge(a.scadenzaVisita)}</span>`:'', a.scadenzaDocumento?`<span><b>Documento</b> ${scadBadge(a.scadenzaDocumento)}</span>`:'', a.taglia?`<span><b>Taglia</b> ${esc(a.taglia)}</span>`:''].filter(Boolean).join('');
+      a.scadenzaVisita?`<span><b>Visita</b> ${scadBadge(a.scadenzaVisita)}</span>`:'', a.scadenzaDocumento?`<span><b>Documento</b> ${scadBadge(a.scadenzaDocumento)}</span>`:'', a.scadenzaTessera?`<span><b>Tessera</b> ${scadBadge(a.scadenzaTessera)}</span>`:'', a.taglia?`<span><b>Taglia</b> ${esc(a.taglia)}</span>`:''].filter(Boolean).join('');
     return `<div class="atc ${a.iscritto?'':'off'}">${avRole(a,40)}<div><div class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}${a.note?' 📝':''}${injTagHTML(a)}${a.iscritto?'':'<span class="tag-off">non iscritto</span>'}</div><div class="meta">${meta||'&nbsp;'}</div></div>
       ${b?`<div class="badges">${b}</div>`:''}</div>`; }).join('');
 }
 function atRows(){
   const l=filteredAt();
   if(isPhone()) return atCards(l);
-  if(!db.athletes.length) return `<tr><td colspan="13"><div class="empty" style="margin:10px 0">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div></td></tr>`;
-  if(!l.length) return `<tr><td colspan="13" class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</td></tr>`;
+  if(!db.athletes.length) return `<tr><td colspan="14"><div class="empty" style="margin:10px 0">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div></td></tr>`;
+  if(!l.length) return `<tr><td colspan="14" class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</td></tr>`;
   return l.map(a=>{ const age=ageOf(a); return `<tr class="${a.iscritto?'':'off'}"><td class="n" style="font-weight:800;font-size:15px">${esc(a.numeroMaglia)}</td>
     <td style="white-space:nowrap">${avRole(a,30)}<span class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}</span>${a.note?` <span title="${esc(a.note)}" style="cursor:help">📝</span>`:''}</td>
     <td>${esc(roleText(a))||'<span class="muted">—</span>'}</td>
@@ -3707,6 +3778,7 @@ function atRows(){
     <td style="white-space:nowrap">${bdayBadge(a,true)}</td>
     <td>${scadBadge(a.scadenzaVisita)}</td>
     <td>${scadBadge(a.scadenzaDocumento)}${a.numeroDocumento?`<div class="sub">n° ${esc(a.numeroDocumento)}</div>`:''}</td>
+    <td>${scadBadge(a.scadenzaTessera)}${a.tessera?`<div class="sub">n° ${esc(a.tessera)}</div>`:''}</td>
     <td>${esc(a.taglia)||'<span class="muted">—</span>'}</td>
     <td class="n">${(()=>{ const p=seasonPct(a.id); return p===null?'<span class="muted">—</span>':p+'%'; })()}</td>
     <td style="text-align:center"><input type="checkbox" data-iscr="${a.id}" ${a.iscritto?'checked':''} title="Iscritto"></td>
@@ -3716,7 +3788,7 @@ function viewAtleti(){
   const ruoli=[...new Set([...RUOLI, ...db.athletes.map(a=>a.ruolo).filter(Boolean)])];
   const up=upcomingBdays(), iscr=db.athletes.filter(a=>a.iscritto).length;
   const scad=k=>db.athletes.filter(a=>{ const n=daysTo(a[k]); return n!==null && n<=SCAD_DAYS; });
-  const vis=scad('scadenzaVisita'), doc=scad('scadenzaDocumento');
+  const vis=scad('scadenzaVisita'), doc=scad('scadenzaDocumento'), tes=scad('scadenzaTessera');
   const warn=[vis.length?`${vis.length} visit${vis.length===1?'a medica scaduta o in scadenza':'e mediche scadute o in scadenza'}`:'', doc.length?`${doc.length} document${doc.length===1?'o':'i'} d'identità scadut${doc.length===1?'o':'i'} o in scadenza`:''].filter(Boolean);
   return `<section>
   <div class="page-head">
@@ -3731,6 +3803,7 @@ function viewAtleti(){
      const nm=(a,m)=>`<span class="nm ${m?'miss':''}" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))} · ${m?'manca':(a.scadenzaVisita<todayISO()?'scaduta':'scade '+shortDate(a.scadenzaVisita))}</span>`;
      return `<div class="warn med">${MEDX}<div class="medtxt"><b>Visite mediche: ${parts.join(' · ')}.</b><details class="names-d"><summary><span class="op">Mostra i nomi</span><span class="cl">Nascondi i nomi</span></summary><div class="names">${vis.map(a=>nm(a,false)).join('')}${miss.map(a=>nm(a,true)).join('')}</div></details></div></div>`; })()}
   ${doc.length?`<div class="warn doc"><span class="ico">🪪</span><b>Documenti d'identità: ${doc.length} ${doc.length===1?'scaduto o in scadenza':'scaduti o in scadenza'} entro ${SCAD_DAYS} giorni.</b></div>`:''}
+  ${tes.length?`<div class="warn doc"><span class="ico">🎫</span><b>Tessere PGS: ${tes.length} ${tes.length===1?'scaduta o in scadenza':'scadute o in scadenza'} entro ${SCAD_DAYS} giorni.</b> ${tes.map(a=>`<span class="nm" data-action="edit-at" data-id="${a.id}" style="cursor:pointer;text-decoration:underline">${esc(fullName(a))}</span>`).join(', ')}</div>`:''}
   <div class="filters">
     <input type="search" id="at-q" placeholder="Cerca per nome, telefono, note…" value="${esc(ui.af.q)}">
     <select id="at-ruolo"><option value="">Tutti i ruoli</option>${ruoli.map(r=>`<option ${ui.af.ruolo===r?'selected':''}>${esc(r)}</option>`).join('')}</select>
@@ -3739,7 +3812,7 @@ function viewAtleti(){
   </div>
   ${db.athletes.length?ROLE_LEGEND():''}
   ${isPhone()?`<div class="panel at-cards" style="padding:0" id="at-rows">${atRows()}</div>`:`<div class="panel" style="padding:0;overflow:auto">
-    <table class="atable"><thead><tr><th class="n">N°</th><th>Atleta</th><th>Ruolo</th><th style="text-align:center">Sesso</th><th class="n">Età</th><th>Cellulare</th><th>Compleanno</th><th>Visita medica</th><th>Documento</th><th>Taglia</th><th class="n" title="Percentuale di presenze agli allenamenti segnati">Presenze</th><th style="text-align:center">Iscritto</th><th></th></tr></thead>
+    <table class="atable"><thead><tr><th class="n">N°</th><th>Atleta</th><th>Ruolo</th><th style="text-align:center">Sesso</th><th class="n">Età</th><th>Cellulare</th><th>Compleanno</th><th>Visita medica</th><th>Documento</th><th>Tessera</th><th>Taglia</th><th class="n" title="Percentuale di presenze agli allenamenti segnati">Presenze</th><th style="text-align:center">Iscritto</th><th></th></tr></thead>
     <tbody id="at-rows">${atRows()}</tbody></table>
   </div>`}
   </section>`;
@@ -3758,7 +3831,8 @@ function openAtModal(id){
       <label class="f">Data di nascita<input type="date" name="dataNascita" value="${esc(a.dataNascita)}"></label>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Età<input type="text" id="at-age" class="ro" value="${age===null?'':age+' anni'}" readonly tabindex="-1"></div>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Compleanno<div class="ro-box" id="at-bday">${bdayBadge(a)}</div></div>
-      <label class="f w2">Cellulare<input type="tel" name="cellulare" value="${esc(a.cellulare)}" placeholder="Es. 333 1234567"></label>
+      <label class="f">Cellulare<input type="tel" name="cellulare" value="${esc(a.cellulare)}" placeholder="Es. 333 1234567"></label>
+      <label class="f w2">Email<input type="email" name="email" value="${esc(a.email||'')}" placeholder="Es. nome@email.it" autocomplete="off"></label>
     </div></div>
     <div class="atf"><h3>Squadra</h3><div class="atf-g">
       <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
@@ -3766,11 +3840,15 @@ function openAtModal(id){
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>${teamAtFieldHTML(a)}
       <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
       <label class="f w2">Secondo ruolo (se può giocare anche lì)<input type="text" name="ruolo2" list="dl-ruoli" value="${esc(a.ruolo2||'')}" placeholder="Es. Banda"></label>
+      <label class="f">Altezza (cm)<input type="text" name="altezza" inputmode="numeric" maxlength="3" value="${esc(a.altezza||'')}" placeholder="Es. 178"></label>
+      <label class="f">Mano<select name="mano"><option value="">—</option>${opt([['Destra','Destra'],['Sinistra','Sinistra (mancino)'],['Ambidestra','Ambidestra']],a.mano||'')}</select></label>
     </div></div>
-    <div class="atf"><h3>Visita medica e documento</h3><div class="atf-g">
+    <div class="atf"><h3>Visita medica, documento e tessera</h3><div class="atf-g">
       <label class="f">Scadenza visita medica<input type="date" name="scadenzaVisita" value="${esc(a.scadenzaVisita)}"></label>
       <label class="f">N° carta d'identità<input type="text" name="numeroDocumento" value="${esc(a.numeroDocumento)}" placeholder="Es. CA12345AB"></label>
       <label class="f">Scadenza documento<input type="date" name="scadenzaDocumento" value="${esc(a.scadenzaDocumento)}"></label>
+      <label class="f">N° tessera PGS<input type="text" name="tessera" value="${esc(a.tessera||'')}" placeholder="Es. MI-2026-0457"></label>
+      <label class="f">Scadenza tessera<input type="date" name="scadenzaTessera" value="${esc(a.scadenzaTessera||'')}"></label>
     </div></div>
     <div class="atf"><h3>Note</h3><textarea name="note" rows="3" placeholder="Allergie, infortuni, disponibilità…" style="width:100%">${esc(a.note)}</textarea></div>
     </div>
@@ -3786,7 +3864,7 @@ function refreshAtDerived(){
 }
 async function saveAt(){
   const fd=new FormData($('#at-form')), a=ui.atDraft;
-  for(const k of ['nome','cognome','cellulare','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
+  for(const k of ['nome','cognome','cellulare','email','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','scadenzaTessera','tessera','altezza','mano','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
   a.iscritto=!!fd.get('iscritto');
   if(teamMulti()){ const sq=[...document.querySelectorAll('#at-form [name=sq]:checked')].map(x=>x.value); a.squadre=sq.length?sq:[teamCur()]; }
   if(!a.nome && !a.cognome){ alert('Inserisci almeno il nome o il cognome.'); $('#at-form [name=nome]').focus(); return; }
@@ -3827,6 +3905,7 @@ function convWarn(a,m,nums){
   if(!a.scadenzaVisita) w.push('visita medica mancante');
   else if(a.scadenzaVisita<ref) w.push('visita medica scaduta');
   if(a.scadenzaDocumento && a.scadenzaDocumento<ref) w.push('documento scaduto');
+  if(a.scadenzaTessera && a.scadenzaTessera<ref) w.push('tessera PGS scaduta');
   const st=absStats(a.id, m.data||'9999-12-31'); if(st.n && st.ass>=3) w.push(`assente a ${st.ass} degli ultimi ${st.n} allenamenti`);
   if(!a.numeroMaglia) w.push('manca il numero di maglia');
   else if(nums && nums[a.numeroMaglia]>1) w.push('numero di maglia doppio');
@@ -4555,9 +4634,9 @@ function printCalendar(){
    Allenamenti e presenze
    ============================================================ */
 const WEEKDAYS=[[1,'Lun'],[2,'Mar'],[3,'Mer'],[4,'Gio'],[5,'Ven'],[6,'Sab'],[0,'Dom']];
-const PSTATE={P:'✓',A:'✗',G:'G','':'·'};
-const PNEXT={'':'P',P:'A',A:'G',G:''};
-const PTITLE={P:'Presente',A:'Assente',G:'Assente giustificato','':'Non segnato'};
+const PSTATE={P:'✓',A:'✗',G:'G',R:'R','':'·'};
+const PNEXT={'':'P',P:'A',A:'G',G:'R',R:''};
+const PTITLE={P:'Presente',A:'Assente',G:'Assente giustificato',R:'In ritardo o uscito prima (conta come presente)','':'Non segnato'};
 ui.pm = todayISO().slice(0,7);   // mese mostrato nel registro (AAAA-MM)
 ui.pAll = false;                 // mostra anche i non iscritti
 const getTr = id => db.trainings.find(t=>t.id===id);
@@ -4573,16 +4652,26 @@ function getCal(){
 function saveCal(c){ db.settings.calendarioAllenamenti=JSON.stringify(c); clearTimeout(saveCal._t); saveCal._t=setTimeout(()=>persist.settings().catch(saveFail),400); }
 function trainingsSorted(){ return [...db.trainings].sort((a,b)=>(a.data+(a.ora||'')).localeCompare(b.data+(b.ora||''))); }
 function isRecorded(t){ return !t.annullato && Object.keys(t.presenze||{}).length>0; }
+/* v63: ritardo, tipo di appuntamento, palestra e orario di fine */
+const isPres=s=>s==='P'||s==='R';
+const TR_TIPI=[['','Allenamento','#2f6fb8'],['amichevole','Amichevole','#7b5cc4'],['atletica','Preparazione atletica','#e07b22'],['torneo','Torneo','#d64a5a'],['evento','Evento di squadra','#22a05a']];
+const trTipo=t=>TR_TIPI.find(x=>x[0]===((t&&t.tipo)||''))||TR_TIPI[0];
+const isCounted=t=>isRecorded(t) && t.tipo!=='evento';   // gli eventi di squadra non contano nelle percentuali
+const trWd=t=>{ const d=parseISO(t.data); return d?d.getDay():-1; };
+function trLuogoFix(t){ return (getCal().luoghi||{})[trWd(t)]||''; }
+function trFineFix(t){ const c=getCal(), wd=trWd(t); return (c.giorni[wd]!==undefined && (!c.giorni[wd] || !t.ora || t.ora===c.giorni[wd])) ? ((c.fine||{})[wd]||'') : ''; }
+function trLuogo(t){ return t.luogo || trLuogoFix(t); }
+function trFine(t){ const f=t.oraFine || trFineFix(t); return (f && (!t.ora || f>t.ora)) ? f : ''; }
 /* assenze negli ultimi n allenamenti con presenze segnate, prima della data indicata (esclusa) */
 function absStats(aid, beforeISO, n=5){
-  const L=trainingsSorted().filter(t=>isRecorded(t) && t.data<beforeISO).slice(-n);
+  const L=trainingsSorted().filter(t=>isCounted(t) && t.data<beforeISO).slice(-n);
   let ass=0, giu=0;
-  const marks=L.map(t=>{ const s=t.presenze[aid]||'A'; if(s!=='P'){ ass++; if(s==='G') giu++; } return s; });
+  const marks=L.map(t=>{ const s=t.presenze[aid]||'A'; if(!isPres(s)){ ass++; if(s==='G') giu++; } return s; });
   return {n:L.length, ass, giu, marks};
 }
 function seasonPct(aid){
-  const L=db.trainings.filter(t=>isRecorded(t) && t.data<=todayISO()); if(!L.length) return null;
-  return Math.round(100*L.filter(t=>t.presenze[aid]==='P').length/L.length);
+  const L=db.trainings.filter(t=>isCounted(t) && t.data<=todayISO()); if(!L.length) return null;
+  return Math.round(100*L.filter(t=>isPres(t.presenze[aid])).length/L.length);
 }
 function absBadge(st){
   if(!st.n) return '<span class="muted" title="Nessun allenamento con presenze segnate">—</span>';
@@ -4598,15 +4687,15 @@ function regTable(){
   const T=trainingsSorted().filter(t=>t.data.slice(0,7)===ui.pm);
   if(!T.length) return `<div class="empty">Nessun allenamento a ${esc(monthLabel(ui.pm))}. Genera il calendario qui sopra o aggiungi un allenamento.</div>`;
   const A=regAthletes(), today=todayISO(), mdays=new Set(db.matches.map(m=>m.data).filter(Boolean));
-  const head=T.map(t=>{ const d=parseISO(t.data);
-    return `<th class="tcol ${t.annullato?'canc':''} ${t.data===today?'today':''}"><button class="thbtn" data-action="edit-tr" data-id="${t.id}" title="${t.annullato?'Annullato · ':''}Apri l'allenamento">${d.toLocaleDateString('it-IT',{weekday:'short'})}<b>${d.getDate()}/${d.getMonth()+1}</b><span>${esc(t.ora)||'&nbsp;'}${mdays.has(t.data)?' 🏐':''}${t.note?' 📝':''}</span></button></th>`; }).join('');
+  const head=T.map(t=>{ const d=parseISO(t.data), tp=trTipo(t), lu=trLuogo(t);
+    return `<th class="tcol ${t.annullato?'canc':''} ${t.data===today?'today':''} ${t.tipo?'tipo':''}" style="--tc:${tp[2]}"><button class="thbtn" data-action="edit-tr" data-id="${t.id}" title="${t.annullato?'Annullato · ':''}${esc(tp[1])}${lu?' · '+esc(lu):''} – apri">${d.toLocaleDateString('it-IT',{weekday:'short'})}<b>${d.getDate()}/${d.getMonth()+1}</b><span>${esc(t.ora)||'&nbsp;'}${mdays.has(t.data)?' 🏐':''}${t.note?' 📝':''}</span></button></th>`; }).join('');
   const rows=A.map(a=>{ const st=absStats(a.id,'9999-12-31'), pct=seasonPct(a.id);
     return `<tr><td class="sticky">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${a.iscritto?'':' <span class="muted" style="font-size:12px">(non iscritto)</span>'}</td>${T.map(t=>{
       if(t.annullato) return `<td class="pc canc" title="Allenamento annullato">—</td>`;
-      const s=(t.presenze||{})[a.id]||'';
-      return `<td class="pc"><button class="pbtn s${s||'0'}" data-action="pcell" data-tid="${t.id}" data-aid="${a.id}" title="${PTITLE[s]} – clic per cambiare">${PSTATE[s]}</button></td>`; }).join('')}
+      const s=(t.presenze||{})[a.id]||'', mo=(t.motivi||{})[a.id]||'';
+      return `<td class="pc"><button class="pbtn s${s||'0'} ${mo?'why':''}" data-action="pcell" data-tid="${t.id}" data-aid="${a.id}" title="${esc(PTITLE[s])}${mo?' · '+esc(mo):''} – clic per cambiare">${PSTATE[s]}</button></td>`; }).join('')}
       <td class="n">${pct===null?'<span class="muted">—</span>':pct+'%'}</td><td class="n">${absBadge(st)}</td></tr>`; }).join('');
-  const foot=T.map(t=>{ if(t.annullato) return '<td class="n muted">annull.</td>'; const p=A.filter(a=>(t.presenze||{})[a.id]==='P').length; return `<td class="n">${isRecorded(t)?p:'<span class="muted">–</span>'}</td>`; }).join('');
+  const foot=T.map(t=>{ if(t.annullato) return '<td class="n muted">annull.</td>'; const p=A.filter(a=>isPres((t.presenze||{})[a.id])).length; return `<td class="n">${isRecorded(t)?p:'<span class="muted">–</span>'}</td>`; }).join('');
   return `<div class="regwrap"><table class="reg"><thead><tr><th class="sticky">Atleta</th>${head}<th class="n">Presenze<br>stagione</th><th class="n">Assenze<br>ultimi 5</th></tr></thead>
     <tbody>${rows}</tbody><tfoot><tr><td class="sticky muted">Presenti</td>${foot}<td></td><td></td></tr></tfoot></table></div>`;
 }
@@ -4627,15 +4716,15 @@ function presDayHTML(){
   const rel=dd===0?'oggi':dd===1?'domani':dd===-1?'ieri':dd>0?'tra '+dd+' giorni':(-dd)+' giorni fa';
   const isM=db.matches.some(m=>m.data===t.data);
   const head=`<div class="pday-head"><button class="iconbtn" data-action="pd-go" data-id="${prev?prev.id:''}" ${prev?'':'disabled'} title="Allenamento precedente">‹</button>
-    <div class="pd-date"><b>${esc(fmtDate(t.data,{weekday:'long',day:'numeric',month:'long'}))}</b><span>${[t.ora?'ore '+esc(t.ora):'', rel, isM?'🏐 giorno di partita':'', t.note?'📝 '+esc(t.note):''].filter(Boolean).join(' · ')}</span></div>
+    <div class="pd-date"><b>${esc(fmtDate(t.data,{weekday:'long',day:'numeric',month:'long'}))}</b><span>${[t.tipo?'<i class="tr-tipo" style="--tc:'+trTipo(t)[2]+'">'+esc(trTipo(t)[1])+'</i>':'', t.ora?'ore '+esc(t.ora)+(trFine(t)?'–'+esc(trFine(t)):''):'', trLuogo(t)?'📍 '+esc(trLuogo(t)):'', rel, isM?'🏐 giorno di partita':'', t.note?'📝 '+esc(t.note):''].filter(Boolean).join(' · ')}</span></div>
     <button class="iconbtn" data-action="pd-go" data-id="${next?next.id:''}" ${next?'':'disabled'} title="Allenamento successivo">›</button></div>`;
   if(t.annullato) return head+`<div class="empty">Allenamento annullato.<br><button class="btn sm" style="margin-top:10px" data-action="edit-tr" data-id="${t.id}">Apri l'allenamento</button></div>`;
-  const A=regAthletes(), P=t.presenze||{}, n={P:0,A:0,G:0,'':0}; A.forEach(a=>n[P[a.id]||'']++);
-  return head+`<div class="pd-count"><span class="cP">✓ ${n.P} present${n.P===1?'e':'i'}</span><span class="cA">✗ ${n.A} assent${n.A===1?'e':'i'}</span><span class="cG">G ${n.G} giustificat${n.G===1?'o':'i'}</span>${n['']?`<span class="c0">${n['']} da segnare</span>`:''}</div>
+  const A=regAthletes(), P=t.presenze||{}, M=t.motivi||{}, n={P:0,A:0,G:0,R:0,'':0}; A.forEach(a=>n[P[a.id]||'']++);
+  return head+`<div class="pd-count"><span class="cP">✓ ${n.P} present${n.P===1?'e':'i'}</span><span class="cA">✗ ${n.A} assent${n.A===1?'e':'i'}</span><span class="cG">G ${n.G} giustificat${n.G===1?'o':'i'}</span>${n.R?`<span class="cR">R ${n.R} in ritardo</span>`:''}${n['']?`<span class="c0">${n['']} da segnare</span>`:''}</div>
     <div class="pd-acts">${n['']?`<button class="btn sm primary" data-action="pd-allp" data-id="${t.id}">Segna presenti tutti gli altri</button>`:''}<button class="btn sm" data-action="edit-tr" data-id="${t.id}">Note e dettagli…</button></div>
     <div class="pd-list">${A.map(a=>{ const s=P[a.id]||'', pct=seasonPct(a.id);
       return `<div class="pd-row ${s?'s'+s:'s0'}">${avatarHTML(a,36)}<div class="nm"><b>${esc(fullName(a))}</b><small>${[roleText(a), pct===null?'':'presenze '+pct+'%'].filter(Boolean).map(esc).join(' · ')}</small></div>
-        <div class="pd-seg">${['P','A','G'].map(v=>`<button class="s${v} ${s===v?'on':''}" data-action="pd-set" data-tid="${t.id}" data-aid="${a.id}" data-v="${v}" title="${PTITLE[v]}">${PSTATE[v]}</button>`).join('')}</div></div>`; }).join('')}</div>`;
+        <div class="pd-seg">${['P','A','G','R'].map(v=>`<button class="s${v} ${s===v?'on':''}" data-action="pd-set" data-tid="${t.id}" data-aid="${a.id}" data-v="${v}" title="${PTITLE[v]}">${PSTATE[v]}</button>`).join('')}</div>${s&&s!=='P'?`<input type="text" class="pd-why" data-why="${a.id}" data-tid="${t.id}" value="${esc(M[a.id]||'')}" maxlength="80" placeholder="${s==='R'?'Es. arrivato alle 21, uscito prima':'Motivo (facoltativo): lavoro, famiglia…'}" aria-label="Motivo">`:''}</div>`; }).join('')}</div>`;
 }
 function refreshPDay(){ const b=$('#pday'); if(b) b.innerHTML=presDayHTML(); }
 /* ===== Partita a schede ===== */
@@ -4662,6 +4751,9 @@ function openAtProfile(id){
   const vis=!a.scadenzaVisita?['bad','mancante','da inserire']:vd<0?['bad',shortDate(a.scadenzaVisita),'scaduta']:vd<=SCAD_DAYS?['warn',shortDate(a.scadenzaVisita),'scade tra '+vd+' giorni']:['ok',shortDate(a.scadenzaVisita),'valida'];
   const dd=a.scadenzaDocumento?daysTo(a.scadenzaDocumento):null;
   const doc=!a.scadenzaDocumento&&!a.numeroDocumento?['','—','non inserito']:[dd!==null&&dd<0?'bad':dd!==null&&dd<=SCAD_DAYS?'warn':'', a.numeroDocumento||'—', a.scadenzaDocumento?(dd<0?'scaduto il ':'scade il ')+shortDate(a.scadenzaDocumento):''];
+  const td2=a.scadenzaTessera?daysTo(a.scadenzaTessera):null;
+  const tes=!a.scadenzaTessera&&!a.tessera?['','—','non inserita']:[td2!==null&&td2<0?'bad':td2!==null&&td2<=SCAD_DAYS?'warn':'', a.tessera||'—', a.scadenzaTessera?(td2<0?'scaduta il ':'scade il ')+shortDate(a.scadenzaTessera):''];
+  const fis=[a.altezza?a.altezza+' cm':'', a.mano?(a.mano==='Sinistra'?'mancino':a.mano.toLowerCase()):''].filter(Boolean);
   const tile=(cls,k,v,s,act)=>`<div class="atp-t ${cls} ${act?'go':''}" ${act||''}><div class="k">${k}</div><b>${v}</b>${s?`<small>${s}</small>`:''}</div>`;
   const tags=[roleText(a), a.numeroMaglia?'n° '+a.numeroMaglia:'', isF(a)?'Donna':isM(a)?'Uomo':''].filter(Boolean).map(t=>`<span>${esc(t)}</span>`).join('')+(a.iscritto?'':'<span class="off">non iscritto</span>');
   openModal(`<div class="modal-box" style="max-width:680px">
@@ -4673,9 +4765,11 @@ function openAtProfile(id){
         ${tile(vis[0],'🩺 Visita medica', vis[1], vis[2], vis[0]==='bad'?`data-action="at-edit" data-id="${a.id}" title="Inserisci la data"`:'')}
         ${tile('','🎂 Compleanno', a.dataNascita?shortDate(a.dataNascita).slice(0,5):'—', age===null?'':`${age} anni${nb?(nb.days===0?' · oggi!':' · tra '+nb.days+' gg'):''}`)}
         ${tile(doc[0],'🪪 Documento', esc(doc[1]), doc[2])}
+        ${tile(tes[0],'🎫 Tessera PGS', esc(tes[1]), tes[2])}
         ${tile('','👕 Taglia', esc(a.taglia||'—'), '')}
+        ${tile('','📏 Fisico', esc(fis[0]||'—'), esc(fis[1]||(fis.length?'':'altezza e mano')))}
       </div>
-      ${a.cellulare?`<div class="atp-contact"><a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span></div>`:''}
+      ${(a.cellulare||a.email)?`<div class="atp-contact">${a.cellulare?`<a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span>`:''}${a.email?`<a class="btn" href="mailto:${esc(a.email)}">✉️ Email</a><span class="muted">${esc(a.email)}</span>`:''}</div>`:''}
       ${a.note?`<div class="atp-note">📝 ${nl2br(a.note)}</div>`:''}
       ${injSectionHTML(a)}${athleteGamesHTML(id)}${athleteSeasonHTML(id)}${athleteTrendHTML(id)}
     </div>
@@ -4984,7 +5078,7 @@ function openReady(id){
 function openQuickMatch(){
   const td=todayISO(), tr=db.trainings.find(t=>t.data===td && !t.annullato), P=tr?tr.presenze||{}:{};
   const L=db.athletes.filter(a=>a.iscritto).sort(byNumber);
-  const pre=a=>tr&&Object.keys(P).length ? P[a.id]==='P' : visitaOk(a,{data:td});
+  const pre=a=>tr&&Object.keys(P).length ? isPres(P[a.id]) : visitaOk(a,{data:td});
   const camps=campList().map(c=>c.name).filter(n=>n!==CAMP_NONE);
   openModal(`<div class="modal-box" style="max-width:620px">
     <div class="modal-head"><div style="flex:1"><h2>⚡ Partita veloce</h2><div class="muted" style="font-size:13px;margin-top:4px">Per un'amichevole o un torneo non in calendario: la crei e parti subito con le statistiche.</div></div><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
@@ -5225,6 +5319,7 @@ const GUIDE=[
 ['👥','Atleti',`
 <ol><li><b>+ Nuovo atleta</b>: nome, ruolo (e secondo ruolo), sesso, data di nascita, cellulare, numero di maglia.</li>
 <li>Inserisci la <b>scadenza della visita medica</b>: se manca o è scaduta l'atleta viene segnalato con la croce rossa e <b>non viene convocato</b>.</li>
+<li>Nella stessa sezione puoi scrivere il <b>numero e la scadenza della tessera PGS</b>: quando sta per scadere compare un avviso in Atleti e in home, e nelle convocazioni se è già scaduta. Più su ci sono anche email, altezza e mano.</li>
 <li>Toccando un atleta apri il suo <b>profilo</b>: presenze, partite giocate, scadenze, andamento e le <b>statistiche della stagione</b> (battuta, ricezione, attacco, muro e punti nei turni di battuta).</li></ol>
 <p>Puoi filtrare per ruolo, ordinare l'elenco e stampare l'elenco della squadra. Chi non fa più parte della squadra si toglie da «iscritto» senza cancellarlo.</p>`],
 ['🏐','Esercizi',`
@@ -5241,7 +5336,9 @@ const GUIDE=[
 <li><b>Stampa</b> il programma, oppure in palestra premi <b>▶ Avvia allenamento</b>: l'app mostra un esercizio alla volta con il timer e un segnale sonoro, e tiene lo schermo acceso.</li></ol>`],
 ['✅','Presenze',`
 <ol><li>Con <b>Genera calendario</b> crei tutti gli allenamenti della stagione nei giorni fissi; con <b>+ Aggiungi allenamento</b> quelli singoli.</li>
-<li>Per ogni allenamento segni ✓ presente, ✗ assente o G giustificato. «Segna presenti tutti gli altri» velocizza.</li></ol>
+<li>Per ogni allenamento segni ✓ presente, ✗ assente, G giustificato o <b>R</b> in ritardo (o uscito prima: conta come presente). «Segna presenti tutti gli altri» velocizza.</li>
+<li>Per assenti, giustificati e ritardi compare una riga per scrivere il <b>motivo</b>; nella vista del mese lo leggi passando sulla casella (ha un puntino).</li>
+<li>Nei <b>giorni fissi</b> puoi indicare orario di fine e palestra di ogni giorno; in «Note e dettagli» li cambi per la singola data e scegli il <b>tipo</b>: allenamento, amichevole, preparazione atletica, torneo o evento di squadra (gli eventi non contano nelle percentuali).</li></ol>
 <p>La percentuale di presenza di ogni atleta viene usata anche per suggerire le convocazioni.</p>`],
 ['📅','Partite e campionati',`
 <ol><li>Crea il <b>campionato</b> (pulsante ＋ accanto ai campionati) e poi <b>+ Nuova partita</b>: data, orari, avversario, palestra, casa o trasferta.</li>
@@ -5525,7 +5622,7 @@ function demoShift(d, base){
   (d.matches||[]).forEach(m=>{ m.data=sh(m.data); });
   (d.trainings||[]).forEach(t=>{ t.data=sh(t.data); });
   (d.sessions||[]).forEach(s=>{ s.data=sh(s.data); });
-  (d.athletes||[]).forEach(a=>{ a.scadenzaVisita=sh(a.scadenzaVisita); a.scadenzaDocumento=sh(a.scadenzaDocumento); a.dataNascita=sh(a.dataNascita); });
+  (d.athletes||[]).forEach(a=>{ a.scadenzaVisita=sh(a.scadenzaVisita); a.scadenzaDocumento=sh(a.scadenzaDocumento); a.scadenzaTessera=sh(a.scadenzaTessera); a.dataNascita=sh(a.dataNascita); });
   return d;
 }
 const isDemo=x=>String(x&&x.id||'').startsWith('demo-');
@@ -5543,7 +5640,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v62-2026-10-09';
+const APP_VERSION='v63-2026-10-09';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6001,6 +6098,7 @@ function checksData(){
   const td=todayISO(), at=db.athletes.filter(a=>a.iscritto), S=[];
   const add=(t,items)=>{ if(items.length) S.push({t,items}); };
   add('Atleti senza visita medica valida', at.filter(a=>!a.scadenzaVisita || a.scadenzaVisita<td).map(a=>({l:fullName(a), s:a.scadenzaVisita?'scaduta il '+shortDate(a.scadenzaVisita):'manca', act:'edit-at', id:a.id})));
+  add('Atleti con la tessera PGS scaduta', at.filter(a=>a.scadenzaTessera && a.scadenzaTessera<td).map(a=>({l:fullName(a), s:'scaduta il '+shortDate(a.scadenzaTessera), act:'edit-at', id:a.id})));
   add('Atleti senza numero di maglia', at.filter(a=>!a.numeroMaglia).map(a=>({l:fullName(a), act:'edit-at', id:a.id})));
   add('Atleti senza data di nascita', at.filter(a=>!a.dataNascita).map(a=>({l:fullName(a), act:'edit-at', id:a.id})));
   add('Atleti senza ruolo o senza sesso', at.filter(a=>!a.ruolo || !a.sesso).map(a=>({l:fullName(a), s:[!a.ruolo?'ruolo':'',!a.sesso?'sesso':''].filter(Boolean).join(' e ')+' da inserire', act:'edit-at', id:a.id})));
@@ -6074,7 +6172,8 @@ function icsBuild(o){
     const desc=[m.competizione, m.giornata?(/^\d+$/.test(m.giornata)?m.giornata+'ª giornata':m.giornata):'', m.oraRitrovo?'Ritrovo ore '+m.oraRitrovo:'', m.divisa?'Divisa: '+m.divisa:'', m.inCasa?'In casa':'In trasferta', m.risultato?'Risultato: '+m.risultato:'', m.note].filter(Boolean).join('\n');
     ev('p-'+m.id, m.data, m.oraRitrovo&&o.ritrovo?m.oraRitrovo:m.ora, m.oraRitrovo&&o.ritrovo&&m.ora?120+Math.max(0,(parseInt(m.ora)*60+parseInt(m.ora.slice(3)))-(parseInt(m.oraRitrovo)*60+parseInt(m.oraRitrovo.slice(3)))):120, '🏐 '+matchTitle(m), loc, desc); });
   if(o.allenamenti) db.trainings.filter(t=>t.data>=from && !t.annullato).forEach(t=>{ const s=db.sessions.find(x=>x.data===t.data); const dur=s&&s.items?Math.max(60,s.items.reduce((a,i)=>a+(+i.durata||0),0)):90;
-    ev('a-'+t.id, t.data, t.ora, dur, '✅ Allenamento '+team, (s&&s.luogo)||'', s&&s.titolo?'Programma: '+s.titolo:''); });
+    const fi=trFine(t), d2=(t.ora&&fi)?(parseInt(fi)*60+parseInt(fi.slice(3)))-(parseInt(t.ora)*60+parseInt(t.ora.slice(3))):0;
+    ev('a-'+t.id, t.data, t.ora, d2>0?d2:dur, (t.tipo==='evento'?'🎉 ':t.tipo==='torneo'?'🏆 ':'✅ ')+trTipo(t)[1]+' '+team, trLuogo(t)||(s&&s.luogo)||'', [s&&s.titolo?'Programma: '+s.titolo:'', t.note].filter(Boolean).join('\n')); });
   return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Volleysched//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:'+icsEsc(team), ...E, 'END:VCALENDAR'].join('\r\n')+'\r\n';
 }
 function openIcs(){
@@ -6528,10 +6627,10 @@ function viewPresenze(){
     <div class="actions"><div class="vseg" role="group" aria-label="Vista"><button data-action="p-mode" data-v="giorno" class="${presMode()==='giorno'?'on':''}"><span class="si">${ICO.presenze}</span><span class="sl">Allenamento</span></button><button data-action="p-mode" data-v="mese" class="${presMode()==='mese'?'on':''}"><span class="si">${ICO.grid}</span><span class="sl">Mese</span></button></div><button class="btn" data-action="print-reg">Stampa<span class="sl"> registro del mese</span></button><button class="btn primary" data-action="new-tr">+ Aggiungi allenamento</button></div>
   </div>
   <details class="panel" ${db.trainings.length?'':'open'}>
-    <summary><h2 style="display:inline">Giorni fissi di allenamento</h2> <span class="muted" style="font-size:13.5px">· ${WEEKDAYS.filter(w=>c.giorni[w[0]]!==undefined).map(w=>w[1]+(c.giorni[w[0]]?' '+c.giorni[w[0]]:'')).join(', ')||'nessuno'}</span></summary>
-    <p class="muted" style="margin:10px 0;font-size:13.5px">Scegli i giorni della settimana (e l'orario) e il periodo: «Genera calendario» aggiunge le date che mancano, senza toccare quelle già presenti. Gli allenamenti extra si aggiungono con «+ Aggiungi allenamento».</p>
+    <summary><h2 style="display:inline">Giorni fissi di allenamento</h2> <span class="muted" style="font-size:13.5px">· ${WEEKDAYS.filter(w=>c.giorni[w[0]]!==undefined).map(w=>w[1]+(c.giorni[w[0]]?' '+c.giorni[w[0]]+((c.fine||{})[w[0]]?'–'+c.fine[w[0]]:''):'')).join(', ')||'nessuno'}</span></summary>
+    <p class="muted" style="margin:10px 0;font-size:13.5px">Scegli i giorni della settimana, con orario e palestra, e il periodo: «Genera calendario» aggiunge le date che mancano, senza toccare quelle già presenti. Gli allenamenti extra si aggiungono con «+ Aggiungi allenamento».</p>
     <div class="daypick">${WEEKDAYS.map(([n,l])=>{ const on=c.giorni[n]!==undefined;
-      return `<div class="dayopt ${on?'on':''}"><label><input type="checkbox" data-calday="${n}" ${on?'checked':''}> ${l}</label><input type="time" data-caltime="${n}" value="${esc(c.giorni[n]||'')}" ${on?'':'disabled'} title="Orario"></div>`; }).join('')}</div>
+      return `<div class="dayopt ${on?'on':''}"><label><input type="checkbox" data-calday="${n}" ${on?'checked':''}> ${l}</label><div class="dayt"><input type="time" data-caltime="${n}" value="${esc(c.giorni[n]||'')}" ${on?'':'disabled'} title="Inizio" aria-label="Inizio"><span>–</span><input type="time" data-calend="${n}" value="${esc((c.fine||{})[n]||'')}" ${on?'':'disabled'} title="Fine" aria-label="Fine"></div><input type="text" data-calplace="${n}" value="${esc((c.luoghi||{})[n]||'')}" ${on?'':'disabled'} placeholder="Palestra" aria-label="Palestra"></div>`; }).join('')}</div>
     <div class="grid g3" style="margin-top:12px;align-items:end">
       <label class="f">Dal<input type="date" data-cal="dal" value="${esc(c.dal)}"></label>
       <label class="f">Al<input type="date" data-cal="al" value="${esc(c.al)}"></label>
@@ -6548,7 +6647,7 @@ function viewPresenze(){
       <label class="sw" style="font-size:13.5px;min-height:0"><input type="checkbox" id="p-all" ${ui.pAll?'checked':''}> Mostra anche i non iscritti</label>
     </div>
     <div id="reg">${regTable()}</div>
-    <div class="legend-p"><span><b style="color:#1d6b3c">✓</b> presente</span><span><b style="color:#b3263a">✗</b> assente</span><span><b style="color:#8a5a00">G</b> assente giustificato</span><span><b style="color:#b9bec9">·</b> non segnato</span><span>Clic su una casella per cambiarla · clic sulla data per note, orario, annullamento e «tutti presenti» · 🏐 = giorno di partita</span></div>
+    <div class="legend-p"><span><b style="color:#1d6b3c">✓</b> presente</span><span><b style="color:#b3263a">✗</b> assente</span><span><b style="color:#8a5a00">G</b> assente giustificato</span><span><b style="color:#2f6fb8">R</b> ritardo o uscita anticipata (conta come presente)</span><span><b style="color:#b9bec9">·</b> non segnato</span><span>Clic su una casella per cambiarla · clic sulla data per note, orario, annullamento e «tutti presenti» · 🏐 = giorno di partita</span></div>
   </div>
   </section>`;
 }
@@ -6566,22 +6665,25 @@ function generateTrainings(){
     if(!days.includes(d.getDay())) continue;
     const iso=toISO(d); if(have.has(iso)) continue;
     if(c.saltaPartite && mdays.has(iso)){ skipped++; continue; }
-    items.push({id:newId('al'), data:iso, ora:c.giorni[d.getDay()]||'', note:'', annullato:false, presenze:{}, createdAt:now, updatedAt:now});
+    items.push({id:newId('al'), data:iso, ora:c.giorni[d.getDay()]||'', oraFine:'', luogo:'', tipo:'', motivi:{}, note:'', annullato:false, presenze:{}, createdAt:now, updatedAt:now});
   }
   if(!items.length){ toast(skipped?`Nessuna data nuova (saltate ${skipped} date con partita)`:'Il calendario è già completo'); return; }
   api('POST','/api/allenamenti-multipli',{items}).then(()=>{ db.trainings.push(...items); render(); toast(`Aggiunti ${items.length} allenamenti`+(skipped?` · saltate ${skipped} date con partita`:'')); }).catch(saveFail);
 }
 function openTrModal(id){
-  const t = id ? clone(getTr(id)) : {id:null, data:todayISO(), ora:(getCal().giorni[new Date().getDay()]||''), note:'', annullato:false, presenze:{}};
+  const t = id ? clone(getTr(id)) : {id:null, data:todayISO(), ora:(getCal().giorni[new Date().getDay()]||''), oraFine:'', luogo:'', tipo:'', motivi:{}, note:'', annullato:false, presenze:{}};
   ui.trDraft=t;
-  const d=parseISO(t.data), p=Object.values(t.presenze||{}).filter(s=>s==='P').length;
+  const d=parseISO(t.data), p=Object.values(t.presenze||{}).filter(isPres).length, lf=trLuogoFix(t), ff=trFineFix(t);
   const m=db.matches.find(x=>x.data===t.data);
   openModal(`<div class="modal-box" style="max-width:620px"><form id="tr-form" autocomplete="off" onsubmit="return false">
     <div class="modal-head"><div style="flex:1"><h2>${id?esc(cap(d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'}))):'Nuovo allenamento'}</h2>
       ${m?`<div class="muted" style="font-size:13.5px;margin-top:4px">🏐 In questa data c'è la partita ${esc(matchTitle(m))}</div>`:''}</div><button type="button" class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body"><div class="grid g2">
       <label class="f">Data<input type="date" name="data" value="${esc(t.data)}"></label>
-      <label class="f">Orario<input type="time" name="ora" value="${esc(t.ora)}"></label>
+      <label class="f">Tipo<select name="tipo">${TR_TIPI.map(([v,l])=>`<option value="${v}" ${(t.tipo||'')===v?'selected':''}>${l}</option>`).join('')}</select></label>
+      <label class="f">Inizio<input type="time" name="ora" value="${esc(t.ora)}"></label>
+      <label class="f">Fine<input type="time" name="oraFine" value="${esc(t.oraFine||'')}" placeholder="${esc(ff)}">${ff&&!t.oraFine?`<small class="muted" style="font-weight:400">Dai giorni fissi: ${esc(ff)}</small>`:''}</label>
+      <label class="f span2">Palestra<input type="text" name="luogo" value="${esc(t.luogo||'')}" placeholder="${esc(lf||'Es. Palestra comunale, via dello Sport 1')}">${lf&&!t.luogo?`<small class="muted" style="font-weight:400">Se lasci vuoto vale quella dei giorni fissi: ${esc(lf)}</small>`:''}</label>
       <label class="sw span2"><input type="checkbox" name="annullato" ${t.annullato?'checked':''}> Allenamento annullato (non conta nelle presenze)</label>
       <label class="f span2">Note<textarea name="note" rows="2" placeholder="Es. palestra chiusa, recupero, amichevole…">${esc(t.note)}</textarea></label>
     </div>
@@ -6593,7 +6695,9 @@ function openTrModal(id){
 }
 async function saveTr(){
   const fd=new FormData($('#tr-form')), t=ui.trDraft;
-  t.data=(fd.get('data')||'').toString(); t.ora=(fd.get('ora')||'').toString(); t.note=(fd.get('note')||'').toString().trim(); t.annullato=!!fd.get('annullato');
+  t.data=(fd.get('data')||'').toString(); t.ora=(fd.get('ora')||'').toString(); t.oraFine=(fd.get('oraFine')||'').toString(); t.luogo=(fd.get('luogo')||'').toString().trim(); t.tipo=(fd.get('tipo')||'').toString();
+  if(t.oraFine && t.ora && t.oraFine<=t.ora){ alert("L'orario di fine deve essere dopo l'inizio."); return; }
+  t.note=(fd.get('note')||'').toString().trim(); t.annullato=!!fd.get('annullato');
   if(!parseISO(t.data)){ alert('Inserisci la data dell\'allenamento.'); return; }
   const isNew=!t.id; if(isNew){ t.id=newId('al'); t.createdAt=Date.now(); } t.updatedAt=Date.now();
   try{ await persist.tr(t); }catch(e){ if(isNew) t.id=null; alert('Salvataggio non riuscito.\n\n'+(e.message||'')); return; }
@@ -6603,7 +6707,7 @@ async function saveTr(){
 function printRegister(){
   const T=trainingsSorted().filter(t=>t.data.slice(0,7)===ui.pm), A=regAthletes();
   if(!T.length || !A.length){ alert('Niente da stampare per questo mese.'); return; }
-  doPrint(`<div class="p-head">${headTeam()}<h1>Registro presenze</h1><div class="p-meta"><span style="text-transform:capitalize"><b>${esc(monthLabel(ui.pm))}</b></span><span>✓ presente · ✗ assente · G giustificato</span></div></div>
+  doPrint(`<div class="p-head">${headTeam()}<h1>Registro presenze</h1><div class="p-meta"><span style="text-transform:capitalize"><b>${esc(monthLabel(ui.pm))}</b></span><span>✓ presente · ✗ assente · G giustificato · R ritardo</span></div></div>
     <table class="p-sched"><thead><tr><th>Atleta</th>${T.map(t=>{ const d=parseISO(t.data); return `<th style="text-align:center">${d.toLocaleDateString('it-IT',{weekday:'short'})}<br>${d.getDate()}/${d.getMonth()+1}</th>`; }).join('')}<th style="text-align:right">Ass. ult. 5</th></tr></thead>
     <tbody>${A.map(a=>{ const st=absStats(a.id,'9999-12-31'); return `<tr><td><b>${esc(fullName(a))}</b></td>${T.map(t=>`<td style="text-align:center">${t.annullato?'—':(PSTATE[(t.presenze||{})[a.id]||'']==='·'?'':PSTATE[(t.presenze||{})[a.id]])}</td>`).join('')}<td class="n">${st.n?st.ass+'/'+st.n:''}</td></tr>`; }).join('')}</tbody></table>`, 'Registro presenze '+ui.pm);
 }
@@ -6853,7 +6957,7 @@ const actions={
   'note-lb': b=>{ ui.nl=b.dataset.v; render(); },
   'p-mode': b=>setPresMode(b.dataset.v),
   'pd-go': b=>{ if(b.dataset.id){ ui.pDay=b.dataset.id; refreshPDay(); } },
-  'pd-set': b=>{ const t=getTr(b.dataset.tid); if(!t) return; t.presenze=t.presenze||{}; const v=b.dataset.v, a=b.dataset.aid; if(t.presenze[a]===v) delete t.presenze[a]; else t.presenze[a]=v; touchTr(t); refreshPDay(); },
+  'pd-set': b=>{ const t=getTr(b.dataset.tid); if(!t) return; t.presenze=t.presenze||{}; const v=b.dataset.v, a=b.dataset.aid; if(t.presenze[a]===v) delete t.presenze[a]; else t.presenze[a]=v; if(!t.presenze[a] || t.presenze[a]==='P'){ if(t.motivi) delete t.motivi[a]; } touchTr(t); refreshPDay(); },
   'pd-allp': b=>{ const t=getTr(b.dataset.id); if(!t) return; t.presenze=t.presenze||{}; let n=0; regAthletes().filter(a=>a.iscritto).forEach(a=>{ if(!t.presenze[a.id]){ t.presenze[a.id]='P'; n++; } }); touchTr(t); refreshPDay(); toast(`${n} segnat${n===1?'o':'i'} presenti`); },
   'mtab': b=>{ ui.mTab=b.dataset.t; const sec=$('#app section.mtabbed'); if(sec) sec.className='mtabbed mt-'+ui.mTab; $$('.mtabs button').forEach(x=>x.classList.toggle('on', x.dataset.t===ui.mTab));
     if(window.matchMedia('(max-width:1100px)').matches) window.scrollTo(0,0); else $(`[data-mt=${ui.mTab}]:not(.hidden)`)?.scrollIntoView({behavior:'smooth',block:'start'}); },
@@ -7067,8 +7171,11 @@ document.addEventListener('change', e=>{
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if(t.id==='p-all'){ ui.pAll=t.checked; $('#reg').innerHTML=regTable(); return; }
   if(t.dataset.calday!==undefined){ const c=getCal(); if(t.checked) c.giorni[t.dataset.calday]=c.giorni[t.dataset.calday]||''; else delete c.giorni[t.dataset.calday]; saveCal(c);
-    const box=t.closest('.dayopt'); box.classList.toggle('on',t.checked); box.querySelector('input[type=time]').disabled=!t.checked; return; }
+    const box=t.closest('.dayopt'); box.classList.toggle('on',t.checked); box.querySelectorAll('input:not([type=checkbox])').forEach(x=>x.disabled=!t.checked); return; }
   if(t.dataset.caltime!==undefined){ const c=getCal(); if(c.giorni[t.dataset.caltime]!==undefined){ c.giorni[t.dataset.caltime]=t.value; saveCal(c); } return; }
+  if(t.dataset.calend!==undefined){ const c=getCal(); c.fine=c.fine||{}; if(t.value) c.fine[t.dataset.calend]=t.value; else delete c.fine[t.dataset.calend]; saveCal(c); return; }
+  if(t.dataset.calplace!==undefined){ const c=getCal(); c.luoghi=c.luoghi||{}; const v=t.value.trim(); if(v) c.luoghi[t.dataset.calplace]=v; else delete c.luoghi[t.dataset.calplace]; saveCal(c); return; }
+  if(t.dataset.why!==undefined){ const tr=getTr(t.dataset.tid); if(!tr) return; tr.motivi=tr.motivi||{}; const v=t.value.trim().slice(0,80); if(v) tr.motivi[t.dataset.why]=v; else delete tr.motivi[t.dataset.why]; touchTr(tr); return; }
   if(t.dataset.cal){ const c=getCal(); c[t.dataset.cal]= t.type==='checkbox' ? t.checked : t.value; saveCal(c); return; }
   if(t.dataset.iscr){ const a=getAt(t.dataset.iscr); if(!a) return; a.iscritto=t.checked; a.updatedAt=Date.now();
     persist.ath(a).then(()=>{ render(); toast(a.iscritto?'Segnato come iscritto':'Segnato come non iscritto'); })

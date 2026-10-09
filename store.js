@@ -108,13 +108,13 @@ const Store = (() => {
       obiettivo: s(x.obiettivo), note: s(x.note), items,
       createdAt: (old && old.createdAt) || x.createdAt || Date.now(), updatedAt: x.updatedAt || Date.now() };
   }
-  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'ruolo2', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar'];
+  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'ruolo2', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar', 'email', 'tessera', 'scadenzaTessera', 'altezza', 'mano'];
   function normAt(a, old) {
     if (!(s(a.nome).trim() || s(a.cognome).trim())) throw new Error('Inserisci almeno il nome o il cognome');
     const r = { id: s(a.id) };
     for (const k of AT_FIELDS) {
       const v = s(a[k]).trim();
-      if (['dataNascita', 'scadenzaVisita', 'scadenzaDocumento'].includes(k) && v && !DATE_RE.test(v)) throw new Error('Data non valida: ' + v);
+      if (['dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'scadenzaTessera'].includes(k) && v && !DATE_RE.test(v)) throw new Error('Data non valida: ' + v);
       r[k] = v;
     }
     if (r.avatar.length > 500000) throw new Error("Immagine dell'atleta troppo grande");
@@ -150,8 +150,13 @@ const Store = (() => {
     const ora = s(t.ora).trim();
     if (ora && !TIME_RE.test(ora)) throw new Error('Orario non valido: ' + ora);
     const pres = {};
-    if (t.presenze && typeof t.presenze === 'object') for (const [k, v] of Object.entries(t.presenze)) if (['P', 'A', 'G'].includes(v)) pres[s(k)] = v;
-    return { id: s(t.id), squadra: s(t.squadra), data: d, ora, note: s(t.note), annullato: [true, 1, '1', 'true'].includes(t.annullato), presenze: pres,
+    if (t.presenze && typeof t.presenze === 'object') for (const [k, v] of Object.entries(t.presenze)) if (['P', 'A', 'G', 'R'].includes(v)) pres[s(k)] = v;
+    const oraFine = s(t.oraFine).trim();
+    if (oraFine && !TIME_RE.test(oraFine)) throw new Error('Orario di fine non valido: ' + oraFine);
+    const mot = {};
+    if (t.motivi && typeof t.motivi === 'object') for (const [k, v] of Object.entries(t.motivi)) { const x = s(v).trim().slice(0, 80); if (x && pres[s(k)] && pres[s(k)] !== 'P') mot[s(k)] = x; }
+    const tipo = ['amichevole', 'atletica', 'torneo', 'evento'].includes(s(t.tipo)) ? s(t.tipo) : '';
+    return { id: s(t.id), squadra: s(t.squadra), data: d, ora, oraFine, luogo: s(t.luogo).trim(), tipo, motivi: mot, note: s(t.note), annullato: [true, 1, '1', 'true'].includes(t.annullato), presenze: pres,
       createdAt: (old && old.createdAt) || t.createdAt || Date.now(), updatedAt: t.updatedAt || Date.now() };
   }
   function normNote(n, old) {

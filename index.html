@@ -3807,7 +3807,7 @@ function printAthletes(){
 /* ============================================================
    Partite e convocazioni
    ============================================================ */
-const DEFAULT_CONV_NOTE = "Portare la carta d'identità. Chi non può esserci avvisi il prima possibile.";
+const DEFAULT_CONV_NOTE = "Chi non può esserci avvisi il prima possibile.";
 const getMatch = id => db.matches.find(m=>m.id===id);
 const cap = s => s ? s.charAt(0).toUpperCase()+s.slice(1) : s;
 function matchDT(m){ return (m.data||'9999-99-99')+' '+(m.ora||'99:99'); }

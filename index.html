@@ -5541,7 +5541,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v60-2026-10-08';
+const APP_VERSION='v61-2026-10-09';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -5922,9 +5922,32 @@ async function agOpen(b){
 }
 /* ===== Controllo automatico della versione ===== */
 async function autoVerCheck(){
+  usageLog();
   if(!navigator.onLine) return;
   try{ const r=await fetch('sw.js?fresh='+Date.now(), {cache:'no-store'}); const t=await r.text(); const m=t.match(/const VERSION = '([^']+)'/);
     if(m && verNum(m[1])>verNum(APP_VERSION)){ document.body.classList.add('has-upd'); window.APP_ONLINE_VER=m[1]; try{ if(swReg) await swReg.update(); }catch(e){} } }catch(e){}
+}
+/* ===== Registro degli utilizzi =====
+   All'avvio manda una riga al Foglio Google del registro (vedi la cartella registro-utilizzi).
+   LOG_URL vuoto = registro spento. */
+const LOG_URL='https://script.google.com/macros/s/AKfycbxaPX1HZYOFwK7HVTb0Ssz5VXDMHBgDsOhPjZFKNLs5uHuHRiW-qwr_AldC6nTITFc/exec';
+function logDevId(){ let id=''; try{ id=localStorage.getItem('vs-devid')||''; if(!id){ id=Math.random().toString(36).slice(2,10); localStorage.setItem('vs-devid', id); } }catch(e){} return id; }
+function logDevice(){ const u=navigator.userAgent||'';
+  const os=/iPhone/.test(u)?'iPhone':(/iPad/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1))?'iPad':/Android/.test(u)?'Android':/Windows/.test(u)?'Windows':/Mac/.test(u)?'Mac':/Linux/.test(u)?'Linux':'Altro';
+  const br=/Edg\//.test(u)?'Edge':/SamsungBrowser/.test(u)?'Samsung':/CriOS|Chrome\//.test(u)?'Chrome':/FxiOS|Firefox\//.test(u)?'Firefox':/Safari\//.test(u)?'Safari':'';
+  let inst=false; try{ inst=matchMedia('(display-mode: standalone)').matches||!!navigator.standalone; }catch(e){}
+  return os+(br?' · '+br:'')+(inst?' · installata':''); }
+function usageLog(){
+  if(!LOG_URL || !navigator.onLine) return;
+  try{
+    const st=db.settings||{}, sc=scoutOn(), i=sc?{st:'scout'}:licInfo(), K=LIC.key, nome=(st.allenatore||'').trim();
+    const stato={chiave:'Chiave attiva', prova:'Prova ('+i.left+' gg rimasti)', finita:'Prova finita', scaduta:'Chiave scaduta', scout:'Scoutman'}[i.st]||i.st;
+    const demo=demoCount()>0 || st.squadra==='Volley Demo';
+    const p={tipo: nome?'Allenatore':(sc?'Scoutman':(demo?'Demo':'Senza nome')), allenatore:nome,
+      squadra:(sc?(Store.getMeta('scoutMode')||{}).team:st.squadra)||'', chiave:(K&&K.ok&&K.n)||'', stato, demo:demo?'sì':'no',
+      versione:APP_VERSION, dispositivo:logDevice(), schermo:innerWidth+'×'+innerHeight, sync:Sync.config()?'sì':'no', id:logDevId()};
+    fetch(LOG_URL, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(p)}).catch(()=>{});
+  }catch(e){}
 }
 /* ===== Piano della stagione ===== */
 const PL_TIPI={prep:['Preparazione','#e07b22'], camp:['Campionato','#2f6fb8'], scar:['Scarico','#22a05a'], torn:['Torneo / fasi finali','#7b5cc4'], tec:['Ciclo tecnico','#d64a5a'], paus:['Pausa','#8a94a6']};

@@ -162,7 +162,10 @@ const Store = (() => {
   function normNote(n, old) {
     const testo = s(n.testo), titolo = s(n.titolo).trim();
     if (!titolo && !testo.trim()) throw new Error('La nota è vuota');
-    return { id: s(n.id), squadra: s(n.squadra), titolo, testo, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
+    const links = Array.isArray(n.links) ? n.links.filter(x => x && typeof x === 'object').map(x => {
+      let u = s(x.u).trim(); if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
+      return { t: s(x.t).trim().slice(0, 80), u: u.slice(0, 1000) }; }).filter(x => /^https?:\/\/[^\s]+\.[^\s]+/i.test(x.u)).slice(0, 20) : [];
+    return { id: s(n.id), squadra: s(n.squadra), titolo, testo, links, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
       createdAt: (old && old.createdAt) || n.createdAt || Date.now(), updatedAt: n.updatedAt || Date.now() };
   }
   const NORM = { exercises: normEx, sessions: normSess, athletes: normAt, matches: normMatch, trainings: normTr, notes: normNote };

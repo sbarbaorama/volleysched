@@ -2138,6 +2138,45 @@ th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
 .atkb-pr .bar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}.atkb-pr .bar i{display:block;height:100%}
 .atkb-in{font-size:12.5px;color:var(--ink-2)}
 .atkb-ct{font-size:12.5px;align-self:flex-start}.atkb-ct a{color:var(--ink-2);text-decoration:none}.atkb-ct a:hover{text-decoration:underline}
+/* ===== v66: lavagna tattica ===== */
+.lav .page-head select{width:auto;max-width:220px}
+.lav-sw{min-height:0;font-size:14px;font-weight:600}
+.lav-sw.off{opacity:.5}
+.lav-note{font-size:12.5px;color:var(--muted)}
+.lav-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bar);color:#fff;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
+.lav-banner .sc{font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}
+.lav-banner .dot{width:9px;height:9px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.3)}
+.lav-board{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr) 210px;align-items:start}
+.lav-main{display:grid;gap:8px;min-width:0}
+.lav-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.lav-rot{display:flex;align-items:center;gap:4px}
+.lav-rot .btn{min-height:42px;min-width:42px;font-size:18px;padding:4px 10px}
+.lav-rot .nm{min-width:110px;text-align:center;font-weight:800}
+.lav-rot .nm small{display:block;font-weight:600;font-size:11.5px;color:var(--muted)}
+.lav-ph button{min-height:40px}
+.lav-wrap{display:flex;justify-content:center;min-width:0}
+svg.lav-court{width:100%;max-width:560px;height:auto;max-height:calc(100vh - 230px);display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.lav-msg{font-size:13px;color:var(--muted);min-height:20px}
+.lav-msg.bad{color:#b4233a;font-weight:700}
+:root[data-theme=dark] .lav-msg.bad{color:#f6aab4}
+.lav-tools{display:flex;flex-direction:column;gap:6px}
+.lav-tools .btn{min-height:42px;justify-content:center}
+.lav-tools .btn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.lav-tools .sep{height:1px;background:var(--line);margin:3px 0}
+.lav-legend{margin-top:10px}
+@media (max-width:820px){
+  .lav-board{grid-template-columns:1fr;padding:8px;border-radius:12px}
+  .lav-tools{flex-direction:row;flex-wrap:wrap}
+  .lav-tools .btn{flex:1 1 auto;padding:6px 9px;font-size:13px;min-height:40px}
+  .lav-tools .sep{display:none}
+  svg.lav-court{max-height:none}
+  .lav .page-head .actions{width:100%;justify-content:space-between}
+  .lav-ph{display:flex;width:100%}.lav-ph button{flex:1 1 0;padding:6px 4px;font-size:12.5px;white-space:normal;line-height:1.15}
+}
+/* v66: esercizi dentro sessioni */
+.btn.ex-big{font-size:15px;padding:9px 18px;border:2px solid #d64a5a;color:#b3263a;background:var(--surface);font-weight:800}
+.btn.ex-big:hover{background:#fdecee}
+:root[data-theme=dark] .btn.ex-big{color:#f4a0ab}
 </style>
 <script>try{var _t=localStorage.getItem('vs-theme')||'auto';document.documentElement.dataset.theme=(_t==='dark'||(_t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';}catch(e){}</script>
 </head>
@@ -2152,7 +2191,7 @@ th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
     <button data-nav="sessioni"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4.5"/></svg></span><span class="nl">Sessioni</span></button>
     <button data-nav="presenze"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12.3l2.7 2.7 5.5-5.7"/></svg></span><span class="nl">Presenze</span></button>
     <button data-nav="partite"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8 13.5h3M13 13.5h3M8 17h3"/></svg></span><span class="nl">Partite</span></button>
-    <button data-nav="esercizi"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 12c-.6-3.6.6-6.6 3.4-8M12 12c3 2 4.4 4.9 4.2 7.9M12 12c-3.4 1.4-6.6 1.2-8.9-.6"/><path d="M8.3 4.3c-.4 2.3.2 4.5 1.6 6.3M19.9 9c-2-.9-4.3-.9-6.4 0M10.6 20.3c1.3-1.8 1.8-4 1.4-6.2"/></svg></span><span class="nl">Esercizi</span></button>
+    <button data-nav="lavagna"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="13" rx="1.8"/><path d="M12 4v13"/><path d="M8 21l2-4M16 21l-2-4"/><circle cx="7.3" cy="9" r="1.2"/><path d="M14.5 12.5c1.2-2.2 2.6-3 4-3" /><path d="M17.5 8.6l1.2.9-.8 1.2"/></svg></span><span class="nl">Lavagna</span></button>
     <button data-nav="note"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10.5L19 7v13.5H5z"/><path d="M15.5 3.5V7H19"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg></span><span class="nl">Note</span></button>
     <button data-nav="impostazioni"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span><span class="nl">Archivio</span></button>
   </nav>
@@ -2747,7 +2786,7 @@ window.addEventListener('beforeunload', e => { if(ui.dirty){ e.preventDefault();
 function render(){
   if(scoutOn()){ renderScout(); renderNavBadge(); return; } document.body.classList.remove('scout');
   if(licLocked()){ document.body.classList.add('locked'); $('#app').innerHTML=viewLock(); return; } document.body.classList.remove('locked');
-  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || (ui.view==='esercizio' && b.dataset.nav==='esercizi') || (ui.view==='sessione' && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto'||ui.view==='pgs') && b.dataset.nav==='partite')));
+  $$('#nav button').forEach(b=>b.classList.toggle('on', b.dataset.nav===ui.view || ((ui.view==='esercizio'||ui.view==='esercizi'||ui.view==='sessione'||ui.view==='piano') && b.dataset.nav==='sessioni') || ((ui.view==='partita'||ui.view==='live'||ui.view==='referto'||ui.view==='pgs') && b.dataset.nav==='partite')));
   refreshDatalists(); updateFab(); applyBrand(); document.body.classList.toggle('train-mode', ui.view==='allena'); document.body.classList.toggle('ref-mode', ui.view==='referto'); if(ui.view!=='allena') keepAwake(false);
   const app=$('#app');
   if(ui.view==='esercizi') app.innerHTML = viewEsercizi();
@@ -2769,6 +2808,7 @@ function render(){
   else if(ui.view==='pgs') app.innerHTML = viewPgs();
   else if(ui.view==='agenda') app.innerHTML = viewAgenda();
   else if(ui.view==='piano') app.innerHTML = viewPiano();
+  else if(ui.view==='lavagna'){ app.innerHTML = viewLavagna(); lavMount(); }
   else if(ui.view==='controlli') app.innerHTML = viewControlli();
   document.body.classList.toggle('wide', ['atleti','presenze'].includes(ui.view));
   document.body.classList.toggle('live-land', ui.view==='live' && isLand());
@@ -2842,7 +2882,7 @@ function viewEsercizi(){
   const nf=exFilterCount();
   return `<section>
     <div class="page-head">
-    <div><h1>Esercizi</h1><p class="muted">${db.exercises.length} schede nello schedario</p></div>
+    <div><a href="#" data-nav="sessioni" class="muted" style="font-size:13.5px;text-decoration:none">← Sessioni</a><h1 style="margin-top:4px">Esercizi</h1><p class="muted">${db.exercises.length} schede nello schedario</p></div>
     <div class="actions">
       ${segHTML('ex')}
       <button class="btn" data-action="print-catalog" title="Stampa le schede visualizzate">Stampa<span class="sl"> elenco</span></button>
@@ -3173,7 +3213,7 @@ function sessRowsHTML(list){
     </div>`; }).join('')}</div>`;
 }
 
-const ICO = {note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10.5L19 7v13.5H5z"/><path d="M15.5 3.5V7H19"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>',atleti:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.2c2.8.2 4.8 2.1 4.8 5"/></svg>',sessioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4.5"/></svg>',presenze:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12.3l2.7 2.7 5.5-5.7"/></svg>',partite:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8 13.5h3M13 13.5h3M8 17h3"/></svg>',esercizi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 12c-.6-3.6.6-6.6 3.4-8M12 12c3 2 4.4 4.9 4.2 7.9M12 12c-3.4 1.4-6.6 1.2-8.9-.6"/><path d="M8.3 4.3c-.4 2.3.2 4.5 1.6 6.3M19.9 9c-2-.9-4.3-.9-6.4 0M10.6 20.3c1.3-1.8 1.8-4 1.4-6.2"/></svg>',impostazioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.7" cy="6.5" r=".9"/><circle cx="4.7" cy="12" r=".9"/><circle cx="4.7" cy="17.5" r=".9"/></svg>',plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'};
+const ICO = {lavagna:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="13" rx="1.8"/><path d="M12 4v13"/><path d="M8 21l2-4M16 21l-2-4"/><circle cx="7.3" cy="9" r="1.2"/><path d="M14.5 12.5c1.2-2.2 2.6-3 4-3" /><path d="M17.5 8.6l1.2.9-.8 1.2"/></svg>',note:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3.5h10.5L19 7v13.5H5z"/><path d="M15.5 3.5V7H19"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4"/></svg>',atleti:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.2 14.2c2.8.2 4.8 2.1 4.8 5"/></svg>',sessioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4.5" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4.5"/></svg>',presenze:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M8 12.3l2.7 2.7 5.5-5.7"/></svg>',partite:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/><path d="M8 13.5h3M13 13.5h3M8 17h3"/></svg>',esercizi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 12c-.6-3.6.6-6.6 3.4-8M12 12c3 2 4.4 4.9 4.2 7.9M12 12c-3.4 1.4-6.6 1.2-8.9-.6"/><path d="M8.3 4.3c-.4 2.3.2 4.5 1.6 6.3M19.9 9c-2-.9-4.3-.9-6.4 0M10.6 20.3c1.3-1.8 1.8-4 1.4-6.2"/></svg>',impostazioni:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>',list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.7" cy="6.5" r=".9"/><circle cx="4.7" cy="12" r=".9"/><circle cx="4.7" cy="17.5" r=".9"/></svg>',plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>'};
 const FAB={note:['new-note','Nuova nota'],sessione:['pick-open','Aggiungi esercizio'],atleti:['new-at','Nuovo atleta'],sessioni:['new-sess','Nuova sessione'],esercizi:['new-ex','Nuovo esercizio'],partite:['new-match','Nuova partita'],presenze:['new-tr','Aggiungi allenamento']};
 function updateFab(){ const b=$('#fab'); if(!b) return; const f=FAB[ui.view]; b.classList.toggle('hidden',!f); if(f){ b.dataset.action=f[0]; b.title=f[1]; b.setAttribute('aria-label',f[1]); } }
 function avRole(a,size){ const sx=sexOf?sexOf(a):''; return `<span class="avw">${avatarHTML(a,size)}${sx==='M'?'<i class="sx m">U</i>':sx==='F'?'<i class="sx f">D</i>':''}</span>`; }
@@ -3233,7 +3273,7 @@ function viewHome(){
     ['partite','Partite','#e07b22', nextM?`Prossima ${rel(nextM.data)}`:`${db.matches.length} in calendario`],
     ['presenze','Presenze','#22a05a', nextT?`Allenamento ${rel(nextT.data)}`:'Registro degli allenamenti'],
     ['sessioni','Sessioni','#7b5cc4', lastS?`Ultima: ${esc(lastS.titolo||'senza titolo')}`:`${db.sessions.length} sessioni`],
-    ['esercizi','Esercizi','#d64a5a', `${db.exercises.length} schede`],
+    ['lavagna','Lavagna','#0f8b8d', 'Rotazioni e schemi'],
     ['note','Note','#c99a06', (db.notes||[]).length?`${(db.notes||[]).length} not${(db.notes||[]).length===1?'a':'e'}`:'Appunti e idee'],
     ['impostazioni','Archivio','#6b7280','Copie e impostazioni'],
   ];
@@ -3253,7 +3293,7 @@ function viewSessioni(){
   return `<section>
   <div class="page-head">
     <div><h1>Sessioni di allenamento</h1><p class="muted">${list.length} session${list.length===1?'e':'i'}</p></div>
-    <div class="actions">${segHTML('sess')}<button class="btn" data-action="pl-go">📆 ${pianoAt(todayISO())?esc(pianoAt(todayISO()).nome):"Piano"}</button><button class="btn" data-action="gen-open">✨ Genera</button><button class="btn primary" data-action="new-sess">+ Nuova sessione</button></div>
+    <div class="actions">${segHTML('sess')}<button class="btn ex-big" data-nav="esercizi" title="Lo schedario degli esercizi">📚 Esercizi <span style="font-weight:600;opacity:.75">${db.exercises.length}</span></button><button class="btn" data-action="pl-go">📆 ${pianoAt(todayISO())?esc(pianoAt(todayISO()).nome):"Piano"}</button><button class="btn" data-action="gen-open">✨ Genera</button><button class="btn primary" data-action="new-sess">+ Nuova sessione</button></div>
   </div>
   ${list.length&&sessView()==='compatta'?sessRowsHTML(list):list.length?`<div class="sess-list">${list.map(s=>{
     const tl=sessTimeline(s), cb=compBar(s), nEx=s.items.filter(i=>i.type==='ex').length;
@@ -5410,7 +5450,7 @@ const GUIDE=[
 <p>Con i pulsanti in alto passi dall'elenco alle <b>schede</b>: sul telefono le figurine con numero, nome e ruolo, sul computer e sul tablet anche presenze, età e avvisi. L'app ricorda la scelta.</p>
 <p>Puoi filtrare per ruolo, ordinare l'elenco e stampare l'elenco della squadra. Chi non fa più parte della squadra si toglie da «iscritto» senza cancellarlo.</p>`],
 ['🏐','Esercizi',`
-<p>L'indice a riquadri divide gli esercizi per fondamentale; dentro trovi le schede con lo schema del campo.</p>
+<p>Gli esercizi si aprono da <b>Sessioni → 📚 Esercizi</b>. L'indice a riquadri divide gli esercizi per fondamentale; dentro trovi le schede con lo schema del campo.</p>
 <ul><li><b>Cerca</b> per parola e usa i <b>Filtri</b>: formazione, distretto, intensità, durata, preferiti, mai usati.</li>
 <li><b>★ Preferiti</b>: tocca la stella per ritrovarli subito.</li>
 <li><b>+ Nuovo esercizio</b>: titolo, descrizione, durata, fondamentale e lo schema disegnato (o un'immagine).</li>
@@ -5421,6 +5461,12 @@ const GUIDE=[
 <ol><li><b>+ Nuova sessione</b>, oppure <b>✨ Genera</b> per avere una proposta già pronta (scegli durata e tema, poi «Crea la sessione»).</li>
 <li>Aggiungi esercizi dal catalogo o blocchi liberi (riscaldamento, pausa acqua, partita…); sposti l'ordine con ↑ ↓.</li>
 <li><b>Stampa</b> il programma, oppure in palestra premi <b>▶ Avvia allenamento</b>: l'app mostra un esercizio alla volta con il timer e un segnale sonoro, e tiene lo schermo acceso.</li></ol>`],
+['🧑‍🏫','Lavagna tattica',`
+<ol><li>Apri <b>Lavagna</b> dal menu: vedi il tuo mezzo campo e la prima linea avversaria, con i giocatori della formazione della prossima partita (puoi sceglierne un'altra in alto).</li>
+<li>Scegli la <b>rotazione</b> con le frecce e la <b>fase</b>: ricezione, battuta, difesa con il 6 fuori o con il 6 dentro.</li>
+<li>Con <b>✋ Muovi</b> sposti giocatori e avversari (✕); con <b>🏐 Palla</b> e <b>➜ Spostamento</b> disegni con il dito; con <b>⌫ Cancella linea</b> tocchi una linea per toglierla.</li>
+<li><b>💾 Salva partenza</b> memorizza le posizioni di quella rotazione e fase; <b>⟲ Torna alla partenza</b> le rimette a posto.</li></ol>
+<p>In ricezione e in battuta l'app segnala in rosso il <b>fallo di posizione</b>. Il libero segue l'impostazione in Archivio: se giocate senza libero non compare. Durante le statistiche di una partita di oggi puoi attivare <b>Segui la partita</b>: la lavagna mostra rotazione, punteggio e i giocatori in campo con i cambi.</p>`],
 ['✅','Presenze',`
 <ol><li>Con <b>Genera calendario</b> crei tutti gli allenamenti della stagione nei giorni fissi; con <b>+ Aggiungi allenamento</b> quelli singoli.</li>
 <li>Per ogni allenamento segni ✓ presente, ✗ assente, G giustificato o <b>R</b> in ritardo (o uscito prima: conta come presente). «Segna presenti tutti gli altri» velocizza.</li>
@@ -5727,7 +5773,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v65-2026-10-10';
+const APP_VERSION='v66-2026-10-10';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6143,6 +6189,160 @@ function usageLog(){
       versione:APP_VERSION, dispositivo:logDevice(), schermo:innerWidth+'×'+innerHeight, sync:Sync.config()?'sì':'no', id:logDevId()};
     fetch(LOG_URL, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(p)}).catch(()=>{});
   }catch(e){}
+}
+/* ===================== LAVAGNA TATTICA (v66) =====================
+   Mezzo campo con la prima linea avversaria. Telefono: attrezzi sotto il campo; tablet e computer: attrezzi di lato.
+   Le posizioni si salvano per rotazione e fase, per zona (così valgono anche con cambi e libero). */
+const LAV_PH=[['ricezione','Ricezione'],['battuta','Battuta'],['difesa','Difesa 6 fuori'],['difesa6','Difesa 6 dentro']];
+const LAV_OPP0=[[60,-45],[150,-45],[240,-45]];
+ui.lav = ui.lav || {k:null, ph:'ricezione', tool:'muovi', live:false, mid:'', lib:null};
+const lavUndo=[];
+function lavData(){ const o=opz().lavagna; return (o && typeof o==='object')?o:{start:{}, cur:{}}; }
+function lavSave(d){ clearTimeout(lavSave._t); ui.lavPending=d; lavSave._t=setTimeout(()=>{ setOpz('lavagna', ui.lavPending); ui.lavPending=null; }, 700); }
+function lavGet(){ return ui.lavPending || lavData(); }
+function lavLiveMatch(){ const td=todayISO(); return db.matches.find(m=>m.data===td && m.stats && m.stats.live && (m.stats.ev||[]).length && formOk(getForm(m))) || null; }
+function lavMatches(){ return [...db.matches].filter(m=>formOk(getForm(m))).sort((a,b)=>(a.data||'').localeCompare(b.data||'')); }
+function lavMatch(){
+  if(ui.lav.live){ const lm=lavLiveMatch(); if(lm) return lm; ui.lav.live=false; }
+  const L=lavMatches(); if(!L.length) return null;
+  if(ui.lav.mid){ const m=L.find(x=>x.id===ui.lav.mid); if(m) return m; }
+  const td=todayISO(); return L.find(m=>(m.data||'')>=td) || L[L.length-1];
+}
+function lavLibOn(f){ if(noLibero()) return false; if(!f || !f.L) return false; return ui.lav.lib===null ? !!f.libero : !!ui.lav.lib; }
+function lavPeople(){   // zona → {id, slot}
+  const m=lavMatch(), f=m?getForm(m):null, live=ui.lav.live && m;
+  const k=live ? getStats(m).live.k : (ui.lav.k===null ? (f?+f.start||0:0) : ui.lav.k);
+  if(ui.lav.k===null) ui.lav.k=k;
+  const who=live ? liveWho(m) : (s=>f?f[s]:'');
+  const z=rotAt(k), lib=lavLibOn(f), out={};
+  z.forEach((slot,i)=>{ const zone=i+1, front=zone>=2&&zone<=4; let sl=slot, id=who(slot);
+    if(lib && SLOT_ROLE[slot]==='C' && !front && !(ui.lav.ph==='battuta' && zone===1)){ sl='L'; id=f.L; }
+    out[zone]={slot:sl, id:id||''}; });
+  return {m, f, k, out, lib};
+}
+function lavBase(k, ph, P){
+  const pos={};
+  for(let zone=1; zone<=6; zone++){ const front=zone>=2&&zone<=4, sl=P[zone].slot, r=SLOT_ROLE[sl]; let [x,y]=ZXY[zone];
+    if(ph==='ricezione'){ y=front?58:228; if(sl==='P' && !front) y=150; }
+    else if(ph==='battuta'){ if(zone===1){ x=250; y=312; } else y=front?58:212; }
+    else if(ph==='difesa') [x,y]={1:[255,232],6:[150,272],5:[45,232],4:[52,44],3:[150,40],2:[248,44]}[zone];
+    else if(ph==='difesa6') [x,y]={1:[255,240],6:[150,150],5:[45,240],4:[52,44],3:[150,40],2:[248,44]}[zone];
+    pos[zone]=[x,y]; }
+  return {pos, lines:[], opp:LAV_OPP0.map(p=>[...p])};
+}
+function lavKey(k){ return k+'|'+ui.lav.ph; }
+function lavCur(P){ const d=lavGet(), kk=lavKey(P.k); d.cur=d.cur||{}; d.start=d.start||{};
+  if(!d.cur[kk]) d.cur[kk]=d.start[kk]?JSON.parse(JSON.stringify(d.start[kk])):lavBase(P.k, ui.lav.ph, P.out);
+  return {d, b:d.cur[kk], kk}; }
+function lavPath(pts){ if(!pts || pts.length<2) return ''; let s=`M${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<pts.length-1;i++){ const [x1,y1]=pts[i], [x2,y2]=pts[i+1]; s+=` Q${x1} ${y1} ${(x1+x2)/2} ${(y1+y2)/2}`; }
+  const l=pts[pts.length-1]; return s+` L${l[0]} ${l[1]}`; }
+function lavPlayer(zone, p, x, y){
+  const r=SLOT_ROLE[p.slot], a=p.id?getAt(p.id):null, sx=a?sexOf(a):'';
+  return `<g data-z="${zone}" transform="translate(${x} ${y})" style="cursor:grab"><circle r="27" fill="transparent"/><circle r="21" fill="${ROLE_COL[r]}" stroke="#fff" stroke-width="2.5"/>
+    <text y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" pointer-events="none">${esc(p.id?athNum(p.id):p.slot)}</text>
+    <text y="35" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44" pointer-events="none">${esc(p.id?athShort(p.id):'')}</text>
+    ${sx?`<circle cx="17" cy="-15" r="8.5" fill="#fff" stroke="#1f2a44" stroke-width="1"/><text x="17" y="-11.4" text-anchor="middle" font-size="10" font-weight="800" fill="${sx==='F'?'#c2185b':'#1f4f8f'}" pointer-events="none">${sx==='F'?'D':'U'}</text>`:''}</g>`;
+}
+function lavOverlap(b){
+  if(!(ui.lav.ph==='ricezione'||ui.lav.ph==='battuta')) return [];
+  const P=n=>b.pos[n], bad=[], srv=ui.lav.ph==='battuta';
+  [[4,5],[3,6],[2,1]].forEach(([f,r])=>{ if(!(srv&&r===1) && P(f)[1]>=P(r)[1]) bad.push([f,r,'davanti a']); });
+  [[4,3],[3,2],[5,6],[6,1]].forEach(([l,r])=>{ if(!(srv&&(r===1||l===1)) && P(l)[0]>=P(r)[0]) bad.push([l,r,'a sinistra di']); });
+  return bad;
+}
+function lavSVG(P){
+  const {b}=lavCur(P), bad=lavOverlap(b);
+  let s=`<svg class="lav-court" id="lav-svg" viewBox="0 -92 300 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lavagna: mezzo campo con la prima linea avversaria">
+  <defs><marker id="lav-ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e07b22"/></marker><marker id="lav-am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f6fb8"/></marker></defs>
+  <rect x="15" y="-70" width="270" height="90" fill="#dfe6ef" stroke="#fff" stroke-width="3"/><text x="150" y="-77" text-anchor="middle" font-size="10" fill="#8a94a6">prima linea avversaria</text>
+  <rect x="15" y="20" width="270" height="270" fill="#f4d3a1" stroke="#fff" stroke-width="3"/><rect x="15" y="20" width="270" height="90" fill="#efc387"/>
+  <line x1="15" y1="110" x2="285" y2="110" stroke="#fff" stroke-width="2.5"/><line x1="5" y1="20" x2="295" y2="20" stroke="#1f2a44" stroke-width="5"/>`;
+  const CELL={4:[15,20],3:[105,20],2:[195,20],5:[15,110],6:[105,110],1:[195,110]};
+  Object.entries(CELL).forEach(([z,[x,y]])=>{ s+=`<text x="${x+7}" y="${y+15}" font-size="11" font-weight="800" fill="rgba(31,42,68,.28)">zona ${z}</text>`; });
+  bad.forEach(([a,c])=>{ const A=b.pos[a], C=b.pos[c]; s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${C[0]}" y2="${C[1]}" stroke="#d7263d" stroke-width="4" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="${A[0]}" cy="${A[1]}" r="27" fill="none" stroke="#d7263d" stroke-width="3"/><circle cx="${C[0]}" cy="${C[1]}" r="27" fill="none" stroke="#d7263d" stroke-width="3"/>`; });
+  s+='<g id="lav-lines">'+b.lines.map((ln,i)=>{ const d=lavPath(ln.d), ball=ln.t==='ball';
+    return `<path d="${d}" fill="none" stroke="${ball?'#e07b22':'#2f6fb8'}" stroke-width="${ball?4:3.5}" stroke-linecap="round" ${ball?'':'stroke-dasharray="8 6"'} marker-end="url(#lav-${ball?'ab':'am'})"/><path d="${d}" data-l="${i}" fill="none" stroke="transparent" stroke-width="18" style="cursor:pointer"/>`; }).join('')+'</g>';
+  s+=b.opp.map(([x,y],i)=>`<g data-o="${i}" transform="translate(${x} ${y})" style="cursor:grab"><circle r="22" fill="transparent"/><circle r="16" fill="#fff" stroke="#1f2a44" stroke-width="2"/><path d="M-7 -7L7 7M7 -7L-7 7" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"/></g>`).join('');
+  for(let z=1; z<=6; z++){ const [x,y]=b.pos[z]; s+=lavPlayer(z, P.out[z], x, y); }
+  return s+'<g id="lav-tmp"></g></svg>';
+}
+function lavMsg(P){ const {b}=lavCur(P), bad=lavOverlap(b);
+  if(!(ui.lav.ph==='ricezione'||ui.lav.ph==='battuta')) return ['', 'In difesa i giocatori possono stare dove vogliono: qui non controllo le sovrapposizioni.'];
+  if(!bad.length) return ['', '✓ Posizioni regolari al momento della battuta.'];
+  const nm=z=>(P.out[z].id?athShort(P.out[z].id):P.out[z].slot)+' (zona '+z+')';
+  return ['bad', 'Fallo di posizione: '+bad.map(([a,c,t])=>nm(a)+' deve stare '+t+' '+nm(c)).join(' · ')];
+}
+function viewLavagna(){
+  const P=lavPeople(), m=P.m, f=P.f, L=lavMatches(), lm=lavLiveMatch(), msg=lavMsg(P), z=rotAt(P.k);
+  const st=ui.lav.live && m ? getStats(m).live : null;
+  const libCtl = noLibero() ? `<span class="lav-note">Senza libero (impostazione in Archivio)</span>`
+    : (f && f.L ? `<label class="sw lav-sw"><input type="checkbox" id="lav-lib" ${P.lib?'checked':''}> Libero</label>` : `<span class="lav-note">Nessun libero nella formazione</span>`);
+  return `<section class="lav">
+  <div class="page-head"><div><h1>Lavagna tattica</h1><p class="muted">${m?esc(matchTitle(m))+(m.data?' · '+esc(shortDate(m.data)):''):'Nessuna formazione: preparala nella scheda di una partita'}</p></div>
+    <div class="actions">${L.length>1&&!ui.lav.live?`<select id="lav-match" aria-label="Formazione da usare">${L.map(x=>`<option value="${x.id}" ${m&&x.id===m.id?'selected':''}>${esc((x.data?shortDate(x.data).slice(0,5)+' · ':'')+(x.avversario||'partita'))}</option>`).join('')}</select>`:''}
+      <label class="sw lav-sw ${lm?'':'off'}" title="${lm?'Mostra rotazione, punteggio e giocatori in campo della partita in corso':'Si attiva quando fai le statistiche di una partita di oggi'}"><input type="checkbox" id="lav-live" ${ui.lav.live?'checked':''} ${lm?'':'disabled'}> Segui la partita</label></div></div>
+  ${st?`<div class="lav-banner"><span class="dot" aria-hidden="true"></span><b>In partita</b><span>Set ${st.set}</span><span class="sc">${st.noi}–${st.loro}</span><span>${st.servo?'battiamo noi':'riceviamo'}</span></div>`:''}
+  <div class="lav-board">
+    <div class="lav-main">
+      <div class="lav-head">
+        <div class="lav-rot"><button type="button" class="btn" data-action="lav-rot" data-v="-1" ${ui.lav.live?'disabled':''} aria-label="Rotazione precedente">‹</button><div class="nm">Rotazione ${ROTNAME[P.k]}<small>palleggiatore in zona ${z.indexOf('P')+1}</small></div><button type="button" class="btn" data-action="lav-rot" data-v="1" ${ui.lav.live?'disabled':''} aria-label="Rotazione successiva">›</button></div>
+        <div class="vseg lav-ph" role="group" aria-label="Fase">${LAV_PH.map(([k,l])=>`<button type="button" data-action="lav-ph" data-v="${k}" class="${ui.lav.ph===k?'on':''}">${l}</button>`).join('')}</div>
+        ${libCtl}
+      </div>
+      <div class="lav-wrap">${lavSVG(P)}</div>
+      <div class="lav-msg ${msg[0]}" id="lav-msg" aria-live="polite">${esc(msg[1])}</div>
+    </div>
+    <div class="lav-tools" role="toolbar" aria-label="Attrezzi">
+      ${[['muovi','✋ Muovi'],['palla','🏐 Palla'],['spost','➜ Spostamento'],['gomma','⌫ Cancella linea']].map(([k,l])=>`<button type="button" class="btn lav-t ${ui.lav.tool===k?'on':''}" data-action="lav-tool" data-v="${k}">${l}</button>`).join('')}
+      <span class="sep"></span>
+      <button type="button" class="btn" data-action="lav-undo">↶ Annulla</button><button type="button" class="btn" data-action="lav-clear">Togli le linee</button>
+      <span class="sep"></span>
+      <button type="button" class="btn primary" data-action="lav-savestart">💾 Salva partenza</button><button type="button" class="btn" data-action="lav-reset">⟲ Torna alla partenza</button>
+      <span class="sep"></span>
+      <button type="button" class="btn" data-action="lav-std">Posizioni standard</button>
+    </div>
+  </div>
+  <div class="legend-row lav-legend">${[['P','Palleggiatore'],['O','Opposto'],['B','Banda'],['C','Centrale']].concat(noLibero()?[]:[['L','Libero']]).map(([r,l])=>`<span><i style="background:${ROLE_COL[r]};border-radius:50%"></i>${l}</span>`).join('')}<span><i style="background:#e07b22;height:3px;width:18px;border-radius:0"></i>palla</span><span><i style="height:0;width:18px;border-top:3px dashed #2f6fb8;border-radius:0;background:none"></i>spostamento</span><span>✕ avversari</span></div>
+  </section>`;
+}
+function lavRefresh(){ const P=lavPeople(); const w=$('.lav-wrap'); if(w){ w.innerHTML=lavSVG(P); lavMount(); } const msg=lavMsg(P), e=$('#lav-msg'); if(e){ e.className='lav-msg '+msg[0]; e.textContent=msg[1]; } }
+function lavSay(t){ const e=$('#lav-msg'); if(e){ e.className='lav-msg'; e.textContent=t; } clearTimeout(lavSay._t); lavSay._t=setTimeout(()=>{ const P=lavPeople(), m=lavMsg(P), x=$('#lav-msg'); if(x){ x.className='lav-msg '+m[0]; x.textContent=m[1]; } }, 2600); }
+function lavSnap(b){ lavUndo.push(JSON.stringify(b)); if(lavUndo.length>40) lavUndo.shift(); }
+function lavMount(){
+  const svg=$('#lav-svg'); if(!svg) return;
+  let drag=null, draw=null;
+  const pt=e=>{ const p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; const q=p.matrixTransform(svg.getScreenCTM().inverse()); return [Math.round(q.x), Math.round(q.y)]; };
+  svg.addEventListener('pointerdown', e=>{
+    const P=lavPeople(), {d,b,kk}=lavCur(P), tool=ui.lav.tool;
+    const g=e.target.closest('[data-z],[data-o]'), ln=e.target.closest('[data-l]');
+    if(tool==='gomma'){ if(ln){ lavSnap(b); b.lines.splice(+ln.dataset.l,1); lavSave(d); lavRefresh(); } return; }
+    if(tool==='muovi' && g){ lavSnap(b); const [x,y]=pt(e), isO=g.dataset.o!==undefined, p0=isO?b.opp[+g.dataset.o]:b.pos[g.dataset.z];
+      drag={g, isO, id:isO?+g.dataset.o:g.dataset.z, dx:p0[0]-x, dy:p0[1]-y, d, b}; svg.setPointerCapture(e.pointerId); e.preventDefault(); return; }
+    if(tool==='palla'||tool==='spost'){ lavSnap(b); draw={t:tool==='palla'?'ball':'move', p:[pt(e)], d, b}; svg.setPointerCapture(e.pointerId); e.preventDefault(); }
+  });
+  svg.addEventListener('pointermove', e=>{
+    if(drag){ const [x,y]=pt(e); let np=[x+drag.dx, y+drag.dy];
+      np=drag.isO?[Math.max(10,Math.min(290,np[0])), Math.max(-80,Math.min(14,np[1]))]:[Math.max(10,Math.min(290,np[0])), Math.max(-4,Math.min(318,np[1]))];
+      (drag.isO?drag.b.opp:drag.b.pos)[drag.id]=np; drag.g.setAttribute('transform',`translate(${np[0]} ${np[1]})`); return; }
+    if(draw){ const p=pt(e), l=draw.p[draw.p.length-1]; if(Math.hypot(p[0]-l[0],p[1]-l[1])>6){ draw.p.push(p); const t=$('#lav-tmp'); if(t) t.innerHTML=`<path d="${lavPath(draw.p)}" fill="none" stroke="${draw.t==='ball'?'#e07b22':'#2f6fb8'}" stroke-width="4" stroke-linecap="round" ${draw.t==='ball'?'':'stroke-dasharray="8 6"'}/>`; } }
+  });
+  const end=()=>{
+    if(drag){ lavSave(drag.d); drag=null; lavRefresh(); }
+    if(draw){ if(draw.p.length>=2){ const q=draw.p, out=[q[0]]; for(let i=1;i<q.length-1;i+=2) out.push(q[i]); out.push(q[q.length-1]); draw.b.lines.push({t:draw.t, d:out}); lavSave(draw.d); } else lavUndo.pop(); draw=null; lavRefresh(); }
+  };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
+}
+function lavAct(a, v){
+  const P=lavPeople(), {d,b,kk}=lavCur(P);
+  if(a==='rot'){ ui.lav.k=((P.k+(+v))%6+6)%6; lavUndo.length=0; render(); return; }
+  if(a==='ph'){ ui.lav.ph=v; lavUndo.length=0; render(); return; }
+  if(a==='tool'){ ui.lav.tool=v; $$('.lav-t').forEach(x=>x.classList.toggle('on', x.dataset.v===v)); return; }
+  if(a==='undo'){ const u=lavUndo.pop(); if(!u) return lavSay('Niente da annullare'); d.cur[kk]=JSON.parse(u); lavSave(d); lavRefresh(); return; }
+  if(a==='clear'){ lavSnap(b); b.lines=[]; lavSave(d); lavRefresh(); return; }
+  if(a==='savestart'){ d.start[kk]=JSON.parse(JSON.stringify(b)); lavSave(d); lavSay('Partenza salvata per '+ROTNAME[P.k]+' · '+LAV_PH.find(x=>x[0]===ui.lav.ph)[1].toLowerCase()); return; }
+  if(a==='reset'){ lavSnap(b); if(d.start[kk]){ d.cur[kk]=JSON.parse(JSON.stringify(d.start[kk])); lavSave(d); lavRefresh(); lavSay('Tornato alla partenza salvata'); } else { d.cur[kk]=lavBase(P.k, ui.lav.ph, P.out); lavSave(d); lavRefresh(); lavSay('Nessuna partenza salvata: posizioni standard'); } return; }
+  if(a==='std'){ lavSnap(b); d.cur[kk]=lavBase(P.k, ui.lav.ph, P.out); lavSave(d); lavRefresh(); return; }
 }
 /* ===== Piano della stagione ===== */
 const PL_TIPI={prep:['Preparazione','#e07b22'], camp:['Campionato','#2f6fb8'], scar:['Scarico','#22a05a'], torn:['Torneo / fasi finali','#7b5cc4'], tec:['Ciclo tecnico','#d64a5a'], paus:['Pausa','#8a94a6']};
@@ -7075,6 +7275,7 @@ const actions={
   'logo-pick': ()=>pickImage(url=>setLogo(url)),
   'logo-del': ()=>{ if(!confirm('Rimuovere il logo?')) return; db.settings.logo=''; saveBrand(); },
   'view-mode': b=>setViewMode(b.dataset.k, b.dataset.v),
+  'lav-rot': b=>lavAct('rot', b.dataset.v), 'lav-ph': b=>lavAct('ph', b.dataset.v), 'lav-tool': b=>lavAct('tool', b.dataset.v), 'lav-undo': ()=>lavAct('undo'), 'lav-clear': ()=>lavAct('clear'), 'lav-savestart': ()=>lavAct('savestart'), 'lav-reset': ()=>lavAct('reset'), 'lav-std': ()=>lavAct('std'),
   'at-view': b=>setAtView(b.dataset.v),
   'f-fond': b=>{ ui.f.fond=b.dataset.v; $('#app').innerHTML=viewEsercizi(); window.scrollTo(0,0); },
   'exf-toggle': ()=>{ ui.fOpen=!ui.fOpen; $('#app').innerHTML=viewEsercizi(); },
@@ -7260,6 +7461,9 @@ document.addEventListener('change', e=>{
     f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; scMarkForm(m); touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
   if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; markPlayed(m); touchMatch(m); rerenderLive(); return; }
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
+  if(t.id==='lav-lib'){ ui.lav.lib=t.checked; lavUndo.length=0; render(); return; }
+  if(t.id==='lav-live'){ ui.lav.live=t.checked; if(t.checked){ ui.lav.k=null; } lavUndo.length=0; render(); return; }
+  if(t.id==='lav-match'){ ui.lav.mid=t.value; ui.lav.k=null; lavUndo.length=0; render(); return; }
   if(t.id==='p-all'){ ui.pAll=t.checked; $('#reg').innerHTML=regTable(); return; }
   if(t.dataset.calday!==undefined){ const c=getCal(); if(t.checked) c.giorni[t.dataset.calday]=c.giorni[t.dataset.calday]||''; else delete c.giorni[t.dataset.calday]; saveCal(c);
     const box=t.closest('.dayopt'); box.classList.toggle('on',t.checked); box.querySelectorAll('input:not([type=checkbox])').forEach(x=>x.disabled=!t.checked); return; }

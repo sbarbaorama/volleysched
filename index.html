@@ -2138,24 +2138,27 @@ th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
 .atkb-pr .bar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}.atkb-pr .bar i{display:block;height:100%}
 .atkb-in{font-size:12.5px;color:var(--ink-2)}
 .atkb-ct{font-size:12.5px;align-self:flex-start}.atkb-ct a{color:var(--ink-2);text-decoration:none}.atkb-ct a:hover{text-decoration:underline}
-/* ===== v66: lavagna tattica ===== */
+/* ===== v67: lavagna tattica ===== */
 .lav .page-head select{width:auto;max-width:220px}
 .lav-sw{min-height:0;font-size:14px;font-weight:600}
-.lav-sw.off{opacity:.5}
+.lav-sw.off{opacity:.45}
 .lav-note{font-size:12.5px;color:var(--muted)}
 .lav-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bar);color:#fff;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
 .lav-banner .sc{font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}
 .lav-banner .dot{width:9px;height:9px;border-radius:50%;background:#3ddc84;box-shadow:0 0 0 3px rgba(61,220,132,.3)}
-.lav-board{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:grid;gap:10px;grid-template-columns:minmax(0,1fr) 210px;align-items:start}
+.lav-board{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:12px;display:grid;gap:12px;grid-template-columns:minmax(0,1fr) 200px;align-items:start}
+.lav-board.with-gal{grid-template-columns:240px minmax(0,1fr) 190px}
 .lav-main{display:grid;gap:8px;min-width:0}
 .lav-head{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 .lav-rot{display:flex;align-items:center;gap:4px}
 .lav-rot .btn{min-height:42px;min-width:42px;font-size:18px;padding:4px 10px}
-.lav-rot .nm{min-width:110px;text-align:center;font-weight:800}
+.lav-rot .nm{min-width:104px;text-align:center;font-weight:800}
 .lav-rot .nm small{display:block;font-weight:600;font-size:11.5px;color:var(--muted)}
 .lav-ph button{min-height:40px}
+.lav-curt{font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lav-curt b{color:var(--ink)}.lav-curt .mod{color:var(--accent);font-weight:700}
 .lav-wrap{display:flex;justify-content:center;min-width:0}
-svg.lav-court{width:100%;max-width:560px;height:auto;max-height:calc(100vh - 230px);display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230px);display:block;touch-action:none;user-select:none;-webkit-user-select:none}
 .lav-msg{font-size:13px;color:var(--muted);min-height:20px}
 .lav-msg.bad{color:#b4233a;font-weight:700}
 :root[data-theme=dark] .lav-msg.bad{color:#f6aab4}
@@ -2164,14 +2167,42 @@ svg.lav-court{width:100%;max-width:560px;height:auto;max-height:calc(100vh - 230
 .lav-tools .btn.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 .lav-tools .sep{height:1px;background:var(--line);margin:3px 0}
 .lav-legend{margin-top:10px}
+/* galleria (tablet e computer) */
+.lav-gal{display:grid;gap:8px;align-content:start;min-width:0}
+.lav-gal h3{margin:0;font-size:15px}
+.lav-flt{display:flex;gap:4px;flex-wrap:wrap}
+.lav-flt button{border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:3px 10px;font-weight:700;font-size:12px;cursor:pointer;min-height:30px}
+.lav-flt button.on{background:var(--bar);border-color:var(--bar);color:#fff}
+.lav-gl{display:grid;gap:8px;max-height:calc(100vh - 300px);overflow:auto;padding-right:2px}
+.lav-gc{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:6px;background:var(--surface-2);cursor:pointer}
+.lav-gc:hover{border-color:var(--line-2)}
+.lav-gc.on{border-color:var(--accent);box-shadow:0 0 0 2px rgba(224,123,34,.3)}
+.lav-gc svg{width:72px;height:auto;border-radius:6px;display:block}
+.lav-gc b{display:block;font-size:13.5px;line-height:1.25;overflow-wrap:anywhere}
+.lav-gc small{display:block;font-size:11.5px;color:var(--muted)}
+.lav-gc .row{display:flex;gap:2px;margin-top:2px}
+.lav-empty{font-size:13px;color:var(--muted);padding:8px 4px}
+/* tendina (telefono) */
+.lav-dd{position:relative}
+.lav-pop{position:absolute;z-index:30;top:calc(100% + 6px);left:0;width:min(360px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line-2);border-radius:14px;box-shadow:0 12px 32px rgba(20,25,40,.22);padding:8px;display:none;max-height:70vh;overflow:auto}
+.lav-pop.open{display:block}
+.lav-pop input[type=search]{width:100%;margin-bottom:6px}
+.lav-g{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:8px 8px 4px}
+.lav-it{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:2px;align-items:center;border-radius:9px}
+.lav-it:hover{background:var(--surface-2)}
+.lav-it .ld{border:0;background:none;text-align:left;padding:8px;font-weight:600;font-size:14.5px;color:var(--ink);cursor:pointer;min-height:42px;min-width:0}
+.lav-it .ld small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.lav-it.on .ld{color:var(--accent)}
+.lav-new{margin-top:6px;width:100%}
+@media (max-width:1100px){ .lav-board.with-gal{grid-template-columns:minmax(0,1fr) 190px} .lav-board.with-gal .lav-gal{grid-column:1/-1;order:3} .lav-gl{max-height:none;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))} }
 @media (max-width:820px){
-  .lav-board{grid-template-columns:1fr;padding:8px;border-radius:12px}
+  .lav-board,.lav-board.with-gal{grid-template-columns:1fr;padding:8px;border-radius:12px}
   .lav-tools{flex-direction:row;flex-wrap:wrap}
   .lav-tools .btn{flex:1 1 auto;padding:6px 9px;font-size:13px;min-height:40px}
   .lav-tools .sep{display:none}
   svg.lav-court{max-height:none}
   .lav .page-head .actions{width:100%;justify-content:space-between}
-  .lav-ph{display:flex;width:100%}.lav-ph button{flex:1 1 0;padding:6px 4px;font-size:12.5px;white-space:normal;line-height:1.15}
+  .lav-ph{display:flex}.lav-ph button{padding:6px 10px;font-size:13px}
 }
 /* v66: esercizi dentro sessioni */
 .btn.ex-big{font-size:15px;padding:9px 18px;border:2px solid #d64a5a;color:#b3263a;background:var(--surface);font-weight:800}
@@ -5463,9 +5494,12 @@ const GUIDE=[
 <li><b>Stampa</b> il programma, oppure in palestra premi <b>▶ Avvia allenamento</b>: l'app mostra un esercizio alla volta con il timer e un segnale sonoro, e tiene lo schermo acceso.</li></ol>`],
 ['🧑‍🏫','Lavagna tattica',`
 <ol><li>Apri <b>Lavagna</b> dal menu: vedi il tuo mezzo campo e la prima linea avversaria, con i giocatori della formazione della prossima partita (puoi sceglierne un'altra in alto).</li>
-<li>Scegli la <b>rotazione</b> con le frecce e la <b>fase</b>: ricezione, battuta, difesa con il 6 fuori o con il 6 dentro.</li>
+<li>Scegli la <b>rotazione</b> con le frecce e la <b>fase</b>: ricezione, battuta o difesa (con la casella «6 dentro»).</li>
 <li>Con <b>✋ Muovi</b> sposti giocatori e avversari (✕); con <b>🏐 Palla</b> e <b>➜ Spostamento</b> disegni con il dito; con <b>⌫ Cancella linea</b> tocchi una linea per toglierla.</li>
-<li><b>💾 Salva partenza</b> memorizza le posizioni di quella rotazione e fase; <b>⟲ Torna alla partenza</b> le rimette a posto.</li></ol>
+<li><b>📌 Salva partenza</b> memorizza le posizioni di quella rotazione e fase; <b>⟲ Torna alla partenza</b> le rimette a posto.</li>
+<li><b>💾 Salva tattica</b> le salva con un nome. Le richiami dalla galleria a sinistra (tablet e computer) o da <b>📂 Tattiche</b> (telefono); lì le rinomini o le cancelli. Se cambi una tattica caricata, <b>Aggiorna</b> la sovrascrive.</li>
+<li><b>WhatsApp</b> crea l'immagine della lavagna da mandare alla squadra.</li></ol>
+<p>Nei cerchi c'è la lettera del ruolo (P, O, B, C, L); con «Segui la partita» compaiono numeri e nomi di chi è in campo. In difesa la casella <b>6 dentro</b> passa dalla difesa con il 6 fuori a quella con il 6 dentro.</p>
 <p>In ricezione e in battuta l'app segnala in rosso il <b>fallo di posizione</b>. Il libero segue l'impostazione in Archivio: se giocate senza libero non compare. Durante le statistiche di una partita di oggi puoi attivare <b>Segui la partita</b>: la lavagna mostra rotazione, punteggio e i giocatori in campo con i cambi.</p>`],
 ['✅','Presenze',`
 <ol><li>Con <b>Genera calendario</b> crei tutti gli allenamenti della stagione nei giorni fissi; con <b>+ Aggiungi allenamento</b> quelli singoli.</li>
@@ -5773,7 +5807,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v66-2026-10-10';
+const APP_VERSION='v67-2026-10-10';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6190,14 +6224,15 @@ function usageLog(){
     fetch(LOG_URL, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(p)}).catch(()=>{});
   }catch(e){}
 }
-/* ===================== LAVAGNA TATTICA (v66) =====================
-   Mezzo campo con la prima linea avversaria. Telefono: attrezzi sotto il campo; tablet e computer: attrezzi di lato.
-   Le posizioni si salvano per rotazione e fase, per zona (così valgono anche con cambi e libero). */
-const LAV_PH=[['ricezione','Ricezione'],['battuta','Battuta'],['difesa','Difesa 6 fuori'],['difesa6','Difesa 6 dentro']];
+/* ===================== LAVAGNA TATTICA (v67) =====================
+   Mezzo campo con la prima linea avversaria. Telefono: menù tattiche a tendina e attrezzi sotto il campo;
+   tablet e computer: galleria delle tattiche a sinistra e attrezzi a destra.
+   Le posizioni si salvano per zona (valgono anche con cambi e libero). */
+const LAV_PH=[['ricezione','Ricezione'],['battuta','Battuta'],['difesa','Difesa']];
 const LAV_OPP0=[[60,-45],[150,-45],[240,-45]];
-ui.lav = ui.lav || {k:null, ph:'ricezione', tool:'muovi', live:false, mid:'', lib:null};
+ui.lav = ui.lav || {k:null, ph:'ricezione', d6:false, tool:'muovi', live:false, mid:'', lib:null, sel:null, dirty:false, dd:false, q:'', flt:'tutte'};
 const lavUndo=[];
-function lavData(){ const o=opz().lavagna; return (o && typeof o==='object')?o:{start:{}, cur:{}}; }
+function lavData(){ const o=opz().lavagna; const d=(o && typeof o==='object')?o:{}; d.start=d.start||{}; d.cur=d.cur||{}; d.tattiche=Array.isArray(d.tattiche)?d.tattiche:[]; return d; }
 function lavSave(d){ clearTimeout(lavSave._t); ui.lavPending=d; lavSave._t=setTimeout(()=>{ setOpz('lavagna', ui.lavPending); ui.lavPending=null; }, 700); }
 function lavGet(){ return ui.lavPending || lavData(); }
 function lavLiveMatch(){ const td=todayISO(); return db.matches.find(m=>m.data===td && m.stats && m.stats.live && (m.stats.ev||[]).length && formOk(getForm(m))) || null; }
@@ -6209,40 +6244,38 @@ function lavMatch(){
   const td=todayISO(); return L.find(m=>(m.data||'')>=td) || L[L.length-1];
 }
 function lavLibOn(f){ if(noLibero()) return false; if(!f || !f.L) return false; return ui.lav.lib===null ? !!f.libero : !!ui.lav.lib; }
+function lavSlots(k, ph, lib){ const z=rotAt(k), out={}; z.forEach((slot,i)=>{ const zone=i+1, front=zone>=2&&zone<=4; out[zone]=(lib && SLOT_ROLE[slot]==='C' && !front && !(ph==='battuta' && zone===1))?'L':slot; }); return out; }
 function lavPeople(){   // zona → {id, slot}
-  const m=lavMatch(), f=m?getForm(m):null, live=ui.lav.live && m;
+  const m=lavMatch(), f=m?getForm(m):null, live=!!(ui.lav.live && m);
   const k=live ? getStats(m).live.k : (ui.lav.k===null ? (f?+f.start||0:0) : ui.lav.k);
   if(ui.lav.k===null) ui.lav.k=k;
-  const who=live ? liveWho(m) : (s=>f?f[s]:'');
-  const z=rotAt(k), lib=lavLibOn(f), out={};
-  z.forEach((slot,i)=>{ const zone=i+1, front=zone>=2&&zone<=4; let sl=slot, id=who(slot);
-    if(lib && SLOT_ROLE[slot]==='C' && !front && !(ui.lav.ph==='battuta' && zone===1)){ sl='L'; id=f.L; }
-    out[zone]={slot:sl, id:id||''}; });
-  return {m, f, k, out, lib};
+  const who=live ? liveWho(m) : (s=>f?f[s]:''), lib=lavLibOn(f), sl=lavSlots(k, ui.lav.ph, lib), out={};
+  for(let zone=1; zone<=6; zone++){ const s=sl[zone]; out[zone]={slot:s, id:(s==='L'?(f&&f.L):who(s))||''}; }
+  return {m, f, k, out, lib, live};
 }
-function lavBase(k, ph, P){
+function lavBase(k, ph, d6, P){
   const pos={};
-  for(let zone=1; zone<=6; zone++){ const front=zone>=2&&zone<=4, sl=P[zone].slot, r=SLOT_ROLE[sl]; let [x,y]=ZXY[zone];
+  for(let zone=1; zone<=6; zone++){ const front=zone>=2&&zone<=4, sl=P[zone].slot; let [x,y]=ZXY[zone];
     if(ph==='ricezione'){ y=front?58:228; if(sl==='P' && !front) y=150; }
     else if(ph==='battuta'){ if(zone===1){ x=250; y=312; } else y=front?58:212; }
-    else if(ph==='difesa') [x,y]={1:[255,232],6:[150,272],5:[45,232],4:[52,44],3:[150,40],2:[248,44]}[zone];
-    else if(ph==='difesa6') [x,y]={1:[255,240],6:[150,150],5:[45,240],4:[52,44],3:[150,40],2:[248,44]}[zone];
+    else [x,y]=(d6?{1:[255,240],6:[150,150],5:[45,240],4:[52,44],3:[150,40],2:[248,44]}:{1:[255,232],6:[150,272],5:[45,232],4:[52,44],3:[150,40],2:[248,44]})[zone];
     pos[zone]=[x,y]; }
   return {pos, lines:[], opp:LAV_OPP0.map(p=>[...p])};
 }
-function lavKey(k){ return k+'|'+ui.lav.ph; }
-function lavCur(P){ const d=lavGet(), kk=lavKey(P.k); d.cur=d.cur||{}; d.start=d.start||{};
-  if(!d.cur[kk]) d.cur[kk]=d.start[kk]?JSON.parse(JSON.stringify(d.start[kk])):lavBase(P.k, ui.lav.ph, P.out);
+const lavPhName=(ph,d6)=>ph==='difesa'?(d6?'Difesa 6 dentro':'Difesa 6 fuori'):(LAV_PH.find(x=>x[0]===ph)||['',''])[1];
+function lavKey(k){ return k+'|'+ui.lav.ph+(ui.lav.ph==='difesa'&&ui.lav.d6?'|6':''); }
+function lavCur(P){ const d=lavGet(), kk=lavKey(P.k);
+  if(!d.cur[kk]) d.cur[kk]=d.start[kk]?JSON.parse(JSON.stringify(d.start[kk])):lavBase(P.k, ui.lav.ph, ui.lav.d6, P.out);
   return {d, b:d.cur[kk], kk}; }
 function lavPath(pts){ if(!pts || pts.length<2) return ''; let s=`M${pts[0][0]} ${pts[0][1]}`;
   for(let i=1;i<pts.length-1;i++){ const [x1,y1]=pts[i], [x2,y2]=pts[i+1]; s+=` Q${x1} ${y1} ${(x1+x2)/2} ${(y1+y2)/2}`; }
   const l=pts[pts.length-1]; return s+` L${l[0]} ${l[1]}`; }
-function lavPlayer(zone, p, x, y){
+function lavPlayer(zone, p, x, y, live){
   const r=SLOT_ROLE[p.slot], a=p.id?getAt(p.id):null, sx=a?sexOf(a):'';
+  const lab=live && p.id ? athNum(p.id) : r;
   return `<g data-z="${zone}" transform="translate(${x} ${y})" style="cursor:grab"><circle r="27" fill="transparent"/><circle r="21" fill="${ROLE_COL[r]}" stroke="#fff" stroke-width="2.5"/>
-    <text y="5" text-anchor="middle" font-size="14" font-weight="800" fill="#fff" pointer-events="none">${esc(p.id?athNum(p.id):p.slot)}</text>
-    <text y="35" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44" pointer-events="none">${esc(p.id?athShort(p.id):'')}</text>
-    ${sx?`<circle cx="17" cy="-15" r="8.5" fill="#fff" stroke="#1f2a44" stroke-width="1"/><text x="17" y="-11.4" text-anchor="middle" font-size="10" font-weight="800" fill="${sx==='F'?'#c2185b':'#1f4f8f'}" pointer-events="none">${sx==='F'?'D':'U'}</text>`:''}</g>`;
+    <text y="${live?5:6.5}" text-anchor="middle" font-size="${live?14:17}" font-weight="800" fill="#fff" pointer-events="none" font-family="Segoe UI,Arial,sans-serif">${esc(lab)}</text>
+    ${live && p.id?`<text y="35" text-anchor="middle" font-size="11.5" font-weight="700" fill="#1f2a44" pointer-events="none" font-family="Segoe UI,Arial,sans-serif">${esc(athShort(p.id))}</text>${sx?`<circle cx="17" cy="-15" r="8.5" fill="#fff" stroke="#1f2a44" stroke-width="1"/><text x="17" y="-11.4" text-anchor="middle" font-size="10" font-weight="800" fill="${sx==='F'?'#c2185b':'#1f4f8f'}" pointer-events="none" font-family="Segoe UI,Arial,sans-serif">${sx==='F'?'D':'U'}</text>`:''}`:''}</g>`;
 }
 function lavOverlap(b){
   if(!(ui.lav.ph==='ricezione'||ui.lav.ph==='battuta')) return [];
@@ -6251,31 +6284,59 @@ function lavOverlap(b){
   [[4,3],[3,2],[5,6],[6,1]].forEach(([l,r])=>{ if(!(srv&&(r===1||l===1)) && P(l)[0]>=P(r)[0]) bad.push([l,r,'a sinistra di']); });
   return bad;
 }
-function lavSVG(P){
-  const {b}=lavCur(P), bad=lavOverlap(b);
-  let s=`<svg class="lav-court" id="lav-svg" viewBox="0 -92 300 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lavagna: mezzo campo con la prima linea avversaria">
-  <defs><marker id="lav-ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e07b22"/></marker><marker id="lav-am" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f6fb8"/></marker></defs>
-  <rect x="15" y="-70" width="270" height="90" fill="#dfe6ef" stroke="#fff" stroke-width="3"/><text x="150" y="-77" text-anchor="middle" font-size="10" fill="#8a94a6">prima linea avversaria</text>
+function lavCourtBase(mini){
+  return `<rect x="15" y="-70" width="270" height="90" fill="#efc387" stroke="#fff" stroke-width="3"/>${mini?'':'<text x="150" y="-77" text-anchor="middle" font-size="10" fill="#8a94a6" font-family="Segoe UI,Arial,sans-serif">prima linea avversaria</text>'}
   <rect x="15" y="20" width="270" height="270" fill="#f4d3a1" stroke="#fff" stroke-width="3"/><rect x="15" y="20" width="270" height="90" fill="#efc387"/>
   <line x1="15" y1="110" x2="285" y2="110" stroke="#fff" stroke-width="2.5"/><line x1="5" y1="20" x2="295" y2="20" stroke="#1f2a44" stroke-width="5"/>`;
+}
+const lavOppHTML=(o,i,mini)=>`<g ${mini?'':`data-o="${i}" style="cursor:grab"`} transform="translate(${o[0]} ${o[1]})"><circle r="22" fill="transparent"/><circle r="15" fill="#d7263d" stroke="#fff" stroke-width="2.5"/></g>`;
+const lavLineHTML=(ln,i,mini)=>{ const d=lavPath(ln.d), ball=ln.t==='ball'; return `<path d="${d}" fill="none" stroke="${ball?'#e07b22':'#2f6fb8'}" stroke-width="${ball?4:3.5}" stroke-linecap="round" ${ball?'':'stroke-dasharray="8 6"'} marker-end="url(#lav-${ball?'ab':'am'}${mini?'-'+mini:''})"/>`+(mini?'':`<path d="${d}" data-l="${i}" fill="none" stroke="transparent" stroke-width="18" style="cursor:pointer"/>`); };
+const lavDefs=suf=>`<defs><marker id="lav-ab${suf}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e07b22"/></marker><marker id="lav-am${suf}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2f6fb8"/></marker></defs>`;
+function lavSVG(P){
+  const {b}=lavCur(P), bad=lavOverlap(b);
+  let s=`<svg class="lav-court" id="lav-svg" viewBox="0 -92 300 448" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lavagna: mezzo campo con la prima linea avversaria">${lavDefs('')}${lavCourtBase(false)}`;
   const CELL={4:[15,20],3:[105,20],2:[195,20],5:[15,110],6:[105,110],1:[195,110]};
-  Object.entries(CELL).forEach(([z,[x,y]])=>{ s+=`<text x="${x+7}" y="${y+15}" font-size="11" font-weight="800" fill="rgba(31,42,68,.28)">zona ${z}</text>`; });
+  Object.entries(CELL).forEach(([z,[x,y]])=>{ s+=`<text x="${x+7}" y="${y+15}" font-size="11" font-weight="800" fill="rgba(31,42,68,.28)" font-family="Segoe UI,Arial,sans-serif">zona ${z}</text>`; });
   bad.forEach(([a,c])=>{ const A=b.pos[a], C=b.pos[c]; s+=`<line x1="${A[0]}" y1="${A[1]}" x2="${C[0]}" y2="${C[1]}" stroke="#d7263d" stroke-width="4" stroke-dasharray="5 5" stroke-linecap="round"/><circle cx="${A[0]}" cy="${A[1]}" r="27" fill="none" stroke="#d7263d" stroke-width="3"/><circle cx="${C[0]}" cy="${C[1]}" r="27" fill="none" stroke="#d7263d" stroke-width="3"/>`; });
-  s+='<g id="lav-lines">'+b.lines.map((ln,i)=>{ const d=lavPath(ln.d), ball=ln.t==='ball';
-    return `<path d="${d}" fill="none" stroke="${ball?'#e07b22':'#2f6fb8'}" stroke-width="${ball?4:3.5}" stroke-linecap="round" ${ball?'':'stroke-dasharray="8 6"'} marker-end="url(#lav-${ball?'ab':'am'})"/><path d="${d}" data-l="${i}" fill="none" stroke="transparent" stroke-width="18" style="cursor:pointer"/>`; }).join('')+'</g>';
-  s+=b.opp.map(([x,y],i)=>`<g data-o="${i}" transform="translate(${x} ${y})" style="cursor:grab"><circle r="22" fill="transparent"/><circle r="16" fill="#fff" stroke="#1f2a44" stroke-width="2"/><path d="M-7 -7L7 7M7 -7L-7 7" stroke="#1f2a44" stroke-width="3" stroke-linecap="round"/></g>`).join('');
-  for(let z=1; z<=6; z++){ const [x,y]=b.pos[z]; s+=lavPlayer(z, P.out[z], x, y); }
+  s+=b.lines.map((ln,i)=>lavLineHTML(ln,i,'')).join('');
+  s+=b.opp.map((o,i)=>lavOppHTML(o,i,false)).join('');
+  for(let z=1; z<=6; z++){ const [x,y]=b.pos[z]; s+=lavPlayer(z, P.out[z], x, y, P.live); }
   return s+'<g id="lav-tmp"></g></svg>';
+}
+function lavMini(t, P){
+  const sl=lavSlots(t.k, t.ph, P.lib);
+  let s=`<svg viewBox="0 -75 300 400" aria-hidden="true">${lavDefs('-'+t.id)}${lavCourtBase(true)}`;
+  s+=(t.lines||[]).map((ln,i)=>lavLineHTML(ln,i,t.id)).join('')+(t.opp||[]).map((o,i)=>lavOppHTML(o,i,true)).join('');
+  for(let z=1; z<=6; z++){ const p=t.pos[z]; if(p) s+=`<circle cx="${p[0]}" cy="${p[1]}" r="19" fill="${ROLE_COL[SLOT_ROLE[sl[z]]]}" stroke="#fff" stroke-width="3"/>`; }
+  return s+'</svg>';
 }
 function lavMsg(P){ const {b}=lavCur(P), bad=lavOverlap(b);
   if(!(ui.lav.ph==='ricezione'||ui.lav.ph==='battuta')) return ['', 'In difesa i giocatori possono stare dove vogliono: qui non controllo le sovrapposizioni.'];
   if(!bad.length) return ['', '✓ Posizioni regolari al momento della battuta.'];
-  const nm=z=>(P.out[z].id?athShort(P.out[z].id):P.out[z].slot)+' (zona '+z+')';
+  const nm=z=>(P.live && P.out[z].id ? athShort(P.out[z].id) : P.out[z].slot.replace(/\d/,''))+' (zona '+z+')';
   return ['bad', 'Fallo di posizione: '+bad.map(([a,c,t])=>nm(a)+' deve stare '+t+' '+nm(c)).join(' · ')];
+}
+const lavTat=()=>lavGet().tattiche;
+const lavSel=()=>lavTat().find(t=>t.id===ui.lav.sel)||null;
+function lavCurLine(){ const t=lavSel(); return t?`<div class="lav-curt">Tattica: <b>${esc(t.nome)}</b>${ui.lav.dirty?' <span class="mod">· modificata</span> <button type="button" class="btn sm primary" data-action="lav-tupd">Aggiorna</button>':''}</div>`:''; }
+function lavDDHTML(){
+  const T=lavTat(), q=(ui.lav.q||'').toLowerCase(), L=T.filter(t=>!q || t.nome.toLowerCase().includes(q));
+  const G=LAV_PH.map(([k,l])=>[l, L.filter(t=>t.ph===k)]).filter(g=>g[1].length);
+  return `<div class="lav-dd"><button type="button" class="btn" data-action="lav-dd" aria-expanded="${ui.lav.dd}">📂 Tattiche <span class="muted" style="font-weight:600">${T.length}</span> ▾</button>
+    <div class="lav-pop ${ui.lav.dd?'open':''}"><input type="search" id="lav-q" placeholder="Cerca una tattica…" value="${esc(ui.lav.q||'')}" aria-label="Cerca una tattica">
+    ${G.length?G.map(([l,g])=>`<div class="lav-g">${l}</div>${g.map(t=>`<div class="lav-it ${t.id===ui.lav.sel?'on':''}"><button type="button" class="ld" data-action="lav-tload" data-id="${t.id}">${esc(t.nome)}<small>Rotazione ${ROTNAME[t.k]} · ${esc(lavPhName(t.ph,t.d6))}</small></button><button type="button" class="iconbtn" data-action="lav-tren" data-id="${t.id}" title="Rinomina" aria-label="Rinomina">✎</button><button type="button" class="iconbtn" data-action="lav-tdel" data-id="${t.id}" title="Cancella" aria-label="Cancella">🗑</button></div>`).join('')}`).join(''):`<div class="lav-empty">${T.length?'Nessuna tattica trovata.':'Ancora nessuna tattica: sistema i giocatori e salvala con un nome.'}</div>`}
+    <button type="button" class="btn primary lav-new" data-action="lav-tsave">💾 Salva questa come nuova tattica</button></div></div>`;
+}
+function lavGalHTML(P){
+  const T=lavTat(), F=[['tutte','Tutte'],['ricezione','Ricezione'],['battuta','Battuta'],['difesa','Difesa']], L=T.filter(t=>ui.lav.flt==='tutte'||t.ph===ui.lav.flt);
+  return `<aside class="lav-gal" aria-label="Tattiche salvate"><h3>📂 Tattiche salvate</h3>
+    <div class="lav-flt">${F.map(([k,l])=>`<button type="button" data-action="lav-flt" data-v="${k}" class="${ui.lav.flt===k?'on':''}">${l}</button>`).join('')}</div>
+    <div class="lav-gl">${L.length?L.map(t=>`<div class="lav-gc ${t.id===ui.lav.sel?'on':''}" data-action="lav-tload" data-id="${t.id}" role="button" tabindex="0">${lavMini(t,P)}<div style="min-width:0"><b>${esc(t.nome)}</b><small>${ROTNAME[t.k]} · ${esc(lavPhName(t.ph,t.d6))}</small><div class="row"><button type="button" class="iconbtn" data-action="lav-tren" data-id="${t.id}" title="Rinomina" aria-label="Rinomina">✎</button><button type="button" class="iconbtn" data-action="lav-tdel" data-id="${t.id}" title="Cancella" aria-label="Cancella">🗑</button></div></div></div>`).join(''):`<div class="lav-empty">${T.length?'Nessuna tattica in questo gruppo.':'Ancora nessuna tattica. Sistema i giocatori e premi «Salva tattica».'}</div>`}</div>
+    <button type="button" class="btn primary" data-action="lav-tsave">💾 Salva tattica</button></aside>`;
 }
 function viewLavagna(){
   const P=lavPeople(), m=P.m, f=P.f, L=lavMatches(), lm=lavLiveMatch(), msg=lavMsg(P), z=rotAt(P.k);
-  const st=ui.lav.live && m ? getStats(m).live : null;
+  const st=P.live ? getStats(m).live : null, phone=isPhone();
   const libCtl = noLibero() ? `<span class="lav-note">Senza libero (impostazione in Archivio)</span>`
     : (f && f.L ? `<label class="sw lav-sw"><input type="checkbox" id="lav-lib" ${P.lib?'checked':''}> Libero</label>` : `<span class="lav-note">Nessun libero nella formazione</span>`);
   return `<section class="lav">
@@ -6283,13 +6344,17 @@ function viewLavagna(){
     <div class="actions">${L.length>1&&!ui.lav.live?`<select id="lav-match" aria-label="Formazione da usare">${L.map(x=>`<option value="${x.id}" ${m&&x.id===m.id?'selected':''}>${esc((x.data?shortDate(x.data).slice(0,5)+' · ':'')+(x.avversario||'partita'))}</option>`).join('')}</select>`:''}
       <label class="sw lav-sw ${lm?'':'off'}" title="${lm?'Mostra rotazione, punteggio e giocatori in campo della partita in corso':'Si attiva quando fai le statistiche di una partita di oggi'}"><input type="checkbox" id="lav-live" ${ui.lav.live?'checked':''} ${lm?'':'disabled'}> Segui la partita</label></div></div>
   ${st?`<div class="lav-banner"><span class="dot" aria-hidden="true"></span><b>In partita</b><span>Set ${st.set}</span><span class="sc">${st.noi}–${st.loro}</span><span>${st.servo?'battiamo noi':'riceviamo'}</span></div>`:''}
-  <div class="lav-board">
+  <div class="lav-board ${phone?'':'with-gal'}">
+    ${phone?'':lavGalHTML(P)}
     <div class="lav-main">
       <div class="lav-head">
+        ${phone?lavDDHTML():''}
         <div class="lav-rot"><button type="button" class="btn" data-action="lav-rot" data-v="-1" ${ui.lav.live?'disabled':''} aria-label="Rotazione precedente">‹</button><div class="nm">Rotazione ${ROTNAME[P.k]}<small>palleggiatore in zona ${z.indexOf('P')+1}</small></div><button type="button" class="btn" data-action="lav-rot" data-v="1" ${ui.lav.live?'disabled':''} aria-label="Rotazione successiva">›</button></div>
         <div class="vseg lav-ph" role="group" aria-label="Fase">${LAV_PH.map(([k,l])=>`<button type="button" data-action="lav-ph" data-v="${k}" class="${ui.lav.ph===k?'on':''}">${l}</button>`).join('')}</div>
+        <label class="sw lav-sw ${ui.lav.ph==='difesa'?'':'off'}" title="In difesa il giocatore in zona 6 sta dentro il campo invece che sulla riga di fondo"><input type="checkbox" id="lav-d6" ${ui.lav.d6?'checked':''} ${ui.lav.ph==='difesa'?'':'disabled'}> 6 dentro</label>
         ${libCtl}
       </div>
+      ${lavCurLine()}
       <div class="lav-wrap">${lavSVG(P)}</div>
       <div class="lav-msg ${msg[0]}" id="lav-msg" aria-live="polite">${esc(msg[1])}</div>
     </div>
@@ -6298,25 +6363,27 @@ function viewLavagna(){
       <span class="sep"></span>
       <button type="button" class="btn" data-action="lav-undo">↶ Annulla</button><button type="button" class="btn" data-action="lav-clear">Togli le linee</button>
       <span class="sep"></span>
-      <button type="button" class="btn primary" data-action="lav-savestart">💾 Salva partenza</button><button type="button" class="btn" data-action="lav-reset">⟲ Torna alla partenza</button>
+      <button type="button" class="btn primary" data-action="lav-tsave">💾 Salva tattica</button><button type="button" class="btn" data-action="lav-savestart">📌 Salva partenza</button><button type="button" class="btn" data-action="lav-reset">⟲ Torna alla partenza</button>
       <span class="sep"></span>
-      <button type="button" class="btn" data-action="lav-std">Posizioni standard</button>
+      <button type="button" class="btn wa" data-action="lav-wa">WhatsApp</button><button type="button" class="btn" data-action="lav-std">Posizioni standard</button>
     </div>
   </div>
-  <div class="legend-row lav-legend">${[['P','Palleggiatore'],['O','Opposto'],['B','Banda'],['C','Centrale']].concat(noLibero()?[]:[['L','Libero']]).map(([r,l])=>`<span><i style="background:${ROLE_COL[r]};border-radius:50%"></i>${l}</span>`).join('')}<span><i style="background:#e07b22;height:3px;width:18px;border-radius:0"></i>palla</span><span><i style="height:0;width:18px;border-top:3px dashed #2f6fb8;border-radius:0;background:none"></i>spostamento</span><span>✕ avversari</span></div>
+  <div class="legend-row lav-legend">${[['P','Palleggiatore'],['O','Opposto'],['B','Banda'],['C','Centrale']].concat(P.lib?[['L','Libero']]:[]).map(([r,l])=>`<span><i style="background:${ROLE_COL[r]};border-radius:50%"></i><b>${r}</b>&nbsp;${l}</span>`).join('')}<span><i style="background:#e07b22;height:3px;width:18px;border-radius:0"></i>palla</span><span><i style="height:0;width:18px;border-top:3px dashed #2f6fb8;border-radius:0;background:none"></i>spostamento</span><span><i style="background:#d7263d;border-radius:50%"></i>avversari</span></div>
   </section>`;
 }
-function lavRefresh(){ const P=lavPeople(); const w=$('.lav-wrap'); if(w){ w.innerHTML=lavSVG(P); lavMount(); } const msg=lavMsg(P), e=$('#lav-msg'); if(e){ e.className='lav-msg '+msg[0]; e.textContent=msg[1]; } }
+function lavRefresh(){ const P=lavPeople(); const w=$('.lav-wrap'); if(w){ w.innerHTML=lavSVG(P); lavMount(); } const msg=lavMsg(P), e=$('#lav-msg'); if(e){ e.className='lav-msg '+msg[0]; e.textContent=msg[1]; }
+  const c=$('.lav-curt'); if(c) c.outerHTML=lavCurLine(); else if(lavSel()){ const mh=$('.lav-head'); if(mh) mh.insertAdjacentHTML('afterend', lavCurLine()); } }
 function lavSay(t){ const e=$('#lav-msg'); if(e){ e.className='lav-msg'; e.textContent=t; } clearTimeout(lavSay._t); lavSay._t=setTimeout(()=>{ const P=lavPeople(), m=lavMsg(P), x=$('#lav-msg'); if(x){ x.className='lav-msg '+m[0]; x.textContent=m[1]; } }, 2600); }
 function lavSnap(b){ lavUndo.push(JSON.stringify(b)); if(lavUndo.length>40) lavUndo.shift(); }
+function lavTouched(){ if(ui.lav.sel) ui.lav.dirty=true; }
 function lavMount(){
   const svg=$('#lav-svg'); if(!svg) return;
   let drag=null, draw=null;
   const pt=e=>{ const p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; const q=p.matrixTransform(svg.getScreenCTM().inverse()); return [Math.round(q.x), Math.round(q.y)]; };
   svg.addEventListener('pointerdown', e=>{
-    const P=lavPeople(), {d,b,kk}=lavCur(P), tool=ui.lav.tool;
+    const P=lavPeople(), {d,b}=lavCur(P), tool=ui.lav.tool;
     const g=e.target.closest('[data-z],[data-o]'), ln=e.target.closest('[data-l]');
-    if(tool==='gomma'){ if(ln){ lavSnap(b); b.lines.splice(+ln.dataset.l,1); lavSave(d); lavRefresh(); } return; }
+    if(tool==='gomma'){ if(ln){ lavSnap(b); b.lines.splice(+ln.dataset.l,1); lavTouched(); lavSave(d); lavRefresh(); } return; }
     if(tool==='muovi' && g){ lavSnap(b); const [x,y]=pt(e), isO=g.dataset.o!==undefined, p0=isO?b.opp[+g.dataset.o]:b.pos[g.dataset.z];
       drag={g, isO, id:isO?+g.dataset.o:g.dataset.z, dx:p0[0]-x, dy:p0[1]-y, d, b}; svg.setPointerCapture(e.pointerId); e.preventDefault(); return; }
     if(tool==='palla'||tool==='spost'){ lavSnap(b); draw={t:tool==='palla'?'ball':'move', p:[pt(e)], d, b}; svg.setPointerCapture(e.pointerId); e.preventDefault(); }
@@ -6324,25 +6391,71 @@ function lavMount(){
   svg.addEventListener('pointermove', e=>{
     if(drag){ const [x,y]=pt(e); let np=[x+drag.dx, y+drag.dy];
       np=drag.isO?[Math.max(10,Math.min(290,np[0])), Math.max(-80,Math.min(14,np[1]))]:[Math.max(10,Math.min(290,np[0])), Math.max(-4,Math.min(318,np[1]))];
-      (drag.isO?drag.b.opp:drag.b.pos)[drag.id]=np; drag.g.setAttribute('transform',`translate(${np[0]} ${np[1]})`); return; }
+      (drag.isO?drag.b.opp:drag.b.pos)[drag.id]=np; drag.g.setAttribute('transform',`translate(${np[0]} ${np[1]})`); drag.moved=true; return; }
     if(draw){ const p=pt(e), l=draw.p[draw.p.length-1]; if(Math.hypot(p[0]-l[0],p[1]-l[1])>6){ draw.p.push(p); const t=$('#lav-tmp'); if(t) t.innerHTML=`<path d="${lavPath(draw.p)}" fill="none" stroke="${draw.t==='ball'?'#e07b22':'#2f6fb8'}" stroke-width="4" stroke-linecap="round" ${draw.t==='ball'?'':'stroke-dasharray="8 6"'}/>`; } }
   });
   const end=()=>{
-    if(drag){ lavSave(drag.d); drag=null; lavRefresh(); }
-    if(draw){ if(draw.p.length>=2){ const q=draw.p, out=[q[0]]; for(let i=1;i<q.length-1;i+=2) out.push(q[i]); out.push(q[q.length-1]); draw.b.lines.push({t:draw.t, d:out}); lavSave(draw.d); } else lavUndo.pop(); draw=null; lavRefresh(); }
+    if(drag){ if(drag.moved){ lavTouched(); lavSave(drag.d); } else lavUndo.pop(); drag=null; lavRefresh(); }
+    if(draw){ if(draw.p.length>=2){ const q=draw.p, out=[q[0]]; for(let i=1;i<q.length-1;i+=2) out.push(q[i]); out.push(q[q.length-1]); draw.b.lines.push({t:draw.t, d:out}); lavTouched(); lavSave(draw.d); } else lavUndo.pop(); draw=null; lavRefresh(); }
   };
   svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', end);
 }
+/* --- finestre per nome e conferma --- */
+function lavAskName(title, def, cb){
+  const P=lavPeople(), {b}=lavCur(P);
+  openModal(`<div class="modal-box" style="max-width:440px"><form id="lav-nf" onsubmit="return false"><div class="modal-head"><h2 style="flex:1">${esc(title)}</h2><button type="button" class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><p class="muted" style="margin-top:0;font-size:13.5px">Rotazione ${ROTNAME[P.k]} · ${esc(lavPhName(ui.lav.ph, ui.lav.d6))} · ${b.lines.length} line${b.lines.length===1?'a':'e'}</p>
+    <label class="f">Nome<input type="text" id="lav-nm" maxlength="50" value="${esc(def||'')}" placeholder="Es. Difesa su attacco in 4" autocomplete="off"></label></div>
+    <div class="modal-foot"><span style="flex:1"></span><button type="button" class="btn" data-action="close-modal">Annulla</button><button type="submit" class="btn primary" id="lav-nok">Salva</button></div></form></div>`);
+  const i=$('#lav-nm'); setTimeout(()=>{ i.focus(); i.select(); },40);
+  $('#lav-nf').addEventListener('submit', ()=>{ const n=i.value.trim(); if(!n){ i.focus(); return; } closeModal(); cb(n); });
+}
+function lavConfirmDel(t, cb){
+  openModal(`<div class="modal-box" style="max-width:420px"><div class="modal-head"><h2 style="flex:1">Cancellare la tattica?</h2><button type="button" class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><p style="margin:0">«${esc(t.nome)}» sparisce da tutti i tuoi dispositivi.</p></div>
+    <div class="modal-foot"><span style="flex:1"></span><button type="button" class="btn" data-action="close-modal">Annulla</button><button type="button" class="btn danger" id="lav-dok">Cancella</button></div></div>`);
+  $('#lav-dok').addEventListener('click', ()=>{ closeModal(); cb(); });
+}
+/* --- immagine per WhatsApp --- */
+async function lavShare(){
+  const svg=$('#lav-svg'); if(!svg) return;
+  const P=lavPeople(), t=lavSel(), title=(t?t.nome+' · ':'')+'Rotazione '+ROTNAME[P.k]+' · '+lavPhName(ui.lav.ph, ui.lav.d6);
+  const clone=svg.cloneNode(true); clone.querySelectorAll('[data-l]').forEach(x=>x.remove()); clone.setAttribute('width','600'); clone.setAttribute('height','896');
+  const xml=new XMLSerializer().serializeToString(clone), url='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+  const img=new Image(); await new Promise((ok,ko)=>{ img.onload=ok; img.onerror=ko; img.src=url; }).catch(()=>{});
+  const W=600*2, H=(896+110)*2, c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d'); g.scale(2,2);
+  g.fillStyle='#ffffff'; g.fillRect(0,0,600,1006);
+  g.fillStyle='#1f2a44'; g.font='800 26px Segoe UI, Arial, sans-serif'; g.fillText(t?t.nome:'Lavagna tattica', 24, 44);
+  g.fillStyle='#4a5570'; g.font='600 17px Segoe UI, Arial, sans-serif'; g.fillText(('Rotazione '+ROTNAME[P.k]+' · '+lavPhName(ui.lav.ph, ui.lav.d6)+(db.settings.squadra?' · '+db.settings.squadra:'')).slice(0,60), 24, 74);
+  try{ g.drawImage(img, 0, 100, 600, 896); }catch(e){}
+  const blob=await new Promise(r=>c.toBlob(r,'image/png'));
+  if(!blob){ toast('Non riesco a creare l\'immagine'); return; }
+  const name=(t?t.nome:'lavagna').replace(/[^\w\- àèéìòù]+/gi,'').trim().replace(/\s+/g,'-')+'.png', f=new File([blob], name, {type:'image/png'});
+  try{ if(navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({files:[f], title, text:title}); return; } }catch(e){ if(e && e.name==='AbortError') return; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  window.open('https://wa.me/?text='+encodeURIComponent(title), '_blank');
+  toast('Immagine salvata: allegala al messaggio WhatsApp');
+}
 function lavAct(a, v){
   const P=lavPeople(), {d,b,kk}=lavCur(P);
-  if(a==='rot'){ ui.lav.k=((P.k+(+v))%6+6)%6; lavUndo.length=0; render(); return; }
-  if(a==='ph'){ ui.lav.ph=v; lavUndo.length=0; render(); return; }
+  if(a==='rot'){ ui.lav.k=((P.k+(+v))%6+6)%6; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
+  if(a==='ph'){ ui.lav.ph=v; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
   if(a==='tool'){ ui.lav.tool=v; $$('.lav-t').forEach(x=>x.classList.toggle('on', x.dataset.v===v)); return; }
-  if(a==='undo'){ const u=lavUndo.pop(); if(!u) return lavSay('Niente da annullare'); d.cur[kk]=JSON.parse(u); lavSave(d); lavRefresh(); return; }
-  if(a==='clear'){ lavSnap(b); b.lines=[]; lavSave(d); lavRefresh(); return; }
-  if(a==='savestart'){ d.start[kk]=JSON.parse(JSON.stringify(b)); lavSave(d); lavSay('Partenza salvata per '+ROTNAME[P.k]+' · '+LAV_PH.find(x=>x[0]===ui.lav.ph)[1].toLowerCase()); return; }
-  if(a==='reset'){ lavSnap(b); if(d.start[kk]){ d.cur[kk]=JSON.parse(JSON.stringify(d.start[kk])); lavSave(d); lavRefresh(); lavSay('Tornato alla partenza salvata'); } else { d.cur[kk]=lavBase(P.k, ui.lav.ph, P.out); lavSave(d); lavRefresh(); lavSay('Nessuna partenza salvata: posizioni standard'); } return; }
-  if(a==='std'){ lavSnap(b); d.cur[kk]=lavBase(P.k, ui.lav.ph, P.out); lavSave(d); lavRefresh(); return; }
+  if(a==='undo'){ const u=lavUndo.pop(); if(!u) return lavSay('Niente da annullare'); d.cur[kk]=JSON.parse(u); lavTouched(); lavSave(d); lavRefresh(); return; }
+  if(a==='clear'){ lavSnap(b); b.lines=[]; lavTouched(); lavSave(d); lavRefresh(); return; }
+  if(a==='savestart'){ d.start[kk]=JSON.parse(JSON.stringify(b)); lavSave(d); lavSay('Partenza salvata per '+ROTNAME[P.k]+' · '+lavPhName(ui.lav.ph, ui.lav.d6).toLowerCase()); return; }
+  if(a==='reset'){ lavSnap(b); if(d.start[kk]){ d.cur[kk]=JSON.parse(JSON.stringify(d.start[kk])); lavSay('Tornato alla partenza salvata'); } else { d.cur[kk]=lavBase(P.k, ui.lav.ph, ui.lav.d6, P.out); lavSay('Nessuna partenza salvata: posizioni standard'); } lavTouched(); lavSave(d); lavRefresh(); return; }
+  if(a==='std'){ lavSnap(b); d.cur[kk]=lavBase(P.k, ui.lav.ph, ui.lav.d6, P.out); lavTouched(); lavSave(d); lavRefresh(); return; }
+  if(a==='tsave'){ ui.lav.dd=false; lavAskName('Salva tattica', '', n=>{ const D=lavGet(), t={id:newId('ta'), nome:n, k:P.k, ph:ui.lav.ph, d6:!!ui.lav.d6, pos:JSON.parse(JSON.stringify(b.pos)), lines:JSON.parse(JSON.stringify(b.lines)), opp:JSON.parse(JSON.stringify(b.opp)), at:Date.now()}; D.tattiche.push(t); ui.lav.sel=t.id; ui.lav.dirty=false; lavSave(D); render(); toast('Tattica salvata: '+n); }); return; }
+  if(a==='tupd'){ const t=lavSel(); if(!t) return; Object.assign(t,{k:P.k, ph:ui.lav.ph, d6:!!ui.lav.d6, pos:JSON.parse(JSON.stringify(b.pos)), lines:JSON.parse(JSON.stringify(b.lines)), opp:JSON.parse(JSON.stringify(b.opp)), at:Date.now()}); ui.lav.dirty=false; lavSave(d); render(); toast('Aggiornata: '+t.nome); return; }
+  if(a==='tload'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; if(!ui.lav.live) ui.lav.k=t.k; ui.lav.ph=t.ph; ui.lav.d6=!!t.d6; ui.lav.dd=false;
+    const P2=lavPeople(), k2=lavKey(P2.k); d.cur[k2]={pos:JSON.parse(JSON.stringify(t.pos)), lines:JSON.parse(JSON.stringify(t.lines||[])), opp:JSON.parse(JSON.stringify(t.opp||LAV_OPP0))};
+    ui.lav.sel=t.id; ui.lav.dirty=false; lavUndo.length=0; lavSave(d); render(); toast('Caricata: '+t.nome+(ui.lav.live&&t.k!==P2.k?' (sulla rotazione della partita)':'')); return; }
+  if(a==='tren'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; ui.lav.dd=false; lavAskName('Rinomina tattica', t.nome, n=>{ t.nome=n; lavSave(d); render(); toast('Rinominata'); }); return; }
+  if(a==='tdel'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; ui.lav.dd=false; lavConfirmDel(t, ()=>{ d.tattiche=d.tattiche.filter(x=>x.id!==v); if(ui.lav.sel===v){ ui.lav.sel=null; ui.lav.dirty=false; } lavSave(d); render(); toast('Tattica cancellata'); }); return; }
+  if(a==='dd'){ ui.lav.dd=!ui.lav.dd; render(); if(ui.lav.dd) setTimeout(()=>$('#lav-q')?.focus(),20); return; }
+  if(a==='flt'){ ui.lav.flt=v; render(); return; }
+  if(a==='wa'){ lavShare(); return; }
 }
 /* ===== Piano della stagione ===== */
 const PL_TIPI={prep:['Preparazione','#e07b22'], camp:['Campionato','#2f6fb8'], scar:['Scarico','#22a05a'], torn:['Torneo / fasi finali','#7b5cc4'], tec:['Ciclo tecnico','#d64a5a'], paus:['Pausa','#8a94a6']};
@@ -7276,6 +7389,7 @@ const actions={
   'logo-del': ()=>{ if(!confirm('Rimuovere il logo?')) return; db.settings.logo=''; saveBrand(); },
   'view-mode': b=>setViewMode(b.dataset.k, b.dataset.v),
   'lav-rot': b=>lavAct('rot', b.dataset.v), 'lav-ph': b=>lavAct('ph', b.dataset.v), 'lav-tool': b=>lavAct('tool', b.dataset.v), 'lav-undo': ()=>lavAct('undo'), 'lav-clear': ()=>lavAct('clear'), 'lav-savestart': ()=>lavAct('savestart'), 'lav-reset': ()=>lavAct('reset'), 'lav-std': ()=>lavAct('std'),
+  'lav-tsave': ()=>lavAct('tsave'), 'lav-tupd': ()=>lavAct('tupd'), 'lav-tload': b=>lavAct('tload', b.dataset.id), 'lav-tren': b=>lavAct('tren', b.dataset.id), 'lav-tdel': b=>lavAct('tdel', b.dataset.id), 'lav-dd': ()=>lavAct('dd'), 'lav-flt': b=>lavAct('flt', b.dataset.v), 'lav-wa': ()=>lavAct('wa'),
   'at-view': b=>setAtView(b.dataset.v),
   'f-fond': b=>{ ui.f.fond=b.dataset.v; $('#app').innerHTML=viewEsercizi(); window.scrollTo(0,0); },
   'exf-toggle': ()=>{ ui.fOpen=!ui.fOpen; $('#app').innerHTML=viewEsercizi(); },
@@ -7404,6 +7518,7 @@ function moveItem(uid,dir){
   const s=getSess(ui.sessId), i=s.items.findIndex(x=>x.uid===uid), j=i+dir;
   if(j<0||j>=s.items.length) return; [s.items[i],s.items[j]]=[s.items[j],s.items[i]]; touchSess(s,'items');
 }
+document.addEventListener('pointerdown', e=>{ if(ui.lav && ui.lav.dd && ui.view==='lavagna' && !e.target.closest('.lav-dd') && !e.target.closest('#modal')){ ui.lav.dd=false; render(); } });
 document.addEventListener('click', e=>{
   const nav=e.target.closest('[data-nav]'); if(nav){ e.preventDefault(); go(nav.dataset.nav); return; }
   const a=e.target.closest('[data-action]'); if(!a || !a.dataset.action) return;
@@ -7437,7 +7552,7 @@ document.addEventListener('input', e=>{
     touchSess(s, t.dataset.if==='durata'?'times':null); autoGrow(t); return; }
   if(t.dataset.set){ db.settings[t.dataset.set]=t.value; if(t.dataset.set==='colore'||t.dataset.set==='accento') applyBrand(); clearTimeout(window._setT); window._setT=setTimeout(()=>{ persist.settings().then(()=>{ const i=$('#set-saved'); if(i){ i.textContent='✓ Salvato'; setTimeout(()=>i.textContent='',1500);} }).catch(saveFail); },400); }
 });
-document.addEventListener('input', e=>{ if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
+document.addEventListener('input', e=>{ if(e.target.id==='lav-q'){ ui.lav.q=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#lav-q'); if(i){ i.focus(); i.setSelectionRange(pos,pos); } return; } if(e.target.id==='g-q'){ ui.gq=e.target.value; const pos=e.target.selectionStart; render(); const i=$('#g-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(_){} } } });
 document.addEventListener('change', e=>{
   if(e.target.dataset.optv){ setOpz(e.target.dataset.optv, e.target.value); toast('Squadra '+genLabel()+': convocazioni e formazione si adeguano'); return; }
   if(e.target.dataset.pgs && ui.pgsS){ ui.pgsS[e.target.dataset.pgs]=e.target.value; if(!['campApp','altNomi'].includes(e.target.dataset.pgs)) pgsSetupRender(); return; }
@@ -7461,6 +7576,7 @@ document.addEventListener('change', e=>{
     f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; scMarkForm(m); touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
   if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; markPlayed(m); touchMatch(m); rerenderLive(); return; }
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
+  if(t.id==='lav-d6'){ ui.lav.d6=t.checked; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
   if(t.id==='lav-lib'){ ui.lav.lib=t.checked; lavUndo.length=0; render(); return; }
   if(t.id==='lav-live'){ ui.lav.live=t.checked; if(t.checked){ ui.lav.k=null; } lavUndo.length=0; render(); return; }
   if(t.id==='lav-match'){ ui.lav.mid=t.value; ui.lav.k=null; lavUndo.length=0; render(); return; }

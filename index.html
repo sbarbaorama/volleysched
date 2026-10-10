@@ -2158,7 +2158,8 @@ th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
 .lav-curt{font-size:13.5px;color:var(--ink-2);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .lav-curt b{color:var(--ink)}.lav-curt .mod{color:var(--accent);font-weight:700}
 .lav-wrap{display:flex;justify-content:center;min-width:0}
-svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230px);display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230px);display:block;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.lav-board.drawing svg.lav-court{touch-action:none}
 .lav-msg{font-size:13px;color:var(--muted);min-height:20px}
 .lav-msg.bad{color:#b4233a;font-weight:700}
 :root[data-theme=dark] .lav-msg.bad{color:#f6aab4}
@@ -2200,7 +2201,8 @@ svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230
   .lav-tools{flex-direction:row;flex-wrap:wrap}
   .lav-tools .btn{flex:1 1 auto;padding:6px 9px;font-size:13px;min-height:40px}
   .lav-tools .sep{display:none}
-  svg.lav-court{max-height:none}
+  svg.lav-court{width:auto;max-width:min(100%,340px);max-height:58vh;margin:0 auto}
+  .lav-wrap{padding:0 6px}
   .lav .page-head .actions{width:100%;justify-content:space-between}
   .lav-ph{display:flex}.lav-ph button{padding:6px 10px;font-size:13px}
 }
@@ -5807,7 +5809,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v68-2026-10-10';
+const APP_VERSION='v69-2026-10-10';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6344,7 +6346,7 @@ function viewLavagna(){
     <div class="actions">${L.length>1&&!P.follow?`<select id="lav-match" aria-label="Formazione da usare">${L.map(x=>`<option value="${x.id}" ${m&&x.id===m.id?'selected':''}>${esc((x.data?shortDate(x.data).slice(0,5)+' · ':'')+(x.avversario||'partita'))}</option>`).join('')}</select>`:''}
       <label class="sw lav-sw" title="${lm?'Mostra rotazione, punteggio e giocatori in campo della partita in corso':'Mostra numeri e nomi degli atleti della formazione; durante le statistiche di una partita segue anche rotazione e cambi'}"><input type="checkbox" id="lav-live" ${ui.lav.live?'checked':''} ${m?'':'disabled'}> Segui la partita</label></div></div>
   ${st?`<div class="lav-banner"><span class="dot" aria-hidden="true"></span><b>In partita</b><span>Set ${st.set}</span><span class="sc">${st.noi}–${st.loro}</span><span>${st.servo?'battiamo noi':'riceviamo'}</span></div>`:''}
-  <div class="lav-board ${phone?'':'with-gal'}">
+  <div class="lav-board ${phone?'':'with-gal'} ${ui.lav.tool==='palla'||ui.lav.tool==='spost'?'drawing':''}">
     ${phone?'':lavGalHTML(P)}
     <div class="lav-main">
       <div class="lav-head">
@@ -6379,6 +6381,8 @@ function lavTouched(){ if(ui.lav.sel) ui.lav.dirty=true; }
 function lavMount(){
   const svg=$('#lav-svg'); if(!svg) return;
   let drag=null, draw=null;
+  // sul telefono il dito sul campo scorre la pagina, tranne quando tocca un giocatore o si sta disegnando
+  svg.addEventListener('touchstart', e=>{ const t=ui.lav.tool; if(t==='palla'||t==='spost'||(t==='muovi' && e.target.closest('[data-z],[data-o]'))) e.preventDefault(); }, {passive:false});
   const pt=e=>{ const p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; const q=p.matrixTransform(svg.getScreenCTM().inverse()); return [Math.round(q.x), Math.round(q.y)]; };
   svg.addEventListener('pointerdown', e=>{
     const P=lavPeople(), {d,b}=lavCur(P), tool=ui.lav.tool;
@@ -6440,7 +6444,7 @@ function lavAct(a, v){
   const P=lavPeople(), {d,b,kk}=lavCur(P);
   if(a==='rot'){ ui.lav.k=((P.k+(+v))%6+6)%6; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
   if(a==='ph'){ ui.lav.ph=v; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
-  if(a==='tool'){ ui.lav.tool=v; $$('.lav-t').forEach(x=>x.classList.toggle('on', x.dataset.v===v)); return; }
+  if(a==='tool'){ ui.lav.tool=v; $$('.lav-t').forEach(x=>x.classList.toggle('on', x.dataset.v===v)); $('.lav-board')?.classList.toggle('drawing', v==='palla'||v==='spost'); return; }
   if(a==='undo'){ const u=lavUndo.pop(); if(!u) return lavSay('Niente da annullare'); d.cur[kk]=JSON.parse(u); lavTouched(); lavSave(d); lavRefresh(); return; }
   if(a==='clear'){ lavSnap(b); b.lines=[]; lavTouched(); lavSave(d); lavRefresh(); return; }
   if(a==='savestart'){ d.start[kk]=JSON.parse(JSON.stringify(b)); lavSave(d); lavSay('Partenza salvata per '+ROTNAME[P.k]+' · '+lavPhName(ui.lav.ph, ui.lav.d6).toLowerCase()); return; }

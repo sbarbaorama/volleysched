@@ -11,8 +11,11 @@
 "use strict";
 const Sync = (() => {
   const API = self.SYNC_API_OVERRIDE || 'https://api.github.com';   // l'alternativa serve solo per le prove
-  const MIME = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', svg: 'image/svg+xml' };
-  const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/gif': 'gif', 'image/svg+xml': 'svg' };
+  const MIME = { png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', svg: 'image/svg+xml',
+    pdf: 'application/pdf', txt: 'text/plain', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', mp4: 'video/mp4', mov: 'video/quicktime', mp3: 'audio/mpeg', m4a: 'audio/mp4', zip: 'application/zip' };
+  const EXT = Object.fromEntries(Object.entries(MIME).map(([e, m]) => [m, e]));
   let cfg = null;               // {owner, repo, token, branch}
   let state = { status: 'off', msg: '', at: 0 };
   const listeners = new Set();
@@ -98,12 +101,16 @@ const Sync = (() => {
     const o = Object.assign({}, r);
     const f = c === 'exercises' ? 'image' : c === 'athletes' ? 'avatar' : null;
     if (f && typeof o[f] === 'string' && o[f].startsWith('img:')) o[f] = (await fetchImg(o[f].slice(4), imgs)) || (f === 'image' ? null : '');
+    if (c === 'notes' && Array.isArray(o.files)) o.files = await Promise.all(o.files.map(async x => { if (!x || typeof x.d !== 'string' || !x.d.startsWith('img:')) return x;
+      let u = await fetchImg(x.d.slice(4), imgs); if (u && x.t) u = u.replace(/^data:[^;,]*/, 'data:' + x.t); return Object.assign({}, x, { d: u || '' }); }));
+    if (c === 'notes' && Array.isArray(o.files)) o.files = o.files.filter(x => x && x.d);
     return o;
   }
   async function toRemote(c, r) {
     const o = Object.assign({}, r);
     const f = c === 'exercises' ? 'image' : c === 'athletes' ? 'avatar' : null;
     if (f && typeof o[f] === 'string' && o[f].startsWith('data:')) o[f] = 'img:' + await refOf(o[f]);
+    if (c === 'notes' && Array.isArray(o.files)) o.files = await Promise.all(o.files.map(async x => (x && typeof x.d === 'string' && x.d.startsWith('data:')) ? Object.assign({}, x, { d: 'img:' + await refOf(x.d) }) : x));
     return o;
   }
   async function pool(list, n, fn) { const out = []; let i = 0; await Promise.all(Array.from({ length: Math.min(n, list.length) }, async () => { while (i < list.length) { const k = i++; out[k] = await fn(list[k]); } })); return out; }
@@ -152,7 +159,8 @@ const Sync = (() => {
     if (push) {
       set('syncing', 'Invio delle modifiche…');
       const referenced = new Set();
-      for (const c of Store.COLS) for (const r of out[c]) for (const f of ['image', 'avatar']) if (typeof r[f] === 'string' && r[f].startsWith('img:')) referenced.add(r[f].slice(4));
+      for (const c of Store.COLS) for (const r of out[c]) { for (const f of ['image', 'avatar']) if (typeof r[f] === 'string' && r[f].startsWith('img:')) referenced.add(r[f].slice(4));
+        if (Array.isArray(r.files)) for (const x of r.files) if (x && typeof x.d === 'string' && x.d.startsWith('img:')) referenced.add(x.d.slice(4)); }
       const missing = [...referenced].filter(ref => !imgs.has(ref));
       const entries = [];
       await pool(missing, 4, async ref => {

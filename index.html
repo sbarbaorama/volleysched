@@ -2210,6 +2210,25 @@ svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230
 .btn.ex-big{font-size:15px;padding:9px 18px;border:2px solid #d64a5a;color:#b3263a;background:var(--surface);font-weight:800}
 .btn.ex-big:hover{background:#fdecee}
 :root[data-theme=dark] .btn.ex-big{color:#f4a0ab}
+/* v70: allegati nelle note */
+.nf-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-bottom:8px}
+.nf-img{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--surface-2);max-width:100%}
+.nf-img .nf-open{border:0;padding:0;margin:0;width:100%;height:100%;cursor:zoom-in;background:none;display:block}
+.nf-img img{width:100%;height:100%;object-fit:cover;display:block}
+.nf-x{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(20,25,40,.65);color:#fff;font-size:13px;cursor:pointer}
+.nf-files{display:grid;gap:6px;margin-bottom:8px}
+.nf-file{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px;align-items:center;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:2px 4px 2px 2px}
+.nf-file .nf-open{display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:6px 8px;cursor:pointer;min-width:0;color:var(--ink);font:inherit}
+.nf-file .ic{font-size:22px}
+.nf-file .nm{min-width:0;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nf-file .nm small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.note-cover{display:block;width:calc(100% + 32px);margin:-14px -16px 10px;height:130px;object-fit:cover;border-radius:14px 14px 0 0}
+.note-att{margin-top:8px;font-size:12px;font-weight:700;color:#5b6475}
+.img-view{position:fixed;inset:0;z-index:200;background:rgba(10,12,18,.9);display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;cursor:zoom-out}
+.img-view.open{display:flex}
+.img-view img{max-width:100%;max-height:calc(100% - 40px);object-fit:contain;border-radius:8px}
+.img-view span{color:#fff;font-size:13px;opacity:.85}
+@media (max-width:760px){ .note-cover{width:calc(100% + 24px);margin:-12px -12px 8px;height:100px} }
 </style>
 <script>try{var _t=localStorage.getItem('vs-theme')||'auto';document.documentElement.dataset.theme=(_t==='dark'||(_t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';}catch(e){}</script>
 </head>
@@ -5161,6 +5180,37 @@ function linkify(t){ return esc(t).replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]'"]
 function noteLinksHTML(n){ const L=(n.links||[]).filter(x=>x.u); if(!L.length) return '';
   return `<div class="note-lk">${L.map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener" data-action="" title="${esc(x.u)}">🔗 ${esc(x.t||urlHost(x.u))}</a>`).join('')}</div>`; }
 function nlRowHTML(x){ x=x||{t:'',u:''}; return `<div class="nl-row"><input type="text" class="nl-t" value="${esc(x.t)}" placeholder="Nome (es. Classifica PGS)" aria-label="Nome del link"><input type="text" class="nl-u" value="${esc(x.u)}" placeholder="https://…" inputmode="url" aria-label="Indirizzo"><button type="button" class="iconbtn" data-action="nl-open" title="Apri la pagina">↗</button><button type="button" class="iconbtn" data-action="nl-del" title="Togli il link">✕</button></div>`; }
+/* allegati nelle note (immagini e file) */
+const NOTE_MAXF=5*1024*1024;
+const isImgF=x=>/^image\//.test(x.t||'') || /^data:image\//.test(x.d||'');
+function fmtSize(b){ return b>=1048576?(b/1048576).toFixed(1).replace('.',',')+' MB':Math.max(1,Math.round(b/1024))+' KB'; }
+function fileIcon(x){ const t=(x.t||'')+' '+(x.n||''); return /pdf/i.test(t)?'📕':/word|\.docx?\b/i.test(t)?'📘':/sheet|excel|\.xlsx?\b/i.test(t)?'📗':/presentation|powerpoint|\.pptx?\b/i.test(t)?'📙':/video/i.test(t)?'🎬':/audio/i.test(t)?'🎵':'📄'; }
+function dataToBlob(d){ const i=d.indexOf(','), meta=d.slice(5,i), b64=/;base64/.test(meta), mime=meta.split(';')[0]||'application/octet-stream';
+  const raw=b64?atob(d.slice(i+1)):decodeURIComponent(d.slice(i+1)); const u=new Uint8Array(raw.length); for(let k=0;k<raw.length;k++) u[k]=raw.charCodeAt(k); return new Blob([u],{type:mime}); }
+function noteFileOpen(x){
+  if(isImgF(x)){ let v=$('#img-view'); if(!v){ v=document.createElement('div'); v.id='img-view'; v.className='img-view'; document.body.appendChild(v); v.addEventListener('click',()=>v.classList.remove('open')); }
+    v.innerHTML=`<img src="${x.d}" alt="${esc(x.n)}"><span>${esc(x.n)} · tocca per chiudere</span>`; v.classList.add('open'); return; }
+  const url=URL.createObjectURL(dataToBlob(x.d)), a=document.createElement('a'); a.href=url; a.download=x.n; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url), 60000);
+}
+function noteFilesHTML(n){ const F=n.files||[]; const I=F.filter(isImgF), O=F.filter(x=>!isImgF(x));
+  if(!F.length) return '';
+  return `${I.length?`<div class="nf-imgs">${I.map(x=>`<div class="nf-img"><button type="button" class="nf-open" data-action="nf-open" data-id="${x.id}" title="Apri ${esc(x.n)}"><img src="${x.d}" alt="${esc(x.n)}"></button><button type="button" class="nf-x" data-action="nf-del" data-id="${x.id}" title="Togli" aria-label="Togli ${esc(x.n)}">✕</button></div>`).join('')}</div>`:''}${O.length?`<div class="nf-files">${O.map(x=>`<div class="nf-file"><button type="button" class="nf-open" data-action="nf-open" data-id="${x.id}" title="Apri"><span class="ic">${fileIcon(x)}</span><span class="nm">${esc(x.n)}<small>${fmtSize(x.s||0)}</small></span></button><button type="button" class="iconbtn" data-action="nf-del" data-id="${x.id}" title="Togli" aria-label="Togli ${esc(x.n)}">✕</button></div>`).join('')}</div>`:''}`; }
+function noteRefreshFiles(){ const b=$('#nf-box'); if(b) b.innerHTML=noteFilesHTML(ui.noteDraft); const c=$('#nf-count'); if(c) c.textContent=(ui.noteDraft.files||[]).length?'('+ui.noteDraft.files.length+')':''; }
+function noteAddFiles(list){
+  const n=ui.noteDraft; if(!n) return; n.files=n.files||[];
+  [...list].forEach(f=>{
+    if(n.files.length>=20){ toast('Al massimo 20 allegati per nota'); return; }
+    const add=(d,size,type,name)=>{ n.files.push({id:newId('nf'), n:name, t:type, s:size, d}); noteRefreshFiles(); };
+    if(/^image\//.test(f.type) && !/svg|gif/.test(f.type)) imageToDataURL(f, 1600, d=>add(d, Math.round((d.length-23)*0.75), 'image/jpeg', (f.name||'immagine').replace(/\.\w+$/,'')+'.jpg'));
+    else { if(f.size>NOTE_MAXF){ toast(`«${f.name}» è troppo grande (massimo 5 MB)`); return; }
+      const r=new FileReader(); r.onload=()=>add(r.result, f.size, f.type||'application/octet-stream', f.name||'allegato'); r.readAsDataURL(f); }
+  });
+}
+function notePick(img){ const inp=$('#filepick'); inp.value=''; inp.accept=img?'image/*':''; inp.multiple=true;
+  inp.onchange=()=>{ const L=[...inp.files]; inp.multiple=false; if(L.length) noteAddFiles(L); }; inp.click(); }
+document.addEventListener('dragover', e=>{ if(e.target.closest && e.target.closest('#note-form')){ e.preventDefault(); } });
+document.addEventListener('drop', e=>{ if(e.target.closest && e.target.closest('#note-form') && e.dataTransfer && e.dataTransfer.files.length){ e.preventDefault(); noteAddFiles(e.dataTransfer.files); } });
+document.addEventListener('paste', e=>{ if(!$('#note-form') || !e.clipboardData) return; const F=[...e.clipboardData.files||[]]; if(F.length){ e.preventDefault(); noteAddFiles(F); } });
 function noteLabels(){ return [...new Set((db.notes||[]).map(n=>n.etichetta).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it')); }
 function viewNote(){
   const q=(ui.nq||'').toLowerCase().trim(), lb=ui.nl||'';
@@ -5177,16 +5227,18 @@ function viewNote(){
 function noteListHTML(L){
   if(!(db.notes||[]).length) return `<div class="empty">Nessuna nota. Premi «+ Nuova nota» per scriverne una: idee per gli allenamenti, cose da ricordare, comunicazioni per la squadra…</div>`;
   if(!L.length) return `<div class="empty">Nessuna nota trovata.</div>`;
-  return `<div class="notes">${L.map(n=>`<article class="note" style="--nc:${NOTE_COL[n.colore]||'#fff'}" data-action="open-note" data-id="${n.id}">${n.fissata?'<span class="pin">📌</span>':''}${n.titolo?`<h3>${esc(n.titolo)}</h3>`:''}${n.testo.trim()?`<p>${linkify(n.testo)}</p>`:''}${noteLinksHTML(n)}
+  return `<div class="notes">${L.map(n=>`<article class="note" style="--nc:${NOTE_COL[n.colore]||'#fff'}" data-action="open-note" data-id="${n.id}">${n.fissata?'<span class="pin">📌</span>':''}${(()=>{ const im=(n.files||[]).find(isImgF); return im?`<img class="note-cover" src="${im.d}" alt="" loading="lazy">`:''; })()}${n.titolo?`<h3>${esc(n.titolo)}</h3>`:''}${n.testo.trim()?`<p>${linkify(n.testo)}</p>`:''}${noteLinksHTML(n)}${(n.files||[]).length?`<div class="note-att">📎 ${n.files.length} allegat${n.files.length===1?'o':'i'}</div>`:''}
     <div class="meta"><span>${esc(new Date(n.updatedAt).toLocaleDateString('it-IT',{day:'numeric',month:'short',year:'numeric'}))}</span>${n.etichetta?`<span class="lb">${esc(n.etichetta)}</span>`:''}</div></article>`).join('')}</div>`;
 }
 function openNote(id){
-  const n=id?Object.assign({},getNote(id)):{id:null,titolo:'',testo:'',links:[],colore:'',etichetta:ui.nl||'',fissata:false};
+  const n=id?Object.assign({},getNote(id)):{id:null,titolo:'',testo:'',links:[],files:[],colore:'',etichetta:ui.nl||'',fissata:false}; n.files=[...(n.files||[])];
   ui.noteDraft=n;
   openModal(`<div class="modal-box" style="max-width:680px"><form id="note-form" onsubmit="return false">
     <div class="modal-head"><input type="text" id="note-title" placeholder="Titolo" value="${esc(n.titolo)}" style="flex:1;font-size:19px;font-weight:700;border:0;background:transparent;padding:4px 0"><button type="button" class="iconbtn" data-action="note-pin" title="Fissa in alto" style="${n.fissata?'':'opacity:.4'}">📌</button><button type="button" class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
     <div class="modal-body">
       <textarea id="note-text" placeholder="Scrivi qui…">${esc(n.testo)}</textarea>
+      <div class="note-links" id="nf-drop"><div class="nl-h">📎 Immagini e allegati <span id="nf-count" class="muted">${(n.files||[]).length?'('+n.files.length+')':''}</span></div><div id="nf-box">${noteFilesHTML(n)}</div>
+        <div class="actions" style="gap:6px"><button type="button" class="btn sm" data-action="nf-img">🖼 Aggiungi foto</button><button type="button" class="btn sm" data-action="nf-file">📎 Aggiungi file</button><span class="muted" style="font-size:12px">File fino a 5 MB. Sul computer puoi anche trascinarli qui o incollare un'immagine.</span></div></div>
       <div class="note-links"><div class="nl-h">🔗 Link a pagine web</div><div id="nl-rows">${(n.links||[]).map(nlRowHTML).join('')}</div><button type="button" class="btn sm" data-action="nl-add">+ Aggiungi link</button></div>
       <div class="grid g2" style="margin-top:10px;align-items:end">
         <label class="f">Etichetta<input type="text" id="note-lb" list="dl-note-lb" value="${esc(n.etichetta)}" placeholder="Es. Allenamenti, Squadra, Idee"><datalist id="dl-note-lb">${noteLabels().map(l=>`<option value="${esc(l)}">`).join('')}</datalist></label>
@@ -5201,7 +5253,7 @@ function openNote(id){
 function noteFromForm(){ const n=ui.noteDraft; n.titolo=$('#note-title').value.trim(); n.testo=$('#note-text').value; n.links=$$('#nl-rows .nl-row').map(r=>({t:r.querySelector('.nl-t').value.trim(), u:normUrl(r.querySelector('.nl-u').value)})).filter(x=>x.u); n.etichetta=$('#note-lb').value.trim(); return n; }
 const noteShare=n=>[n.titolo?'*'+n.titolo+'*':'', n.testo, ...(n.links||[]).map(x=>(x.t?x.t+': ':'')+x.u)].filter(Boolean).join('\n');
 async function noteSave(silent){
-  const n=noteFromForm(); if(!n.titolo && !n.testo.trim()){ if(!silent) closeModal(); return false; }
+  const n=noteFromForm(); if(!n.titolo && !n.testo.trim() && !(n.files||[]).length){ if(!silent) closeModal(); return false; }
   const now=Date.now(); if(!n.id){ n.id=newId('no'); n.createdAt=now; db.notes=db.notes||[]; db.notes.push(n); } else { const i=db.notes.findIndex(x=>x.id===n.id); db.notes[i]=n; }
   n.updatedAt=now; ui.noteDraft=Object.assign({},n);
   try{ await api('PUT','/api/note/'+encodeURIComponent(n.id), n); }catch(e){ saveFail(e); return false; }
@@ -5546,7 +5598,7 @@ const GUIDE=[
 <div class="tip">Nel referto, nelle caselle dei turni di battuta è scritto il punteggio a cui ogni battitore ha perso la battuta: seguendole in ordine ricostruisci la sequenza dei punti.</div>
 <p>L'analisi mostra cambio palla e break per rotazione (P1…P6), i battitori, l'effetto dei time-out, i parziali subiti e l'andamento di ogni set. In <b>Partite</b> c'è l'analisi di tutta la stagione.</p>
 <p>Se in partita hai usato le <b>statistiche dal vivo</b>, non serve ricopiare niente: nella scheda Referto premi <b>📊 Crea dalle statistiche</b>. L'analisi si può mandare su <b>WhatsApp</b> o <b>stampare</b>.</p>`],
-['🗒️','Note',`<p>Appunti liberi con titolo, colore ed etichetta; 📌 fissa in cima quelli importanti. Ogni nota si può copiare o mandare su WhatsApp. Sul telefono le trovi dalla home.</p>`],
+['🗒️','Note',`<p>Appunti liberi con titolo, colore ed etichetta; 📌 fissa in cima quelli importanti. Ogni nota si può copiare o mandare su WhatsApp. Sul telefono le trovi dalla home.</p><p>In ogni nota puoi aggiungere <b>link</b> a pagine web e <b>immagini o allegati</b> (PDF, Word, Excel…, fino a 5 MB ciascuno): con 🖼 Aggiungi foto o 📎 Aggiungi file, oppure sul computer trascinandoli nella nota. La prima immagine fa da copertina; tocca un allegato per aprirlo. Con la sincronizzazione arrivano anche sugli altri dispositivi.</p>`],
 ['☁️','Sincronizzare i dati online',`
 <p>Per avere gli stessi dati su telefono, tablet e computer si usa un <b>archivio privato su GitHub</b> (gratuito). Solo tu puoi leggerlo. Si prepara una volta sola, meglio dal computer.</p>
 <h4>1. Crea l'account e l'archivio</h4>
@@ -5809,7 +5861,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v69-2026-10-10';
+const APP_VERSION='v70-2026-10-11';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -7353,12 +7405,18 @@ const actions={
   'new-note': ()=>openNote(null),
   'open-note': b=>openNote(b.dataset.id),
   'note-save': ()=>noteSave(false),
+  'nf-img': ()=>notePick(true), 'nf-file': ()=>notePick(false),
+  'nf-open': b=>{ const x=(ui.noteDraft&&ui.noteDraft.files||[]).find(f=>f.id===b.dataset.id); if(x) noteFileOpen(x); },
+  'nf-del': b=>{ const n=ui.noteDraft; n.files=(n.files||[]).filter(f=>f.id!==b.dataset.id); noteRefreshFiles(); },
   'nl-add': ()=>{ const box=$('#nl-rows'); if(!box) return; box.insertAdjacentHTML('beforeend', nlRowHTML()); box.lastElementChild.querySelector('.nl-u').focus(); },
   'nl-del': b=>{ b.closest('.nl-row')?.remove(); },
   'nl-open': b=>{ const u=normUrl(b.closest('.nl-row')?.querySelector('.nl-u').value); if(u) window.open(u,'_blank','noopener'); else toast('Scrivi prima l\'indirizzo della pagina'); },
   'note-pin': b=>{ const n=ui.noteDraft; n.fissata=!n.fissata; b.style.opacity=n.fissata?'':'.4'; },
   'note-col': b=>{ ui.noteDraft.colore=b.dataset.v; $$('.nsw button').forEach(x=>x.classList.toggle('on',x===b)); },
-  'note-wa': async ()=>{ const n=noteFromForm(); if(!n.titolo&&!n.testo.trim()) return; await noteSave(true); window.open('https://wa.me/?text='+encodeURIComponent(noteShare(n)),'_blank'); if(ui.view==='note') $('#note-list').innerHTML=noteListHTML(db.notes); },
+  'note-wa': async ()=>{ const n=noteFromForm(); if(!n.titolo&&!n.testo.trim()&&!(n.files||[]).length) return; await noteSave(true); if(ui.view==='note') $('#note-list').innerHTML=noteListHTML(db.notes);
+    const F=(n.files||[]).map(x=>new File([dataToBlob(x.d)], x.n, {type:x.t||'application/octet-stream'}));
+    if(F.length){ try{ if(navigator.canShare && navigator.canShare({files:F})){ await navigator.share({files:F, text:noteShare(n)}); return; } }catch(e){ if(e && e.name==='AbortError') return; } toast('Gli allegati non partono da qui: mandali a parte da WhatsApp'); }
+    window.open('https://wa.me/?text='+encodeURIComponent(noteShare(n)),'_blank'); },
   'note-copy': ()=>{ const n=noteFromForm(); copyText(noteShare(n)); },
   'note-del': ()=>{ const n=ui.noteDraft; if(!n.id || !confirm('Eliminare questa nota?')) return; api('DELETE','/api/note/'+encodeURIComponent(n.id)).then(()=>{ db.notes=db.notes.filter(x=>x.id!==n.id); closeModal(); render(); toast('Nota eliminata'); }).catch(saveFail); },
   'note-lb': b=>{ ui.nl=b.dataset.v; render(); },

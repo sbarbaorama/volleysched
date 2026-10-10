@@ -161,11 +161,13 @@ const Store = (() => {
   }
   function normNote(n, old) {
     const testo = s(n.testo), titolo = s(n.titolo).trim();
-    if (!titolo && !testo.trim()) throw new Error('La nota è vuota');
+    const files = Array.isArray(n.files) ? n.files.filter(x => x && typeof x === 'object' && typeof x.d === 'string' && /^(data:|img:)/.test(x.d))
+      .map(x => ({ id: s(x.id) || ('f' + Math.random().toString(36).slice(2, 9)), n: s(x.n).trim().slice(0, 120) || 'allegato', t: s(x.t).slice(0, 100), s: +x.s || 0, d: x.d })).slice(0, 20) : [];
+    if (!titolo && !testo.trim() && !files.length) throw new Error('La nota è vuota');
     const links = Array.isArray(n.links) ? n.links.filter(x => x && typeof x === 'object').map(x => {
       let u = s(x.u).trim(); if (u && !/^https?:\/\//i.test(u)) u = 'https://' + u;
       return { t: s(x.t).trim().slice(0, 80), u: u.slice(0, 1000) }; }).filter(x => /^https?:\/\/[^\s]+\.[^\s]+/i.test(x.u)).slice(0, 20) : [];
-    return { id: s(n.id), squadra: s(n.squadra), titolo, testo, links, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
+    return { id: s(n.id), squadra: s(n.squadra), titolo, testo, links, files, colore: s(n.colore), fissata: [true, 1, '1', 'true'].includes(n.fissata), etichetta: s(n.etichetta).trim(),
       createdAt: (old && old.createdAt) || n.createdAt || Date.now(), updatedAt: n.updatedAt || Date.now() };
   }
   const NORM = { exercises: normEx, sessions: normSess, athletes: normAt, matches: normMatch, trainings: normTr, notes: normNote };

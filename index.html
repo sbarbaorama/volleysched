@@ -5500,7 +5500,7 @@ const GUIDE=[
 <li><b>💾 Salva tattica</b> le salva con un nome. Le richiami dalla galleria a sinistra (tablet e computer) o da <b>📂 Tattiche</b> (telefono); lì le rinomini o le cancelli. Se cambi una tattica caricata, <b>Aggiorna</b> la sovrascrive.</li>
 <li><b>WhatsApp</b> crea l'immagine della lavagna da mandare alla squadra.</li></ol>
 <p>Nei cerchi c'è la lettera del ruolo (P, O, B, C, L); con «Segui la partita» compaiono numeri e nomi di chi è in campo. In difesa la casella <b>6 dentro</b> passa dalla difesa con il 6 fuori a quella con il 6 dentro.</p>
-<p>In ricezione e in battuta l'app segnala in rosso il <b>fallo di posizione</b>. Il libero segue l'impostazione in Archivio: se giocate senza libero non compare. Durante le statistiche di una partita di oggi puoi attivare <b>Segui la partita</b>: la lavagna mostra rotazione, punteggio e i giocatori in campo con i cambi.</p>`],
+<p>In ricezione e in battuta l'app segnala in rosso il <b>fallo di posizione</b>. Il libero segue l'impostazione in Archivio: se giocate senza libero non compare. Con <b>Segui la partita</b> vedi numeri e nomi degli atleti della formazione, in ogni rotazione; durante le statistiche di una partita di oggi la lavagna segue anche rotazione, punteggio e cambi.</p>`],
 ['✅','Presenze',`
 <ol><li>Con <b>Genera calendario</b> crei tutti gli allenamenti della stagione nei giorni fissi; con <b>+ Aggiungi allenamento</b> quelli singoli.</li>
 <li>Per ogni allenamento segni ✓ presente, ✗ assente, G giustificato o <b>R</b> in ritardo (o uscito prima: conta come presente). «Segna presenti tutti gli altri» velocizza.</li>
@@ -5807,7 +5807,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v67-2026-10-10';
+const APP_VERSION='v68-2026-10-10';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6238,7 +6238,7 @@ function lavGet(){ return ui.lavPending || lavData(); }
 function lavLiveMatch(){ const td=todayISO(); return db.matches.find(m=>m.data===td && m.stats && m.stats.live && (m.stats.ev||[]).length && formOk(getForm(m))) || null; }
 function lavMatches(){ return [...db.matches].filter(m=>formOk(getForm(m))).sort((a,b)=>(a.data||'').localeCompare(b.data||'')); }
 function lavMatch(){
-  if(ui.lav.live){ const lm=lavLiveMatch(); if(lm) return lm; ui.lav.live=false; }
+  if(ui.lav.live){ const lm=lavLiveMatch(); if(lm) return lm; }
   const L=lavMatches(); if(!L.length) return null;
   if(ui.lav.mid){ const m=L.find(x=>x.id===ui.lav.mid); if(m) return m; }
   const td=todayISO(); return L.find(m=>(m.data||'')>=td) || L[L.length-1];
@@ -6246,12 +6246,12 @@ function lavMatch(){
 function lavLibOn(f){ if(noLibero()) return false; if(!f || !f.L) return false; return ui.lav.lib===null ? !!f.libero : !!ui.lav.lib; }
 function lavSlots(k, ph, lib){ const z=rotAt(k), out={}; z.forEach((slot,i)=>{ const zone=i+1, front=zone>=2&&zone<=4; out[zone]=(lib && SLOT_ROLE[slot]==='C' && !front && !(ph==='battuta' && zone===1))?'L':slot; }); return out; }
 function lavPeople(){   // zona → {id, slot}
-  const m=lavMatch(), f=m?getForm(m):null, live=!!(ui.lav.live && m);
-  const k=live ? getStats(m).live.k : (ui.lav.k===null ? (f?+f.start||0:0) : ui.lav.k);
+  const m=lavMatch(), f=m?getForm(m):null, live=!!(ui.lav.live && m), follow=!!(live && lavLiveMatch()===m);
+  const k=follow ? getStats(m).live.k : (ui.lav.k===null ? (f?+f.start||0:0) : ui.lav.k);
   if(ui.lav.k===null) ui.lav.k=k;
-  const who=live ? liveWho(m) : (s=>f?f[s]:''), lib=lavLibOn(f), sl=lavSlots(k, ui.lav.ph, lib), out={};
+  const who=follow ? liveWho(m) : (s=>f?f[s]:''), lib=lavLibOn(f), sl=lavSlots(k, ui.lav.ph, lib), out={};
   for(let zone=1; zone<=6; zone++){ const s=sl[zone]; out[zone]={slot:s, id:(s==='L'?(f&&f.L):who(s))||''}; }
-  return {m, f, k, out, lib, live};
+  return {m, f, k, out, lib, live, follow};
 }
 function lavBase(k, ph, d6, P){
   const pos={};
@@ -6336,20 +6336,20 @@ function lavGalHTML(P){
 }
 function viewLavagna(){
   const P=lavPeople(), m=P.m, f=P.f, L=lavMatches(), lm=lavLiveMatch(), msg=lavMsg(P), z=rotAt(P.k);
-  const st=P.live ? getStats(m).live : null, phone=isPhone();
+  const st=P.follow ? getStats(m).live : null, phone=isPhone();
   const libCtl = noLibero() ? `<span class="lav-note">Senza libero (impostazione in Archivio)</span>`
     : (f && f.L ? `<label class="sw lav-sw"><input type="checkbox" id="lav-lib" ${P.lib?'checked':''}> Libero</label>` : `<span class="lav-note">Nessun libero nella formazione</span>`);
   return `<section class="lav">
   <div class="page-head"><div><h1>Lavagna tattica</h1><p class="muted">${m?esc(matchTitle(m))+(m.data?' · '+esc(shortDate(m.data)):''):'Nessuna formazione: preparala nella scheda di una partita'}</p></div>
-    <div class="actions">${L.length>1&&!ui.lav.live?`<select id="lav-match" aria-label="Formazione da usare">${L.map(x=>`<option value="${x.id}" ${m&&x.id===m.id?'selected':''}>${esc((x.data?shortDate(x.data).slice(0,5)+' · ':'')+(x.avversario||'partita'))}</option>`).join('')}</select>`:''}
-      <label class="sw lav-sw ${lm?'':'off'}" title="${lm?'Mostra rotazione, punteggio e giocatori in campo della partita in corso':'Si attiva quando fai le statistiche di una partita di oggi'}"><input type="checkbox" id="lav-live" ${ui.lav.live?'checked':''} ${lm?'':'disabled'}> Segui la partita</label></div></div>
+    <div class="actions">${L.length>1&&!P.follow?`<select id="lav-match" aria-label="Formazione da usare">${L.map(x=>`<option value="${x.id}" ${m&&x.id===m.id?'selected':''}>${esc((x.data?shortDate(x.data).slice(0,5)+' · ':'')+(x.avversario||'partita'))}</option>`).join('')}</select>`:''}
+      <label class="sw lav-sw" title="${lm?'Mostra rotazione, punteggio e giocatori in campo della partita in corso':'Mostra numeri e nomi degli atleti della formazione; durante le statistiche di una partita segue anche rotazione e cambi'}"><input type="checkbox" id="lav-live" ${ui.lav.live?'checked':''} ${m?'':'disabled'}> Segui la partita</label></div></div>
   ${st?`<div class="lav-banner"><span class="dot" aria-hidden="true"></span><b>In partita</b><span>Set ${st.set}</span><span class="sc">${st.noi}–${st.loro}</span><span>${st.servo?'battiamo noi':'riceviamo'}</span></div>`:''}
   <div class="lav-board ${phone?'':'with-gal'}">
     ${phone?'':lavGalHTML(P)}
     <div class="lav-main">
       <div class="lav-head">
         ${phone?lavDDHTML():''}
-        <div class="lav-rot"><button type="button" class="btn" data-action="lav-rot" data-v="-1" ${ui.lav.live?'disabled':''} aria-label="Rotazione precedente">‹</button><div class="nm">Rotazione ${ROTNAME[P.k]}<small>palleggiatore in zona ${z.indexOf('P')+1}</small></div><button type="button" class="btn" data-action="lav-rot" data-v="1" ${ui.lav.live?'disabled':''} aria-label="Rotazione successiva">›</button></div>
+        <div class="lav-rot"><button type="button" class="btn" data-action="lav-rot" data-v="-1" ${P.follow?'disabled':''} aria-label="Rotazione precedente">‹</button><div class="nm">Rotazione ${ROTNAME[P.k]}<small>palleggiatore in zona ${z.indexOf('P')+1}</small></div><button type="button" class="btn" data-action="lav-rot" data-v="1" ${P.follow?'disabled':''} aria-label="Rotazione successiva">›</button></div>
         <div class="vseg lav-ph" role="group" aria-label="Fase">${LAV_PH.map(([k,l])=>`<button type="button" data-action="lav-ph" data-v="${k}" class="${ui.lav.ph===k?'on':''}">${l}</button>`).join('')}</div>
         <label class="sw lav-sw ${ui.lav.ph==='difesa'?'':'off'}" title="In difesa il giocatore in zona 6 sta dentro il campo invece che sulla riga di fondo"><input type="checkbox" id="lav-d6" ${ui.lav.d6?'checked':''} ${ui.lav.ph==='difesa'?'':'disabled'}> 6 dentro</label>
         ${libCtl}
@@ -6448,9 +6448,9 @@ function lavAct(a, v){
   if(a==='std'){ lavSnap(b); d.cur[kk]=lavBase(P.k, ui.lav.ph, ui.lav.d6, P.out); lavTouched(); lavSave(d); lavRefresh(); return; }
   if(a==='tsave'){ ui.lav.dd=false; lavAskName('Salva tattica', '', n=>{ const D=lavGet(), t={id:newId('ta'), nome:n, k:P.k, ph:ui.lav.ph, d6:!!ui.lav.d6, pos:JSON.parse(JSON.stringify(b.pos)), lines:JSON.parse(JSON.stringify(b.lines)), opp:JSON.parse(JSON.stringify(b.opp)), at:Date.now()}; D.tattiche.push(t); ui.lav.sel=t.id; ui.lav.dirty=false; lavSave(D); render(); toast('Tattica salvata: '+n); }); return; }
   if(a==='tupd'){ const t=lavSel(); if(!t) return; Object.assign(t,{k:P.k, ph:ui.lav.ph, d6:!!ui.lav.d6, pos:JSON.parse(JSON.stringify(b.pos)), lines:JSON.parse(JSON.stringify(b.lines)), opp:JSON.parse(JSON.stringify(b.opp)), at:Date.now()}); ui.lav.dirty=false; lavSave(d); render(); toast('Aggiornata: '+t.nome); return; }
-  if(a==='tload'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; if(!ui.lav.live) ui.lav.k=t.k; ui.lav.ph=t.ph; ui.lav.d6=!!t.d6; ui.lav.dd=false;
+  if(a==='tload'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; if(!lavPeople().follow) ui.lav.k=t.k; ui.lav.ph=t.ph; ui.lav.d6=!!t.d6; ui.lav.dd=false;
     const P2=lavPeople(), k2=lavKey(P2.k); d.cur[k2]={pos:JSON.parse(JSON.stringify(t.pos)), lines:JSON.parse(JSON.stringify(t.lines||[])), opp:JSON.parse(JSON.stringify(t.opp||LAV_OPP0))};
-    ui.lav.sel=t.id; ui.lav.dirty=false; lavUndo.length=0; lavSave(d); render(); toast('Caricata: '+t.nome+(ui.lav.live&&t.k!==P2.k?' (sulla rotazione della partita)':'')); return; }
+    ui.lav.sel=t.id; ui.lav.dirty=false; lavUndo.length=0; lavSave(d); render(); toast('Caricata: '+t.nome+(P2.follow&&t.k!==P2.k?' (sulla rotazione della partita)':'')); return; }
   if(a==='tren'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; ui.lav.dd=false; lavAskName('Rinomina tattica', t.nome, n=>{ t.nome=n; lavSave(d); render(); toast('Rinominata'); }); return; }
   if(a==='tdel'){ const t=d.tattiche.find(x=>x.id===v); if(!t) return; ui.lav.dd=false; lavConfirmDel(t, ()=>{ d.tattiche=d.tattiche.filter(x=>x.id!==v); if(ui.lav.sel===v){ ui.lav.sel=null; ui.lav.dirty=false; } lavSave(d); render(); toast('Tattica cancellata'); }); return; }
   if(a==='dd'){ ui.lav.dd=!ui.lav.dd; render(); if(ui.lav.dd) setTimeout(()=>$('#lav-q')?.focus(),20); return; }
@@ -7578,7 +7578,7 @@ document.addEventListener('change', e=>{
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if(t.id==='lav-d6'){ ui.lav.d6=t.checked; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
   if(t.id==='lav-lib'){ ui.lav.lib=t.checked; lavUndo.length=0; render(); return; }
-  if(t.id==='lav-live'){ ui.lav.live=t.checked; if(t.checked){ ui.lav.k=null; } lavUndo.length=0; render(); return; }
+  if(t.id==='lav-live'){ ui.lav.live=t.checked; if(t.checked && lavLiveMatch()){ ui.lav.k=null; } lavUndo.length=0; render(); return; }
   if(t.id==='lav-match'){ ui.lav.mid=t.value; ui.lav.k=null; lavUndo.length=0; render(); return; }
   if(t.id==='p-all'){ ui.pAll=t.checked; $('#reg').innerHTML=regTable(); return; }
   if(t.dataset.calday!==undefined){ const c=getCal(); if(t.checked) c.giorni[t.dataset.calday]=c.giorni[t.dataset.calday]||''; else delete c.giorni[t.dataset.calday]; saveCal(c);

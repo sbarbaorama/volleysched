@@ -2310,7 +2310,7 @@ function toMin(hhmm){ const m=/^(\d{1,2}):(\d{2})$/.exec(hhmm||''); return m ? (
 function fmtClock(t){ t=((t%1440)+1440)%1440; return String(Math.floor(t/60)).padStart(2,'0')+':'+String(t%60).padStart(2,'0'); }
 function fmtDur(m){ m=+m||0; if(m<60) return m+' min'; const h=Math.floor(m/60), r=m%60; return h+' h'+(r?' '+r+' min':''); }
 function fmtDate(d, opts){ if(!d) return ''; const dt=new Date(d+'T12:00:00'); if(isNaN(dt)) return d; return dt.toLocaleDateString('it-IT', opts||{weekday:'long',day:'numeric',month:'long',year:'numeric'}); }
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),1800); }
+function toast(msg, ms){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),ms||1800); }
 function fondColor(f){
   if(!f) return '#9aa1b0';
   if(FOND_COLORS[f]) return FOND_COLORS[f];
@@ -4517,7 +4517,7 @@ function getStats(m){ if(!m.stats) m.stats={sets:[], ev:[], live:null}; const S=
 function liveWho(m){ const f=getForm(m), L=getStats(m).live; return slot=>(L.subs[slot]!==undefined?L.subs[slot]:f[slot]); }
 function onCourt(m){ const who=liveWho(m), f=getForm(m), L=getStats(m).live, z=rotAt(L.k);
   const ids=z.map(s=>who(s)); if(f.libero && f.L) ids.push(f.L); return ids.filter(Boolean); }
-function markPlayed(m){ const L=getStats(m).live; const s=new Set(L.played[L.set]||[]); onCourt(m).forEach(id=>s.add(id)); L.played[L.set]=[...s]; }
+function markPlayed(m){ const L=getStats(m).live; if(L.fine || L.set>MAX_SETS) return; const s=new Set(L.played[L.set]||[]); onCourt(m).forEach(id=>s.add(id)); L.played[L.set]=[...s]; }
 
 const isLand=()=>window.matchMedia('(orientation: landscape) and (max-height: 520px), (orientation: landscape) and (pointer: coarse) and (min-height: 521px) and (max-width: 1440px)').matches;
 function viewLiveLand(){
@@ -4580,7 +4580,7 @@ function viewLive(){
     </div>
   </div></section>`;
 }
-function evLabel(e){ if(e.k==='err' && !e.a) return 'altro errore nostro'; if(e.k==='sub') return 'cambio, esce '+athShort(e.out); if(e.k==='pt') return 'punto nostro'; if(e.k==='pl') return 'punto loro'; const A=ACTS[e.k]; const b=A&&A.b.find(x=>x[0]===e.v); return A?A.l+': '+(b?b[1].toLowerCase():e.v):e.k; }
+function evLabel(e){ if(e.k==='err' && !e.a) return 'altro errore nostro'; if(e.k==='sub') return 'cambio, esce '+athShort(e.out); if(e.k==='lineup') return 'formazione del set, al posto di '+athShort(e.out); if(e.k==='pt') return 'punto nostro'; if(e.k==='pl') return 'punto loro'; const A=ACTS[e.k]; const b=A&&A.b.find(x=>x[0]===e.v); return A?A.l+': '+(b?b[1].toLowerCase():e.v):e.k; }
 function liveEvent(k, v){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
   const simple=liveMode(m)==='simple', who0=(simple && !ui.livePick && k==='bat' && L.servo) ? liveServer(m) : '';
@@ -4617,7 +4617,7 @@ function liveEndSet(){
     L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
     touchMatch(m); rerenderLive();
     if(w>=SETS_TO_WIN || l>=SETS_TO_WIN || S.sets.length>=MAX_SETS) liveAskEnd(true);
-    else toast(`Set chiuso · risultato ${w}-${l}. Controlla rotazione e chi batte per il set ${L.set}.`); };
+    else toast(`Set chiuso · ${w}-${l}. Per la formazione del set ${L.set} usa «Cambio» prima del primo punto, poi controlla rotazione e battuta.`, 6000); };
 }
 function liveAskEnd(auto){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live; if(L.fine) return;
@@ -4652,21 +4652,27 @@ function statsDelSet(n){
     if(inList) S.sets.splice(n-1,1); else { L.noi=0; L.loro=0; }
     S.ev=S.ev.filter(e=>e.s!==n).map(e=>e.s>n?Object.assign({}, e, {s:e.s-1}):e);
     const P={}; for(const [k,v] of Object.entries(L.played||{})){ const kk=+k; if(kk===n) continue; P[kk>n?kk-1:kk]=v; } L.played=P;
-    if(L.fine) L.set=Math.max(1,S.sets.length); else if(inList && L.set>n) L.set--;
+    if(L.fine) L.set=Math.max(1,S.sets.length); else if(inList && L.set>n) L.set--; playedSetsFix(m);
     const {w,l}=setWins(S); if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=S.sets.length?(m.inCasa?`${w}-${l}`:`${l}-${w}`):'';
     touchMatch(m); closeModal(); openMatchStats(); toast('Set '+n+' tolto'); if(ui.view==='live') rerenderLive(); };
 }
+const isPlayEv=e=>!!e && e.k!=='sub' && e.k!=='lineup';
+const setStarted=(S,n)=>(S.ev||[]).some(e=>e.s===n && isPlayEv(e));
 function liveSub(){
-  const m=getMatch(ui.matchId), S=getStats(m), who=liveWho(m), z=rotAt(S.live.k);
+  const m=getMatch(ui.matchId), S=getStats(m), L=S.live, who=liveWho(m), z=rotAt(L.k), start=!setStarted(S, L.set);
+  if(L.fine){ toast('La partita è finita'); return; }
   const court=z.map(s=>({s, id:who(s)})), bench=convocati(m).filter(a=>!onCourt(m).includes(a.id));
-  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><div style="flex:1"><h2>Cambio</h2></div><button class="iconbtn" data-action="close-modal">✕</button></div>
+  openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><div style="flex:1"><h2>${start?'Formazione del set '+L.set:'Cambio'}</h2>${start?`<div class="muted" style="font-size:13.5px;margin-top:4px">Il set non è ancora iniziato: chi metti in campo adesso è la formazione di partenza, non una sostituzione.</div>`:''}</div><button class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body"><div class="grid g2"><label class="f">Esce<select id="sub-out">${court.map(c=>`<option value="${c.s}">${esc(athShort(c.id))} (${esc(SLOTS.find(x=>x[0]===c.s)[1])})</option>`).join('')}</select></label>
-    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div></div>
-    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>Fai il cambio</button></div></div>`);
+    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div>
+    ${start?`<p class="muted" style="font-size:13px;margin:10px 0 0">In campo ora: ${court.map(c=>esc(athShort(c.id))).join(', ')}. Dopo ogni scelta la finestra resta aperta per il giocatore successivo; premi «Fatto» quando hai finito.</p>`:''}</div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">${start?'Fatto':'Annulla'}</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>${start?'Metti in campo':'Fai il cambio'}</button></div></div>`);
   $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; const outA=getAt(who(s)), inA=getAt(id);
-    if(isMixed() && outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Fare il cambio lo stesso?')) return;
-    { const L=S.live; S.ev.push({id:newId('ev'), t:Date.now(), s:L.set, a:id, k:'sub', v:'', out:who(s), slot:s, prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k, subs:Object.assign({}, L.subs)}, noi:L.noi, loro:L.loro}); }
-    S.live.subs[s]=id; markPlayed(m); touchMatch(m); closeModal(); rerenderLive(); toast('Cambio fatto'); };
+    if(isMixed() && outA && inA && sexOf(outA) && sexOf(inA) && sexOf(outA)!==sexOf(inA) && !confirm('Attenzione: esce '+(isF(outA)?'una donna':'un uomo')+' ed entra '+(isF(inA)?'una donna':'un uomo')+'. In campo devono restare 3 uomini e 3 donne alternati. Continuare lo stesso?')) return;
+    S.ev.push({id:newId('ev'), t:Date.now(), s:L.set, a:id, k:start?'lineup':'sub', v:'', out:who(s), slot:s, prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k, subs:Object.assign({}, L.subs)}, noi:L.noi, loro:L.loro});
+    L.subs[s]=id; if(!start) markPlayed(m); touchMatch(m);
+    if(start){ rerenderLive(); toast('In campo '+athShort(id)+(outA?' al posto di '+athShort(outA.id):'')); liveSub(); }
+    else { closeModal(); rerenderLive(); toast('Cambio fatto'); } };
 }
 /* -------------------- riepiloghi -------------------- */
 function statTable(evs, played, ids){
@@ -5630,6 +5636,7 @@ const GUIDE=[
 <ol><li>Dalla partita (o dalla home il giorno della gara) premi <b>📊 Statistiche</b>: l'app controlla che convocati e formazione siano pronti.</li>
 <li>Tocchi l'atleta, poi il gesto e il giudizio: <b>++</b> perfetto, <b>+</b> buono, <b>0</b> neutro, <b>−</b> errore.</li>
 <li>+1 noi / +1 loro aggiornano punteggio, rotazione e battuta; <b>Cambio</b> per le sostituzioni, <b>Fine set</b> a fine set, <b>↶</b> per annullare.</li>
+<li><b>Formazione di inizio set</b>: dopo «Fine set», prima del primo punto, metti in campo i giocatori con <b>Cambio</b> (la finestra si chiama «Formazione del set»): non contano come sostituzioni e chi resta fuori non risulta aver giocato quel set. Poi controlla la rotazione e chi batte.</li>
 <li>Quando una squadra arriva a 3 set, o dopo il quinto, l'app chiede se la partita è finita; puoi chiuderla anche prima con <b>Fine partita</b>. Una partita chiusa si può riaprire. Nel <b>Riepilogo</b>, alla voce «Set registrati», puoi togliere un set che non è stato giocato.</li></ol>
 <p>Girando il telefono in orizzontale hai una vista più comoda. <b>⚡ Partita veloce</b> crea al volo un'amichevole e parte subito.</p>
 <p>In alto puoi scegliere tra statistiche <b>Complete</b> (tutti i fondamentali) e <b>Semplici</b>: solo battuta, ricezione e attacco, con tre esiti ciascuno, più un pulsante per gli altri errori. Nella versione semplice, quando battete voi basta toccare l'esito: la battuta va a chi è in zona 1. L'app ricorda la scelta per le partite successive.</p>`],
@@ -5824,7 +5831,8 @@ function refFromStats(m){
   const nS=Math.max(S.sets.length, ...S.ev.map(e=>e.s||1));
   for(let s=1;s<=nS;s++){
     const E=S.ev.filter(e=>(e.s||1)===s); if(!E.some(e=>OUR_PT(e)||THEIR_PT(e))) continue;
-    const first=E[0], k0=first.prev&&first.prev.k!=null?+first.prev.k:(+f.start||0), sv0=first.prev?!!first.prev.servo:false;
+    E.filter(e=>e.k==='lineup').forEach(e=>{ if(e.slot) subs[e.slot]=e.a; });
+    const first=E.find(isPlayEv)||E[0], k0=first.prev&&first.prev.k!=null?+first.prev.k:(+f.start||0), sv0=first.prev?!!first.prev.servo:false;
     const who=sl=>subs[sl]!==undefined?subs[sl]:f[sl];
     const set={our:rotAt(k0).map(who), pal:who('P'), opp:null, firstServe:sv0?'noi':'loro', ev:[]};
     for(const e of E){
@@ -5838,7 +5846,7 @@ function refFromStats(m){
 }
 /* ===== Statistiche della stagione nel profilo ===== */
 function athleteSeasonHTML(id){
-  const ms=db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.some(e=>e.a===id && e.k!=='sub'));
+  const ms=db.matches.filter(m=>m.stats && m.stats.ev && m.stats.ev.some(e=>e.a===id && isPlayEv(e)));
   let sv=null; { const L=refCollect(db.matches); if(L.length){ const A=refAnalyze(L); sv=A.srv[id]||null; } }
   if(!ms.length && !sv) return '';
   const p={bat:0,ace:0,batE:0,ric:0,ricG:0,ricE:0,att:0,attP:0,attE:0,mur:0,dif:0,err:0,set:0};
@@ -5918,7 +5926,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v71-2026-10-12';
+const APP_VERSION='v73-2026-10-12';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6305,6 +6313,42 @@ async function autoVerCheck(){
     if(m && verNum(m[1])>verNum(APP_VERSION)){ document.body.classList.add('has-upd'); window.APP_ONLINE_VER=m[1]; try{ if(swReg) await swReg.update(); }catch(e){} } }catch(e){}
 }
 /* Toglie una volta sola "Portare la carta d'identità." dalle note delle partite già inserite (tutte le squadre). */
+/* v72: toglie dai «set giocati» quelli senza punteggio né azioni (per esempio il sesto set segnato aprendo le statistiche a partita finita) */
+function playedSetsFix(m){
+  const S=m.stats, L=S&&S.live; if(!L || !L.played) return false;
+  const ok=new Set(); (S.sets||[]).forEach((x,i)=>{ if(i<MAX_SETS) ok.add(i+1); });
+  (S.ev||[]).forEach(e=>{ if(e && e.s>=1 && e.s<=MAX_SETS) ok.add(+e.s); });
+  if(!L.fine && L.set<=MAX_SETS && (L.noi||L.loro)) ok.add(+L.set);
+  let ch=false; const P={};
+  for(const [k,v] of Object.entries(L.played)){ if(ok.has(+k)) P[k]=v; else ch=true; }
+  if(ch) L.played=P;
+  if(!L.fine && L.set>MAX_SETS){ L.fine=true; L.set=MAX_SETS; ch=true; }
+  return ch;
+}
+/* v73: i cambi fatti prima del primo punto di un set diventano «formazione del set»; i set giocati si ricalcolano dalle azioni registrate */
+function statsRebuild(m){
+  const S=m.stats, L=S&&S.live; if(!S || !Array.isArray(S.ev) || !L) return false;
+  let ch=false; const f=getForm(m), seen=new Set();
+  for(const e of S.ev){ if(!e) continue; if(isPlayEv(e)) seen.add(e.s); else if(e.k==='sub' && !seen.has(e.s)){ e.k='lineup'; ch=true; } }
+  if(formOk(f)){
+    const subs={}, P={}, started=new Set(), who=sl=>subs[sl]!==undefined?subs[sl]:f[sl];
+    const court=()=>{ const ids=SLOTS.map(([sl])=>who(sl)); if(f.libero && f.L) ids.push(f.L); return ids.filter(Boolean); };
+    for(const e of S.ev){ if(!e || !(e.s>=1 && e.s<=MAX_SETS)) continue; const n=e.s, set=P[n]||(P[n]=new Set());
+      if(e.k==='lineup'){ if(e.slot) subs[e.slot]=e.a; continue; }
+      if(e.k==='sub'){ if(e.slot) subs[e.slot]=e.a; if(started.has(n) && e.a) set.add(e.a); continue; }
+      started.add(n); court().forEach(id=>set.add(id)); }
+    const NP={}; for(const [n,set] of Object.entries(P)) if(started.has(+n) && set.size) NP[n]=[...set];
+    const norm=o=>JSON.stringify(Object.keys(o).sort().map(k=>[k,[...(o[k]||[])].sort()]));
+    if(norm(NP)!==norm(L.played||{})){ L.played=NP; ch=true; }
+  }
+  return playedSetsFix(m) || ch;
+}
+async function cleanPlayedSets(){
+  if(scoutOn()) return;
+  const ms=(Store.fullState().matches||[]).filter(m=>m.stats && m.stats.live && statsRebuild(m));
+  for(const m of ms){ m.updatedAt=Date.now(); await persist.match(m); }
+  if(ms.length) await loadState();
+}
 async function cleanConvNote(){
   if(scoutOn() || Store.getMeta('pulitoCartaId')) return;
   const RE=/Portare la carta d['’]identità\.?[ \t]*/gi;
@@ -6766,7 +6810,7 @@ function scoutOn(){ const s=Store.getMeta('scoutMode'); return !!(s && s.on); }
 function scoutCfg(){ return (Store.getMeta('scoutMode')||{}).cfg || null; }
 const scKey=k=>k+':'+(teamCur()||'1');
 function coachScoutCfg(){ return Store.getMeta(scKey('scoutRepo')) || null; }
-const scHasEv=m=>!!(m && m.stats && m.stats.ev && m.stats.ev.some(e=>e.k!=='sub'));
+const scHasEv=m=>!!(m && m.stats && m.stats.ev && m.stats.ev.some(isPlayEv));
 const scSig=m=>{ const s=m.stats||{}, ev=s.ev||[]; return ev.length+':'+((ev[ev.length-1]||{}).id||'')+':'+JSON.stringify(s.sets||[])+':'+(m.risultato||'')+':'+JSON.stringify(m.formazione||{}).length; };
 /* --- archivio GitHub (solo i file della cartella scout/) --- */
 const SC_API=()=>self.SYNC_API_OVERRIDE||'https://api.github.com';
@@ -6913,7 +6957,7 @@ function viewScoutHome(){
   const sm=Store.getMeta('scoutMode')||{}, c=scoutCfg(), td=todayISO();
   const ms=[...db.matches].sort((a,b)=>((a.data||'')+(a.ora||'')).localeCompare((b.data||'')+(b.ora||'')));
   const next=ms.filter(m=>(m.data||'')>=td), past=ms.filter(m=>(m.data||'')<td).reverse();
-  const card=m=>{ const n=(m.convocati||[]).length, ev=m.stats&&m.stats.ev?m.stats.ev.filter(e=>e.k!=='sub').length:0;
+  const card=m=>{ const n=(m.convocati||[]).length, ev=m.stats&&m.stats.ev?m.stats.ev.filter(isPlayEv).length:0;
     return `<button class="sc-match ${m.data===td?'today':''} ${ev?'done':''}" data-action="sc-open" data-id="${m.id}"><span class="d"><b>${esc(fmtDate(m.data,{weekday:'short',day:'numeric',month:'short'}))}</b>${esc(m.ora||'')}</span>
       <span class="t"><b>${esc(matchTitle(m))}</b><small>${m.inCasa?'in casa':'in trasferta'} · ${n} convocat${n===1?'o':'i'}${ev?` · ${ev} azioni registrate`:''}${m.risultato?' · '+esc(m.risultato):''}</small></span><span class="go">›</span></button>`; };
   return `<section style="max-width:760px;margin:0 auto">
@@ -7561,7 +7605,7 @@ const actions={
   'rot-view': ()=>openRotations(),
   'form-auto': ()=>{ const m=getMatch(ui.matchId); const f=getForm(m); if(SLOTS.some(([s])=>f[s]) && !confirm('Sostituire la formazione attuale con quella proposta?')) return; autoForm(m); },
   'rot-print': ()=>printRotations(),
-  'live-open': ()=>{ const m=getMatch(ui.matchId); getStats(m); markPlayed(m); ui.livePick=null; go('live',{matchId:m.id}); },
+  'live-open': ()=>{ const m=getMatch(ui.matchId); getStats(m); ui.livePick=null; go('live',{matchId:m.id}); },
   'live-close': ()=>go('partita',{matchId:ui.matchId}),
   'live-pt': ()=>liveEvent('pt'),
   'live-pl': ()=>liveEvent('pl'),
@@ -7693,7 +7737,7 @@ document.addEventListener('change', e=>{
     m.convocati=db.athletes.filter(a=>s.has(a.id)).map(a=>a.id); touchMatch(m); refreshMatch(m,'conv'); return; }
   if(t.dataset.fs){ const m=getMatch(ui.matchId); if(!m) return; const f=getForm(m); const k=t.dataset.fs;
     f[k]= k==='libero' ? t.checked : k==='start' ? +t.value : t.value; m.formazione=f; scMarkForm(m); touchMatch(m); $('#form-panel').innerHTML=formPanelHTML(m); return; }
-  if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; markPlayed(m); touchMatch(m); rerenderLive(); return; }
+  if(t.dataset.live==='k'){ const m=getMatch(ui.matchId), L=getStats(m).live; L.k=+t.value; if(getStats(m).ev.some(e=>e.s===L.set)) markPlayed(m); touchMatch(m); rerenderLive(); return; }
   if(t.id==='cs-all'){ ui.csAll=t.checked; ui.csOpen=true; const y=window.scrollY; render(); window.scrollTo(0,y); return; }
   if(t.id==='lav-d6'){ ui.lav.d6=t.checked; ui.lav.sel=null; ui.lav.dirty=false; lavUndo.length=0; render(); return; }
   if(t.id==='lav-lib'){ ui.lav.lib=t.checked; lavUndo.length=0; render(); return; }
@@ -7742,6 +7786,7 @@ $('#app').innerHTML='<div class="empty">Caricamento di Volleysched…</div>';
     if(Store.isEmpty() && !Sync.config() && !Store.getMeta('avviato')) ui.view='benvenuto';
     await licInit();
     await cleanConvNote().catch(e=>console.error(e));
+    await cleanPlayedSets().catch(e=>console.error(e));
     render(); navSync(); setTimeout(autoVerCheck, 3000);
     setTimeout(()=>{ if(scoutOn()) scoutSync(false); else coachScoutSync(false); }, 1500);
     setInterval(()=>{ if(document.visibilityState==='visible'){ if(scoutOn()) scoutSync(false); else if(['partite','partita','home'].includes(ui.view)) coachScoutSync(false); } }, 60000);

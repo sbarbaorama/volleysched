@@ -1984,6 +1984,22 @@ body.scout .brand small{display:none}
   body > *:not(#print-area){display:none!important}
   #print-area{display:block;color:#111}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  /* v76: nessuna tabella deve uscire dal foglio */
+  #print-area [style*="overflow"]{overflow:visible!important}
+  #print-area table{max-width:100%}
+  #print-area table.rf-t,#print-area table.atable{display:table!important;overflow:visible!important}
+  #print-area th,#print-area td{overflow-wrap:break-word}
+  #print-area td.n,#print-area th.n{overflow-wrap:normal}
+  #print-area img,#print-area svg{max-width:100%}
+  #print-area .atable{font-size:8.5pt}
+  #print-area .atable th{font-size:7pt;padding:3pt 3pt;white-space:normal;line-height:1.2;vertical-align:bottom;background:#f1efe9;color:#444;overflow-wrap:normal}
+  #print-area .atable td{padding:2.5pt 3pt;border-bottom:.5pt solid #ddd}
+  #print-area .atable td[style*="nowrap"]{white-space:normal!important}
+  #print-area .atable .av{width:14px!important;height:14px!important;font-size:6.5px!important;margin-right:3pt}
+  #print-area table.p-sched.sm{font-size:8.5pt}
+  #print-area table.p-sched.sm th{font-size:7pt;padding:3pt 3pt;overflow-wrap:normal}
+  #print-area table.p-sched.sm td{padding:2.5pt 3pt}
+  #print-area table.p-reg td,#print-area table.p-reg th{padding:2.5pt 2pt}
 }
 .p-head{border-bottom:2.5pt solid #1f2a44;padding-bottom:8pt;margin-bottom:10pt}
 .p-team{font-size:9pt;text-transform:uppercase;letter-spacing:.08em;color:#666;font-weight:700}
@@ -3838,8 +3854,8 @@ function sessionPrintHTML(s){
   h+=`<div class="p-footer">Stampato il ${new Date().toLocaleDateString('it-IT')} · Volleysched</div>`;
   return h;
 }
-function doPrint(html, title){
-  $('#print-area').innerHTML=html;
+function doPrint(html, title, o={}){
+  $('#print-area').innerHTML=(o.land?'<style>@page{size:A4 landscape;margin:10mm 12mm}</style>':'')+html;
   const old=document.title; if(title) document.title=title;
   setTimeout(()=>{ window.print(); document.title=old; }, 60);
 }
@@ -4054,8 +4070,8 @@ async function saveAt(){
 function printAthletes(){
   const l=filteredAt(); if(!l.length){ alert('Nessun atleta da stampare.'); return; }
   doPrint(`<div class="p-head">${headTeam()}<h1>Elenco atleti</h1><div class="p-meta"><span>${l.length} atleti</span><span>Aggiornato al ${fmtDate(todayISO(),{day:'numeric',month:'long',year:'numeric'})}</span></div></div>
-    <table class="p-sched"><thead><tr><th>N°</th><th>Atleta</th><th>Ruolo</th><th>Sesso</th><th style="text-align:right">Età</th><th>Cellulare</th><th>Nascita</th><th>Visita medica</th><th>Documento</th><th>Taglia</th><th>Iscritto</th></tr></thead>
-    <tbody>${l.map(a=>`<tr><td><b>${esc(a.numeroMaglia)}</b></td><td><b>${esc(fullName(a))}</b>${a.note?`<div style="font-size:8pt;color:#666">${esc(a.note)}</div>`:''}</td><td>${esc(a.ruolo)}</td><td>${esc(a.sesso)}</td><td class="n">${ageOf(a)??''}</td><td>${esc(a.cellulare)}</td><td>${shortDate(a.dataNascita)}</td><td>${shortDate(a.scadenzaVisita)}</td><td>${a.numeroDocumento?esc(a.numeroDocumento)+'<br>':''}${a.scadenzaDocumento?'scad. '+shortDate(a.scadenzaDocumento):''}</td><td>${esc(a.taglia)}</td><td>${a.iscritto?'Sì':'No'}</td></tr>`).join('')}</tbody></table>`, 'Elenco atleti');
+    <table class="p-sched sm"><thead><tr><th>N°</th><th>Atleta</th><th>Ruolo</th><th>Sesso</th><th style="text-align:right">Età</th><th>Cellulare</th><th>Nascita</th><th>Visita medica</th><th>Documento</th><th>Taglia</th><th>Iscritto</th></tr></thead>
+    <tbody>${l.map(a=>`<tr><td><b>${esc(a.numeroMaglia)}</b></td><td><b>${esc(fullName(a))}</b>${a.note?`<div style="font-size:8pt;color:#666">${esc(a.note)}</div>`:''}</td><td>${esc(a.ruolo)}</td><td>${esc(a.sesso)}</td><td class="n">${ageOf(a)??''}</td><td>${esc(a.cellulare)}</td><td>${shortDate(a.dataNascita)}</td><td>${shortDate(a.scadenzaVisita)}</td><td>${a.numeroDocumento?esc(a.numeroDocumento)+'<br>':''}${a.scadenzaDocumento?'scad. '+shortDate(a.scadenzaDocumento):''}</td><td>${esc(a.taglia)}</td><td>${a.iscritto?'Sì':'No'}</td></tr>`).join('')}</tbody></table>`, 'Elenco atleti', {land:true});
 }
 
 
@@ -5961,7 +5977,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v75-2026-10-12';
+const APP_VERSION='v76-2026-10-12';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -7300,8 +7316,8 @@ function printRegister(){
   const T=trainingsSorted().filter(t=>t.data.slice(0,7)===ui.pm), A=regAthletes();
   if(!T.length || !A.length){ alert('Niente da stampare per questo mese.'); return; }
   doPrint(`<div class="p-head">${headTeam()}<h1>Registro presenze</h1><div class="p-meta"><span style="text-transform:capitalize"><b>${esc(monthLabel(ui.pm))}</b></span><span>✓ presente · ✗ assente · G giustificato · R ritardo</span></div></div>
-    <table class="p-sched"><thead><tr><th>Atleta</th>${T.map(t=>{ const d=parseISO(t.data); return `<th style="text-align:center">${d.toLocaleDateString('it-IT',{weekday:'short'})}<br>${d.getDate()}/${d.getMonth()+1}</th>`; }).join('')}<th style="text-align:right">Ass. ult. 5</th></tr></thead>
-    <tbody>${A.map(a=>{ const st=absStats(a.id,'9999-12-31'); return `<tr><td><b>${esc(fullName(a))}</b></td>${T.map(t=>`<td style="text-align:center">${t.annullato?'—':(PSTATE[(t.presenze||{})[a.id]||'']==='·'?'':PSTATE[(t.presenze||{})[a.id]])}</td>`).join('')}<td class="n">${st.n?st.ass+'/'+st.n:''}</td></tr>`; }).join('')}</tbody></table>`, 'Registro presenze '+ui.pm);
+    <table class="p-sched sm p-reg"><thead><tr><th>Atleta</th>${T.map(t=>{ const d=parseISO(t.data); return `<th style="text-align:center">${d.toLocaleDateString('it-IT',{weekday:'short'})}<br>${d.getDate()}/${d.getMonth()+1}</th>`; }).join('')}<th style="text-align:right">Ass. ult. 5</th></tr></thead>
+    <tbody>${A.map(a=>{ const st=absStats(a.id,'9999-12-31'); return `<tr><td><b>${esc(fullName(a))}</b></td>${T.map(t=>`<td style="text-align:center">${t.annullato?'—':(PSTATE[(t.presenze||{})[a.id]||'']==='·'?'':PSTATE[(t.presenze||{})[a.id]])}</td>`).join('')}<td class="n">${st.n?st.ass+'/'+st.n:''}</td></tr>`; }).join('')}</tbody></table>`, 'Registro presenze '+ui.pm, {land:T.length>8});
 }
 
 
@@ -7650,7 +7666,7 @@ const actions={
   'live-sub': ()=>liveSub(),
   'live-servo': ()=>{ const m=getMatch(ui.matchId), L=getStats(m).live; L.servo=!L.servo; touchMatch(m); rerenderLive(); },
   'stats-match': ()=>openMatchStats(),
-  'stats-print': ()=>{ const m=getMatch(ui.matchId), S=getStats(m); doPrint(`<div class="p-head">${headTeam()}<h1>Statistiche</h1><div class="p-meta"><span><b>${esc(matchTitle(m))}</b></span><span>${m.data?esc(fmtDate(m.data)):''}</span><span>${S.sets.map(x=>x.noi+'-'+x.loro).join(', ')}</span></div></div>`+statTable(S.ev, playedCount(m)), 'Statistiche'); },
+  'stats-print': ()=>{ const m=getMatch(ui.matchId), S=getStats(m); doPrint(`<div class="p-head">${headTeam()}<h1>Statistiche</h1><div class="p-meta"><span><b>${esc(matchTitle(m))}</b></span><span>${m.data?esc(fmtDate(m.data)):''}</span><span>${S.sets.map(x=>x.noi+'-'+x.loro).join(', ')}</span></div></div>`+statTable(S.ev, playedCount(m)), 'Statistiche', {land:true}); },
   'stats-reset': ()=>{ const m=getMatch(ui.matchId); if(!confirm('Cancellare tutte le statistiche di questa partita (azioni, set, punteggio)?')) return; m.stats=null; touchMatch(m); closeModal(); if(ui.view==='live') rerenderLive(); else render(); toast('Statistiche azzerate'); },
   'print-convsum': ()=>printConvSummary(),
   'conv-none': ()=>{ const m=getMatch(ui.matchId); m.convocati=[]; touchMatch(m); refreshMatch(m,'conv'); },

@@ -2229,6 +2229,11 @@ svg.lav-court{width:100%;max-width:540px;height:auto;max-height:calc(100vh - 230
 .img-view img{max-width:100%;max-height:calc(100% - 40px);object-fit:contain;border-radius:8px}
 .img-view span{color:#fff;font-size:13px;opacity:.85}
 @media (max-width:760px){ .note-cover{width:calc(100% + 24px);margin:-12px -12px 8px;height:100px} }
+.set-rows{display:grid;gap:6px;margin-bottom:6px}
+.set-row{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2)}
+.set-row .sc{font-weight:800;font-variant-numeric:tabular-nums}
+.set-row.bad{border-color:#e9a0aa;background:#fdecee}
+:root[data-theme=dark] .set-row.bad{background:rgba(215,38,61,.15)}
 </style>
 <script>try{var _t=localStorage.getItem('vs-theme')||'auto';document.documentElement.dataset.theme=(_t==='dark'||(_t==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches))?'dark':'light';}catch(e){}</script>
 </head>
@@ -4524,7 +4529,7 @@ function viewLiveLand(){
   return `<div class="ll">
   <div>
     <div class="ll-score">
-      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button>${scoutSwitchHTML(m)}<span class="st">${esc(m.avversario||"")} · Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span><button class="btn" data-action="live-undo" ${S.ev.length?'':'disabled'}>↶</button></div>
+      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button>${scoutSwitchHTML(m)}<span class="st">${esc(m.avversario||"")} · ${L.fine?'Partita finita':'Set '+L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span><button class="btn" data-action="live-undo" ${S.ev.length?'':'disabled'}>↶</button></div>
       <div class="r"><span class="sc">${L.noi}<small>–</small>${L.loro}</span><span style="flex:1"></span><button class="btn" data-action="live-pt" title="Punto nostro su errore avversario">+1 noi</button><button class="btn" data-action="live-pl">+1 loro</button></div>
       <div class="r"><span class="serve ${L.servo?'':'them'}" data-action="live-servo">${L.servo?'🏐 '+esc(athShort(server)):'Battono loro'}</span><span style="flex:1"></span><select data-live="k">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></div>
     </div>
@@ -4536,7 +4541,7 @@ function viewLiveLand(){
   </div>
   <div>
     <div class="ll-acts">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}" title="${l}"><span class="asym">${ASYM(k,v,c)}</span></button>`).join('')}</div></div>`).join('')}</div>
-    <div class="ll-foot"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button><button class="btn" data-action="live-endset">Fine set</button></div>
+    <div class="ll-foot"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button>${liveEndBtns(m)}</div>
   </div></div>`;
 }
 let lastLand=isLand();
@@ -4551,9 +4556,9 @@ function viewLive(){
   const last=S.ev.slice(-8).reverse();
   return `<section>
   <div class="page-head" style="margin-bottom:10px"><div><a href="#" data-action="live-close" class="muted" style="font-size:13.5px;text-decoration:none">← Torna alla partita</a><h1 style="margin-top:4px;font-size:20px">${esc(matchTitle(m))}</h1></div>
-    <div class="actions"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button><button class="btn" data-action="live-endset">Fine set</button></div></div>
+    <div class="actions"><button class="btn" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button>${liveEndBtns(m)}</div></div>
   <div class="live-top">
-    <div><div class="live-sets">Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</div><div class="sc">${L.noi}<small>noi – loro</small>${L.loro}</div></div>
+    <div><div class="live-sets">${L.fine?'Partita finita':'Set '+L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</div><div class="sc">${L.noi}<small>noi – loro</small>${L.loro}</div></div>
     <div style="display:flex;gap:6px"><button class="btn sm" data-action="live-pt">+1 noi</button><button class="btn sm" data-action="live-pl">+1 loro</button></div>
     <div style="display:flex;flex-direction:column;gap:4px"><span class="serve ${L.servo?'':'them'}" data-action="live-servo" style="cursor:pointer">${L.servo?'🏐 Batte: '+esc(athShort(server)):'Battono loro'}</span>
       <label style="font-size:12.5px">Rotazione <select data-live="k">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></label></div>
@@ -4580,6 +4585,7 @@ function liveEvent(k, v){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
   const simple=liveMode(m)==='simple', who0=(simple && !ui.livePick && k==='bat' && L.servo) ? liveServer(m) : '';
   if(k!=='pt' && k!=='pl' && !ui.livePick && !who0 && !(simple && k==='err')){ toast(simple && k==='bat' ? 'Battono loro: la battuta si segna quando battiamo noi' : 'Tocca prima il giocatore'); return; }
+  if(L.fine){ toast('La partita è finita: per continuare premi «Riapri la partita»'); return; }
   const e={id:newId('ev'), t:Date.now(), s:L.set, a:(k==='pt'||k==='pl')?'':(ui.livePick||who0||''), k, v:v||'', prev:{noi:L.noi, loro:L.loro, servo:L.servo, k:L.k}};
   if(OUR_PT(e)){ L.noi++; if(!L.servo){ L.k=(L.k+1)%6; L.servo=true; } }
   else if(THEIR_PT(e)){ L.loro++; L.servo=false; }
@@ -4589,16 +4595,66 @@ function liveEvent(k, v){
   touchMatch(m); rerenderLive();
 }
 function rerenderLive(){ const y=window.scrollY; document.body.classList.toggle('live-land', isLand()); $('#app').innerHTML=viewLive(); window.scrollTo(0,y); }
-function liveUndo(){ const m=getMatch(ui.matchId), S=getStats(m), e=S.ev.pop(); if(!e) return; Object.assign(S.live, e.prev); touchMatch(m); rerenderLive(); toast('Ultima azione annullata'); }
+function liveUndo(){ const m=getMatch(ui.matchId), S=getStats(m); if(S.live.fine){ toast('La partita è finita: per correggere premi «Riapri la partita»'); return; } const e=S.ev.pop(); if(!e) return; Object.assign(S.live, e.prev); touchMatch(m); rerenderLive(); toast('Ultima azione annullata'); }
+/* v71: fine set, fine partita (al massimo 5 set) e correzione dei set */
+const MAX_SETS=5, SETS_TO_WIN=3;
+function setWins(S){ const w=S.sets.filter(x=>x.noi>x.loro).length; return {w, l:S.sets.length-w}; }
+function setResult(m){ const S=getStats(m), {w,l}=setWins(S); if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=S.sets.length?(m.inCasa?`${w}-${l}`:`${l}-${w}`):m.risultato; return {w,l}; }
+function liveEndBtns(m){ const L=getStats(m).live;
+  return L.fine ? `<button class="btn primary" data-action="live-reopen">Riapri la partita</button>`
+    : `<button class="btn" data-action="live-endset">Fine set</button><button class="btn danger" data-action="live-endmatch">Fine partita</button>`; }
 function liveEndSet(){
   const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
-  if(!confirm(`Chiudere il set ${L.set} sul ${L.noi}-${L.loro}?`)) return;
-  S.sets.push({noi:L.noi, loro:L.loro});
-  const won=S.sets.filter(x=>x.noi>x.loro).length, lost=S.sets.length-won;
-  L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
-  if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=m.inCasa?`${won}-${lost}`:`${lost}-${won}`;
-  touchMatch(m); rerenderLive();
-  toast(`Set chiuso · risultato ${won}-${lost}. Controlla rotazione e chi batte per il set ${L.set}.`);
+  if(L.fine){ toast('La partita è già finita'); return; }
+  if(S.sets.length>=MAX_SETS){ liveAskEnd(true); return; }
+  if(!L.noi && !L.loro){ toast('Il set non ha ancora punti'); return; }
+  openModal(`<div class="modal-box" style="max-width:420px"><div class="modal-head"><h2 style="flex:1">Chiudere il set ${L.set}?</h2><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><p style="margin:0">Il set ${L.set} finisce <b>${L.noi}-${L.loro}</b> ${L.noi>L.loro?'per noi':'per loro'}.</p></div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn primary" id="es-ok">Chiudi il set</button></div></div>`);
+  $('#es-ok').onclick=()=>{ closeModal();
+    S.sets.push({noi:L.noi, loro:L.loro});
+    const {w,l}=setResult(m);
+    L.set++; L.noi=0; L.loro=0; L.servo=!L.servo;
+    touchMatch(m); rerenderLive();
+    if(w>=SETS_TO_WIN || l>=SETS_TO_WIN || S.sets.length>=MAX_SETS) liveAskEnd(true);
+    else toast(`Set chiuso · risultato ${w}-${l}. Controlla rotazione e chi batte per il set ${L.set}.`); };
+}
+function liveAskEnd(auto){
+  const m=getMatch(ui.matchId), S=getStats(m), L=S.live; if(L.fine) return;
+  const cur=(L.noi||L.loro) && S.sets.length<MAX_SETS, {w,l}=setWins(S);
+  const parz=S.sets.map(x=>x.noi+'-'+x.loro).join(', ');
+  openModal(`<div class="modal-box" style="max-width:460px"><div class="modal-head"><h2 style="flex:1">${auto?'La partita è finita?':'Chiudere la partita?'}</h2>${auto&&S.sets.length<MAX_SETS?'<button class="iconbtn" data-action="close-modal">✕</button>':''}</div>
+    <div class="modal-body"><p style="margin-top:0">${S.sets.length?`Set: <b>${w}-${l}</b>${parz?' ('+esc(parz)+')':''}.`:'Nessun set chiuso.'}</p>
+    ${auto && (w>=SETS_TO_WIN||l>=SETS_TO_WIN)?`<p>${w>=SETS_TO_WIN?'Avete vinto '+w+' set: la partita è vinta.':'Gli avversari hanno vinto '+l+' set: la partita è finita.'}</p>`:''}
+    ${S.sets.length>=MAX_SETS?'<p>Sono stati giocati tutti e 5 i set: non se ne possono aggiungere altri.</p>':''}
+    ${cur?`<label class="sw" style="font-weight:600"><input type="checkbox" id="em-cur" checked> Registra anche il set in corso (${L.noi}-${L.loro})</label>`:''}
+    <p class="muted" style="font-size:13px;margin-bottom:0">Dopo la chiusura non si possono più segnare azioni. Se serve, puoi riaprirla.</p></div>
+    <div class="modal-foot"><span style="flex:1"></span>${S.sets.length>=MAX_SETS && auto?'':`<button class="btn" data-action="close-modal">${auto?'Non ancora':'Annulla'}</button>`}<button class="btn danger" id="em-ok">Fine partita</button></div></div>`);
+  $('#em-ok').onclick=()=>{ if(cur && $('#em-cur')?.checked) S.sets.push({noi:L.noi, loro:L.loro});
+    const r=setResult(m); L.fine=true; L.set=Math.max(1,S.sets.length); L.noi=0; L.loro=0;
+    closeModal(); touchMatch(m); rerenderLive(); toast(`Partita chiusa · ${r.w}-${r.l}`); };
+}
+function liveReopen(){ const m=getMatch(ui.matchId), S=getStats(m), L=S.live;
+  if(S.sets.length>=MAX_SETS){ toast('Sono già stati giocati 5 set: puoi solo correggerli dal Riepilogo'); return; }
+  L.fine=false; L.set=S.sets.length+1; touchMatch(m); rerenderLive(); toast('Partita riaperta: set '+L.set); }
+function statsSetsHTML(m){ const S=getStats(m), L=S.live, rows=S.sets.map((x,i)=>({n:i+1, noi:x.noi, loro:x.loro, live:false}));
+  if(!L.fine && (L.noi||L.loro || S.ev.some(e=>e.s===L.set))) rows.push({n:L.set, noi:L.noi, loro:L.loro, live:true});
+  if(!rows.length) return '';
+  const cnt=n=>S.ev.filter(e=>e.s===n).length;
+  return `<div class="st-sec"><h3>Set registrati</h3><p class="muted" style="margin:0 0 8px;font-size:13px">Se c'è un set che non è stato giocato (per esempio un sesto set) lo puoi togliere: spariscono anche le sue azioni e i set dopo vengono rinumerati.</p>
+    <div class="set-rows">${rows.map(r=>`<div class="set-row ${r.n>MAX_SETS?'bad':''}"><b>Set ${r.n}</b><span class="sc">${r.noi}-${r.loro}</span><span class="muted">${cnt(r.n)} azion${cnt(r.n)===1?'e':'i'}${r.live?' · in corso':''}${r.n>MAX_SETS?' · non può esistere':''}</span><button class="btn sm danger" data-action="stats-delset" data-n="${r.n}">Togli</button></div>`).join('')}</div></div>`; }
+function statsDelSet(n){
+  const m=getMatch(ui.matchId), S=getStats(m), L=S.live, inList=n<=S.sets.length, sc=inList?S.sets[n-1]:{noi:L.noi, loro:L.loro}, c=S.ev.filter(e=>e.s===n).length;
+  openModal(`<div class="modal-box" style="max-width:440px"><div class="modal-head"><h2 style="flex:1">Togliere il set ${n}?</h2><button class="iconbtn" data-action="close-modal">✕</button></div>
+    <div class="modal-body"><p style="margin:0">Il set ${n} (${sc.noi}-${sc.loro}) e le sue ${c} azioni vengono cancellati dalle statistiche. ${inList&&n<S.sets.length?'I set successivi vengono rinumerati.':''}</p></div>
+    <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">Annulla</button><button class="btn danger" id="ds-ok">Togli il set</button></div></div>`);
+  $('#ds-ok').onclick=()=>{
+    if(inList) S.sets.splice(n-1,1); else { L.noi=0; L.loro=0; }
+    S.ev=S.ev.filter(e=>e.s!==n).map(e=>e.s>n?Object.assign({}, e, {s:e.s-1}):e);
+    const P={}; for(const [k,v] of Object.entries(L.played||{})){ const kk=+k; if(kk===n) continue; P[kk>n?kk-1:kk]=v; } L.played=P;
+    if(L.fine) L.set=Math.max(1,S.sets.length); else if(inList && L.set>n) L.set--;
+    const {w,l}=setWins(S); if(!m.risultato || /^\d-\d$/.test(m.risultato)) m.risultato=S.sets.length?(m.inCasa?`${w}-${l}`:`${l}-${w}`):'';
+    touchMatch(m); closeModal(); openMatchStats(); toast('Set '+n+' tolto'); if(ui.view==='live') rerenderLive(); };
 }
 function liveSub(){
   const m=getMatch(ui.matchId), S=getStats(m), who=liveWho(m), z=rotAt(S.live.k);
@@ -4636,7 +4692,7 @@ function openMatchStats(){
   const m=getMatch(ui.matchId), S=getStats(m);
   const team={pt:S.ev.filter(OUR_PT).length, err:S.ev.filter(e=>THEIR_PT(e) && e.k!=='pl').length};
   openModal(`<div class="modal-box" style="max-width:1000px"><div class="modal-head"><div style="flex:1"><h2>Statistiche della partita</h2><div class="muted" style="font-size:13.5px;margin-top:4px">${esc(matchTitle(m))}${S.sets.length?' · set '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''} · punti nostri ${S.ev.filter(e=>OUR_PT(e)).length} (di cui ${S.ev.filter(e=>e.k==='pt').length} su errore avversario) · errori nostri ${team.err}</div></div><button class="iconbtn" data-action="close-modal">✕</button></div>
-    <div class="modal-body">${statTable(S.ev, playedCount(m))}${rotTableHTML(S.ev)?`<div class="st-sec"><h3>Per rotazione</h3>${rotTableHTML(S.ev)}</div>`:''}${trendHTML(m)}${weakHTML([m],'In questa partita')}</div>
+    <div class="modal-body">${statsSetsHTML(m)}${statTable(S.ev, playedCount(m))}${rotTableHTML(S.ev)?`<div class="st-sec"><h3>Per rotazione</h3>${rotTableHTML(S.ev)}</div>`:''}${trendHTML(m)}${weakHTML([m],'In questa partita')}</div>
     <div class="modal-foot"><button class="btn danger" data-action="stats-reset">Azzera le statistiche</button><span style="flex:1"></span><button class="btn wa" data-action="rep-quick">📲 Resoconto</button><button class="btn" data-action="stats-print">Stampa</button><button class="btn primary" data-action="close-modal">Chiudi</button></div></div>`);
 }
 function seasonStatsHTML(){
@@ -5573,7 +5629,8 @@ const GUIDE=[
 ['📊','Statistiche durante la partita',`
 <ol><li>Dalla partita (o dalla home il giorno della gara) premi <b>📊 Statistiche</b>: l'app controlla che convocati e formazione siano pronti.</li>
 <li>Tocchi l'atleta, poi il gesto e il giudizio: <b>++</b> perfetto, <b>+</b> buono, <b>0</b> neutro, <b>−</b> errore.</li>
-<li>+1 noi / +1 loro aggiornano punteggio, rotazione e battuta; <b>Cambio</b> per le sostituzioni, <b>Fine set</b> a fine set, <b>↶</b> per annullare.</li></ol>
+<li>+1 noi / +1 loro aggiornano punteggio, rotazione e battuta; <b>Cambio</b> per le sostituzioni, <b>Fine set</b> a fine set, <b>↶</b> per annullare.</li>
+<li>Quando una squadra arriva a 3 set, o dopo il quinto, l'app chiede se la partita è finita; puoi chiuderla anche prima con <b>Fine partita</b>. Una partita chiusa si può riaprire. Nel <b>Riepilogo</b>, alla voce «Set registrati», puoi togliere un set che non è stato giocato.</li></ol>
 <p>Girando il telefono in orizzontale hai una vista più comoda. <b>⚡ Partita veloce</b> crea al volo un'amichevole e parte subito.</p>
 <p>In alto puoi scegliere tra statistiche <b>Complete</b> (tutti i fondamentali) e <b>Semplici</b>: solo battuta, ricezione e attacco, con tre esiti ciascuno, più un pulsante per gli altri errori. Nella versione semplice, quando battete voi basta toccare l'esito: la battuta va a chi è in zona 1. L'app ricorda la scelta per le partite successive.</p>`],
 ['🎥','Scoutman',`
@@ -5861,7 +5918,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v70-2026-10-11';
+const APP_VERSION='v71-2026-10-12';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6681,7 +6738,7 @@ function viewLiveSimple(){
   return `<div class="ls">
   <div>
     <div class="ls-head">
-      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button><span class="opp">${esc(m.avversario||'')} · Set ${L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span>${scoutSwitchHTML(m)}<button class="btn ls-undo" data-action="live-undo" title="Annulla l'ultima azione" ${S.ev.length?'':'disabled'}>↶<span>Annulla</span></button></div>
+      <div class="r"><button class="btn" data-action="live-close" title="Torna alla partita">←</button><span class="opp">${esc(m.avversario||'')} · ${L.fine?'Partita finita':'Set '+L.set}${S.sets.length?' · '+S.sets.map(x=>x.noi+'-'+x.loro).join(', '):''}</span>${scoutSwitchHTML(m)}<button class="btn ls-undo" data-action="live-undo" title="Annulla l'ultima azione" ${S.ev.length?'':'disabled'}>↶<span>Annulla</span></button></div>
       <div class="ls-score">
         <div class="side"><span class="t">Noi</span><span class="n">${L.noi}</span><button class="plus" data-action="live-pt" title="Punto nostro su errore avversario">+1</button></div>
         <div class="mid"><span class="serve ${L.servo?'':'them'}" data-action="live-servo">${L.servo?'🏐 Battiamo':'Battono loro'}</span><select data-live="k" title="Rotazione">${ROTNAME.map((n,i)=>`<option value="${i}" ${L.k===i?'selected':''}>${n}</option>`).join('')}</select></div>
@@ -6699,7 +6756,7 @@ function viewLiveSimple(){
       ${Object.entries(SACTS).map(([k,A])=>`<div class="sa-row ${k===focus?'focus':''} ${(k==='bat'&&!L.servo)?'dim':''}"><h4>${A.l}<small>${sub(k)}</small></h4>${A.b.map(([v,l,c])=>`<button class="sbtn ${c}" data-ev="${k}" data-v="${v}">${l}</button>`).join('')}</div>`).join('')}
       <button class="sa-err" data-ev="err" data-v="=">✋ Altro errore nostro <span style="font-weight:600;font-size:12px">(fallo, invasione…)</span></button>
     </div>
-    <div class="ls-foot"><button class="btn ls-f-sub" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button><button class="btn" data-action="live-endset">Fine set</button></div>
+    <div class="ls-foot"><button class="btn ls-f-sub" data-action="live-sub">Cambio</button><button class="btn" data-action="stats-match">Riepilogo</button>${liveEndBtns(m)}</div>
     <div class="ls-last">${e?`Ultima: <b>${e.a?esc(athShort(e.a)):'squadra'}</b> · ${esc(evLabel(e))} (${e.noi}-${e.loro})`:''}</div>
   </div></div>`;
 }
@@ -7509,7 +7566,7 @@ const actions={
   'live-pt': ()=>liveEvent('pt'),
   'live-pl': ()=>liveEvent('pl'),
   'live-undo': ()=>liveUndo(),
-  'live-endset': ()=>liveEndSet(),
+  'live-endset': ()=>liveEndSet(), 'live-endmatch': ()=>liveAskEnd(false), 'live-reopen': ()=>liveReopen(), 'stats-delset': b=>statsDelSet(+b.dataset.n),
   'live-sub': ()=>liveSub(),
   'live-servo': ()=>{ const m=getMatch(ui.matchId), L=getStats(m).live; L.servo=!L.servo; touchMatch(m); rerenderLive(); },
   'stats-match': ()=>openMatchStats(),

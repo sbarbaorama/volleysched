@@ -2143,6 +2143,7 @@ th.tcol.tipo .thbtn{box-shadow:inset 0 3px 0 var(--tc)}
 .atk-a{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .atk{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 10px 12px;text-align:center;cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .atk::before{content:'';position:absolute;left:0;right:0;top:0;height:5px;border-radius:14px 14px 0 0;background:var(--rc)}
+.mg2{display:block;font-size:10.5px;font-weight:700;color:var(--muted);margin-top:3px;white-space:nowrap;text-align:inherit;letter-spacing:0}
 .atk-n{position:absolute;top:10px;left:11px;font-size:22px;font-weight:900;color:var(--rc);font-variant-numeric:tabular-nums;line-height:1}
 .atk-ph{margin-top:4px}
 .atk-nm{min-width:0;max-width:100%}.atk-nm b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.atk-nm span{display:block;font-size:13px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -3927,7 +3928,7 @@ function atCards(l){
   if(!db.athletes.length) return `<div class="empty" style="margin:10px">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div>`;
   if(!l.length) return `<div class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</div>`;
   return l.map(a=>{ const age=ageOf(a), p=seasonPct(a.id);
-    const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', roleText(a), a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
+    const meta=[a.numeroMaglia?'n° '+a.numeroMaglia:'', a.magliaAllenamento?'2° maglia n° '+a.magliaAllenamento:'', roleText(a), a.sesso, age===null?'':age+' anni', p===null?'':'presenze '+p+'%'].filter(Boolean).map(esc).join(' · ');
     const b=[a.cellulare?`<a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 ${esc(a.cellulare)}</a>`:'', a.dataNascita?`<span><b>Compleanno</b> ${bdayBadge(a,true)}</span>`:'',
       a.scadenzaVisita?`<span><b>Visita</b> ${scadBadge(a.scadenzaVisita)}</span>`:'', a.scadenzaDocumento?`<span><b>Documento</b> ${scadBadge(a.scadenzaDocumento)}</span>`:'', a.scadenzaTessera?`<span><b>Tessera</b> ${scadBadge(a.scadenzaTessera)}</span>`:'', a.taglia?`<span><b>Taglia</b> ${esc(a.taglia)}</span>`:''].filter(Boolean).join('');
     return `<div class="atc ${a.iscritto?'':'off'}">${avRole(a,40)}<div><div class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}${a.note?' 📝':''}${injTagHTML(a)}${a.iscritto?'':'<span class="tag-off">non iscritto</span>'}</div><div class="meta">${meta||'&nbsp;'}</div></div>
@@ -3950,13 +3951,13 @@ function atGrid(l){
   if(!db.athletes.length) return `<div class="empty">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div>`;
   if(!l.length) return `<div class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</div>`;
   if(isPhone()) return `<div class="atk-a">${l.map(a=>`<div class="atk ${a.iscritto?'':'off'}" style="--rc:${atRc(a)}" data-action="edit-at" data-id="${a.id}">
-    <span class="atk-n">${esc(a.numeroMaglia||'–')}</span><span class="atk-ph">${avRole(a,44)}</span>
+    <span class="atk-n">${esc(a.numeroMaglia||'–')}${a.magliaAllenamento?`<small class="mg2" title="2° maglia">2° ${esc(a.magliaAllenamento)}</small>`:''}</span><span class="atk-ph">${avRole(a,44)}</span>
     <span class="atk-nm"><b>${esc(a.cognome||a.nome)}</b>${a.cognome?`<span>${esc(a.nome)}</span>`:''}</span>
     <span class="atk-rl">${esc(roleText(a)||'ruolo da inserire')}</span>${atFlagsHTML(atFlags(a,true))}</div>`).join('')}</div>`;
   return `<div class="atk-b">${l.map(a=>{ const p=seasonPct(a.id), age=ageOf(a), pc=p===null?'':p>=75?'#22a05a':p>=50?'#e0a020':'#d64a5a';
     const info=[age!==null?age+' anni':'', a.altezza?a.altezza+' cm':'', a.mano==='Sinistra'?'mancino':'', a.taglia?'taglia '+a.taglia:''].filter(Boolean).join(' · ');
     return `<div class="atkb ${a.iscritto?'':'off'}" style="--rc:${atRc(a)}" data-action="edit-at" data-id="${a.id}">
-    <div class="atkb-top"><span class="atk-ph">${avRole(a,56)}</span><div class="atkb-nm"><b>${esc(fullName(a))}</b><span>${esc(roleText(a)||'ruolo da inserire')}</span></div><span class="atkb-n">${esc(a.numeroMaglia||'–')}</span></div>
+    <div class="atkb-top"><span class="atk-ph">${avRole(a,56)}</span><div class="atkb-nm"><b>${esc(fullName(a))}</b><span>${esc(roleText(a)||'ruolo da inserire')}</span></div><span class="atkb-n">${esc(a.numeroMaglia||'–')}${a.magliaAllenamento?`<small class="mg2" title="2° maglia">2° ${esc(a.magliaAllenamento)}</small>`:''}</span></div>
     <div class="atkb-pr"><span>Presenze</span><div class="bar"><i style="width:${p||0}%;background:${pc}"></i></div><b>${p===null?'—':p+'%'}</b></div>
     ${info?`<div class="atkb-in">${esc(info)}</div>`:''}${atFlagsHTML(atFlags(a))}
     ${a.cellulare?`<div class="atkb-ct" data-action=""><a href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 ${esc(a.cellulare)}</a></div>`:''}</div>`; }).join('')}</div>`;
@@ -3967,7 +3968,7 @@ function atRows(){
   if(isPhone()) return atCards(l);
   if(!db.athletes.length) return `<tr><td colspan="13"><div class="empty" style="margin:10px 0">Nessun atleta in anagrafica. Aggiungi il primo con «+ Nuovo atleta».</div></td></tr>`;
   if(!l.length) return `<tr><td colspan="13" class="muted" style="text-align:center;padding:24px">Nessun atleta corrisponde ai filtri.</td></tr>`;
-  return l.map(a=>{ const age=ageOf(a); return `<tr class="at-row ${a.iscritto?'':'off'}" data-action="edit-at" data-id="${a.id}" title="Apri la scheda"><td class="n" style="font-weight:800;font-size:15px">${esc(a.numeroMaglia)}</td>
+  return l.map(a=>{ const age=ageOf(a); return `<tr class="at-row ${a.iscritto?'':'off'}" data-action="edit-at" data-id="${a.id}" title="Apri la scheda"><td class="n" style="font-weight:800;font-size:15px">${esc(a.numeroMaglia)}${a.magliaAllenamento?`<small class="mg2 sub" title="2° maglia">2° ${esc(a.magliaAllenamento)}</small>`:''}</td>
     <td style="white-space:nowrap">${avRole(a,30)}<span class="nm" data-action="edit-at" data-id="${a.id}">${esc(fullName(a))}</span>${a.note?` <span title="${esc(a.note)}" style="cursor:help">📝</span>`:''}</td>
     <td>${esc(roleText(a))||'<span class="muted">—</span>'}</td>
     <td style="text-align:center">${esc(a.sesso)||'<span class="muted">—</span>'}</td>
@@ -5989,7 +5990,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v78-2026-10-15';
+const APP_VERSION='v79-2026-10-15';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;

@@ -108,7 +108,7 @@ const Store = (() => {
       obiettivo: s(x.obiettivo), note: s(x.note), items,
       createdAt: (old && old.createdAt) || x.createdAt || Date.now(), updatedAt: x.updatedAt || Date.now() };
   }
-  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'ruolo2', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar', 'email', 'tessera', 'scadenzaTessera', 'altezza', 'mano'];
+  const AT_FIELDS = ['nome', 'cognome', 'cellulare', 'ruolo', 'ruolo2', 'sesso', 'dataNascita', 'scadenzaVisita', 'scadenzaDocumento', 'taglia', 'note', 'numeroMaglia', 'numeroDocumento', 'avatar', 'email', 'tessera', 'scadenzaTessera', 'altezza', 'mano', 'magliaAllenamento'];
   function normAt(a, old) {
     if (!(s(a.nome).trim() || s(a.cognome).trim())) throw new Error('Inserisci almeno il nome o il cognome');
     const r = { id: s(a.id) };
@@ -137,6 +137,7 @@ const Store = (() => {
     r.convocati = (m.convocati || []).filter(Boolean).map(String);
     r.assenti = (m.assenti || []).filter(Boolean).map(String);
     r.disponibili = (m.disponibili || []).filter(Boolean).map(String);
+    r.maglia2 = (m.maglia2 || []).filter(Boolean).map(String);
     r.formazione = (m.formazione && typeof m.formazione === 'object') ? clone(m.formazione) : null;
     r.stats = (m.stats && typeof m.stats === 'object') ? clone(m.stats) : null;
     r.referto = (m.referto && typeof m.referto === 'object') ? clone(m.referto) : null;

@@ -210,7 +210,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid rgba(224,123,34,.35);b
 .warn{background:#fff6e0;border:1px solid #f0d58a;color:#5c4400;border-radius:8px;padding:10px 14px;font-size:13.5px;margin-bottom:16px}
 
 /* atleti */
-input[type=tel]{background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;font-size:14.5px;font-weight:400;color:var(--ink);width:100%}
+input[type=tel],input[type=email]{background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;font-size:14.5px;font-weight:400;color:var(--ink);width:100%}
 .span3{grid-column:1/-1}
 .atable{width:100%;border-collapse:collapse;font-size:14px}
 .atable th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface-2);white-space:nowrap}
@@ -1975,6 +1975,12 @@ body.scout .brand small{display:none}
 .inj-s .ex-sug span{flex:1;min-width:180px}
 
 #print-area{display:none}
+.mg-sw{display:inline-flex;flex-direction:column;align-items:center;line-height:1;border:1px solid var(--line-2);background:var(--surface);border-radius:7px;padding:3px 6px;min-width:34px;cursor:pointer;color:var(--ink);font:inherit}
+.mg-sw b{font-size:15px;font-weight:800}
+.mg-sw small{font-size:9.5px;font-weight:700;color:var(--muted);margin-top:2px}
+.mg-sw.on{background:#2f6fb8;border-color:#2f6fb8;color:#fff}
+.mg-sw.on small{color:#dbe8f7}
+.mg-bar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;background:var(--surface-2);border-radius:8px;padding:6px 10px;margin-bottom:8px}
 
 /* ---------- PRINT ---------- */
 @page{size:A4;margin:13mm 12mm}
@@ -3911,7 +3917,7 @@ function renderNavBadge(){
 }
 function filteredAt(){
   const f=ui.af, q=f.q.toLowerCase().trim();
-  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.email,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.numeroDocumento,a.tessera].join(' ').toLowerCase().includes(w)))
+  return db.athletes.filter(a=>(!q || q.split(/\s+/).every(w=>[a.nome,a.cognome,a.cellulare,a.email,a.ruolo,a.ruolo2,a.note,a.taglia,a.numeroMaglia,a.magliaAllenamento,a.numeroDocumento,a.tessera].join(' ').toLowerCase().includes(w)))
       && (!f.ruolo || a.ruolo===f.ruolo || a.ruolo2===f.ruolo) && (!f.rk || rolesOf(a).includes(f.rk)) && (f.iscr==='' || (f.iscr==='si') === !!a.iscritto))
     .sort((x,y)=>{ const byName=(x.cognome||'').localeCompare(y.cognome||'','it') || (x.nome||'').localeCompare(y.nome||'','it');
       if(f.sort==='numero') return byNumber(x,y); if(f.sort==='presenze') return ((seasonPct(y.id)??-1)-(seasonPct(x.id)??-1)) || byName; return byName; });
@@ -4027,6 +4033,7 @@ function openAtModal(id){
     </div></div>
     <div class="atf"><h3>Squadra</h3><div class="atf-g">
       <label class="f">N° di maglia<input type="text" name="numeroMaglia" inputmode="numeric" maxlength="3" value="${esc(a.numeroMaglia)}" placeholder="Es. 7"></label>
+      <label class="f">N° 2° maglia<input type="text" name="magliaAllenamento" inputmode="numeric" maxlength="3" value="${esc(a.magliaAllenamento||'')}" placeholder="Es. 12"></label>
       <label class="f">Taglia maglia gara<select name="taglia"><option value="">—</option>${opt([...new Set([...TAGLIE, a.taglia].filter(Boolean))].map(t=>[t,t]),a.taglia)}</select></label>
       <div class="f" style="display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--ink-2)">Iscritto<label class="sw"><input type="checkbox" name="iscritto" ${a.iscritto?'checked':''}> Sì, iscritto</label></div>${teamAtFieldHTML(a)}
       <label class="f">Ruolo<input type="text" name="ruolo" list="dl-ruoli" value="${esc(a.ruolo)}" placeholder="Scegli o scrivi"></label>
@@ -4055,7 +4062,7 @@ function refreshAtDerived(){
 }
 async function saveAt(){
   const fd=new FormData($('#at-form')), a=ui.atDraft;
-  for(const k of ['nome','cognome','cellulare','email','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','scadenzaTessera','tessera','altezza','mano','taglia','numeroMaglia','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
+  for(const k of ['nome','cognome','cellulare','email','ruolo','ruolo2','sesso','dataNascita','scadenzaVisita','scadenzaDocumento','scadenzaTessera','tessera','altezza','mano','taglia','numeroMaglia','magliaAllenamento','numeroDocumento','note']) a[k]=(fd.get(k)??'').toString().trim();
   a.iscritto=!!fd.get('iscritto');
   if(teamMulti()){ const sq=[...document.querySelectorAll('#at-form [name=sq]:checked')].map(x=>x.value); a.squadre=sq.length?sq:[teamCur()]; }
   if(!a.nome && !a.cognome){ alert('Inserisci almeno il nome o il cognome.'); $('#at-form [name=nome]').focus(); return; }
@@ -4070,8 +4077,8 @@ async function saveAt(){
 function printAthletes(){
   const l=filteredAt(); if(!l.length){ alert('Nessun atleta da stampare.'); return; }
   doPrint(`<div class="p-head">${headTeam()}<h1>Elenco atleti</h1><div class="p-meta"><span>${l.length} atleti</span><span>Aggiornato al ${fmtDate(todayISO(),{day:'numeric',month:'long',year:'numeric'})}</span></div></div>
-    <table class="p-sched sm"><thead><tr><th>N°</th><th>Atleta</th><th>Ruolo</th><th>Sesso</th><th style="text-align:right">Età</th><th>Cellulare</th><th>Nascita</th><th>Visita medica</th><th>Documento</th><th>Taglia</th><th>Iscritto</th></tr></thead>
-    <tbody>${l.map(a=>`<tr><td><b>${esc(a.numeroMaglia)}</b></td><td><b>${esc(fullName(a))}</b>${a.note?`<div style="font-size:8pt;color:#666">${esc(a.note)}</div>`:''}</td><td>${esc(a.ruolo)}</td><td>${esc(a.sesso)}</td><td class="n">${ageOf(a)??''}</td><td>${esc(a.cellulare)}</td><td>${shortDate(a.dataNascita)}</td><td>${shortDate(a.scadenzaVisita)}</td><td>${a.numeroDocumento?esc(a.numeroDocumento)+'<br>':''}${a.scadenzaDocumento?'scad. '+shortDate(a.scadenzaDocumento):''}</td><td>${esc(a.taglia)}</td><td>${a.iscritto?'Sì':'No'}</td></tr>`).join('')}</tbody></table>`, 'Elenco atleti', {land:true});
+    <table class="p-sched sm"><thead><tr><th>N°</th><th>2° maglia</th><th>Atleta</th><th>Ruolo</th><th>Sesso</th><th style="text-align:right">Età</th><th>Cellulare</th><th>Nascita</th><th>Visita medica</th><th>Documento</th><th>Taglia</th><th>Iscritto</th></tr></thead>
+    <tbody>${l.map(a=>`<tr><td><b>${esc(a.numeroMaglia)}</b></td><td>${esc(a.magliaAllenamento||'')}</td><td><b>${esc(fullName(a))}</b>${a.note?`<div style="font-size:8pt;color:#666">${esc(a.note)}</div>`:''}</td><td>${esc(a.ruolo)}</td><td>${esc(a.sesso)}</td><td class="n">${ageOf(a)??''}</td><td>${esc(a.cellulare)}</td><td>${shortDate(a.dataNascita)}</td><td>${shortDate(a.scadenzaVisita)}</td><td>${a.numeroDocumento?esc(a.numeroDocumento)+'<br>':''}${a.scadenzaDocumento?'scad. '+shortDate(a.scadenzaDocumento):''}</td><td>${esc(a.taglia)}</td><td>${a.iscritto?'Sì':'No'}</td></tr>`).join('')}</tbody></table>`, 'Elenco atleti', {land:true});
 }
 
 
@@ -4099,7 +4106,7 @@ function convWarn(a,m,nums){
   if(a.scadenzaTessera && a.scadenzaTessera<ref) w.push('tessera PGS scaduta');
   const st=absStats(a.id, m.data||'9999-12-31'); if(st.n && st.ass>=3) w.push(`assente a ${st.ass} degli ultimi ${st.n} allenamenti`);
   if(!a.numeroMaglia) w.push('manca il numero di maglia');
-  else if(nums && nums[a.numeroMaglia]>1) w.push('numero di maglia doppio');
+  else if(nums && nums[numOf(a,m)]>1) w.push('numero di maglia doppio');
   return w;
 }
 function waText(m){
@@ -4116,7 +4123,7 @@ function waText(m){
   if(m.divisa) L.push(`👕 Divisa: ${m.divisa}`);
   L.push('');
   L.push(`*Convocati (${c.length}):*`);
-  c.forEach(a=>L.push(`${a.numeroMaglia?a.numeroMaglia+' · ':'– '}${fullName(a)}${avEmoji(a)?' '+avEmoji(a):''}${a.ruolo?' ('+a.ruolo+')':''}`));
+  c.forEach(a=>L.push(`${numOf(a,m)?numOf(a,m)+' · ':'– '}${fullName(a)}${avEmoji(a)?' '+avEmoji(a):''}${a.ruolo?' ('+a.ruolo+')':''}`));
   if((m.note||'').trim()){ L.push(''); L.push(m.note.trim()); }
   if(st.allenatore){ L.push(''); L.push(st.allenatore); }
   return L.join('\n');
@@ -4307,7 +4314,7 @@ function suggestList(m, o){
 function marksHTML(st){ return st.n?`<span class="dots">${st.marks.map(s=>`<i class="dot d${s}"></i>`).join('')}</span>`:'<span class="muted">—</span>'; }
 function suggestRows(L, chk){
   return L.map(c=>`<tr><td style="width:30px">${chk?`<input type="checkbox" data-sg="${c.a.id}" ${chk==='on'?'checked':''}>`:''}</td>
-    <td class="num">${esc(c.a.numeroMaglia)||'–'}</td><td>${avatarHTML(c.a,24)}<b>${esc(fullName(c.a))}</b><div class="muted" style="font-size:12px">${[roleText(c.a)||'ruolo non indicato', isF(c.a)?'donna':isM(c.a)?'uomo':'', c.why].filter(Boolean).map(esc).join(' · ')}</div></td>
+    <td class="num">${esc(numOf(c.a))||'–'}</td><td>${avatarHTML(c.a,24)}<b>${esc(fullName(c.a))}</b><div class="muted" style="font-size:12px">${[roleText(c.a)||'ruolo non indicato', isF(c.a)?'donna':isM(c.a)?'uomo':'', c.why].filter(Boolean).map(esc).join(' · ')}</div></td>
     <td style="white-space:nowrap">${marksHTML(c.st)} <b>${c.st.n?c.pres+'/'+c.st.n:''}</b></td><td style="text-align:center">${c.played}</td></tr>`).join('');
 }
 function openSuggest(){
@@ -4413,7 +4420,10 @@ function formOk(f){ return SLOTS.every(([s])=>f[s]); }
 function athShort(id){ const a=getAt(id); if(!a) return '?'; const base=a.cognome||a.nome||'?';
   const same=db.athletes.filter(x=>x.id!==a.id && (x.cognome||x.nome)===base); if(!same.length) return base;
   const ini=(a.nome||'')[0]||''; return same.some(x=>((x.nome||'')[0]||'')===ini) ? base+' '+(a.numeroMaglia||a.nome||'') : base+' '+ini+'.'; }
-function athNum(id){ const a=getAt(id); return a ? (a.numeroMaglia || ((a.nome||'')[0]||'')+((a.cognome||'')[0]||'')) : '?'; }
+function maglia2(a,m){ return !!(a && m && a.magliaAllenamento && (m.maglia2||[]).includes(a.id)); }
+/* v78: numero di maglia usato nella partita (1ª o 2° maglia) */
+function numOf(a,m){ if(!a) return ''; if(m===undefined) m=ui.matchId?getMatch(ui.matchId):null; return maglia2(a,m) ? a.magliaAllenamento : (a.numeroMaglia||''); }
+function athNum(id){ const a=getAt(id); return a ? (numOf(a) || ((a.nome||'')[0]||'')+((a.cognome||'')[0]||'')) : '?'; }
 /* posizioni di gioco dopo il servizio: avanti B4 C3 P/O2, dietro P/O1 B6 C5 */
 function playZone(slot, front){ const r=SLOT_ROLE[slot]; if(front) return r==='B'?4:r==='C'?3:2; return r==='B'?6:r==='C'?5:1; }
 function courtSVG(f, k, mode, opt={}){
@@ -4446,7 +4456,7 @@ function formOptions(m, f, slot){
   const conv=convocati(m), pool=conv.length?conv:db.athletes.filter(a=>a.iscritto);
   const want=SLOT_ROLE[slot], used=new Set(Object.entries(f).filter(([k,v])=>k!==slot && v && SLOTS.concat([['L']]).some(([s])=>s===k)).map(([,v])=>v));
   const fit=pool.filter(a=>roleKey(a.ruolo)===want), fit2=pool.filter(a=>roleKey(a.ruolo)!==want && roleKey(a.ruolo2)===want), other=pool.filter(a=>!fit.includes(a) && !fit2.includes(a));
-  const o=a=>`<option value="${a.id}" ${f[slot]===a.id?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'})${used.has(a.id)?' – già in campo':''}</option>`;
+  const o=a=>`<option value="${a.id}" ${f[slot]===a.id?'selected':''}>${esc((numOf(a,m)?numOf(a,m)+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'})${used.has(a.id)?' – già in campo':''}</option>`;
   const extra=f[slot] && !pool.some(a=>a.id===f[slot]) && getAt(f[slot]) ? o(getAt(f[slot])) : '';
   return `<option value="">—</option>${extra}${fit.length?`<optgroup label="Ruolo principale">${fit.map(o).join('')}</optgroup>`:''}${fit2.length?`<optgroup label="Secondo ruolo">${fit2.map(o).join('')}</optgroup>`:''}${other.length?`<optgroup label="Altri">${other.map(o).join('')}</optgroup>`:''}`;
 }
@@ -4552,7 +4562,7 @@ function viewLiveLand(){
     ${formOk(f)?`<div class="ll-court">${courtSVG(f,L.k,'partenza',{who, serve:L.servo, click:true, sel:ui.livePick})}</div>`:`<div class="ll-last" style="white-space:normal">Formazione incompleta: la rotazione non viene seguita.</div>`}
   </div>
   <div>
-    <div class="ll-players">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
+    <div class="ll-players">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(numOf(a)||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
     <div class="ll-last">${e?`Ultima: <b>${e.a?esc(athShort(e.a)):'squadra'}</b> · ${esc(evLabel(e))} (${e.noi}-${e.loro})`:'Tocca un giocatore, poi l\'azione'}</div>
   </div>
   <div>
@@ -4584,7 +4594,7 @@ function viewLive(){
   <div class="sess-layout live-grid" style="margin-top:14px;grid-template-columns:minmax(0,1fr) 330px">
     <div>
       <div class="panel"><h2 style="margin-bottom:8px">1. Chi?</h2>
-        <div class="pchips">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
+        <div class="pchips">${roster.map(a=>`<button class="pchip ${court.has(a.id)?'court':''} ${ui.livePick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(numOf(a)||'–')}</span>${esc(athShort(a.id))}</button>`).join('')||'<span class="muted">Nessun convocato.</span>'}</div>
         <div class="muted" style="font-size:12px;margin-top:6px">In blu chi è in campo.</div></div>
       <div class="panel"><h2 style="margin-bottom:8px">2. Cosa?</h2>
         <div class="actgrid">${Object.entries(ACTS).map(([k,A])=>`<div class="actbox"><h4>${A.l}</h4><div class="row">${A.b.map(([v,l,c])=>`<button class="abtn ${c}" data-ev="${k}" data-v="${v}" title="${l}"><span class="asym">${ASYM(k,v,c)}</span><small class="acap">${l}</small></button>`).join('')}</div></div>`).join('')}</div>
@@ -4658,12 +4668,12 @@ function playedEditHTML(m){
   const S=getStats(m), L=S.live, MP=matchPlayed(m), src=playedSource(m), n=Math.min(MAX_SETS, Math.max(S.sets.length, refSets(m).length, ...Object.keys(MP).map(Number), ...S.ev.filter(isPlayEv).map(e=>e.s||0)));
   if(!n) return '';
   const P=MP, ids=[...new Set([...(m.convocati||[]), ...Object.values(P).flat()])].filter(id=>getAt(id));
-  const A=ids.map(getAt).sort((a,b)=>(+a.numeroMaglia||99)-(+b.numeroMaglia||99) || fullName(a).localeCompare(fullName(b),'it'));
+  const A=ids.map(getAt).sort((a,b)=>(+numOf(a,m)||99)-(+numOf(b,m)||99) || fullName(a).localeCompare(fullName(b),'it'));
   if(!A.length) return '';
   const on=(id,s)=>(P[s]||[]).includes(id);
   return `<div class="st-sec"><h3>Chi ha giocato ogni set</h3><p class="muted" style="margin:0 0 8px;font-size:13px">${src==='manuale'?'<b>Corretto a mano</b>: l\'app non lo ricalcola più da sola.':src==='referto'?'Calcolato dal <b>referto</b>: formazione di partenza di ogni set più chi entra con un cambio. Se correggi il referto, si aggiorna da solo.':'Calcolato dalle <b>azioni delle statistiche</b>. Se compili il referto, conta quello.'} Togli o metti la spunta per correggere a mano.</p>
     <div style="overflow-x:auto"><table class="ctable pl-ed"><thead><tr><th>Atleta</th>${Array.from({length:n},(_,i)=>`<th style="text-align:center">Set ${i+1}</th>`).join('')}<th style="text-align:center">Totale</th></tr></thead>
-    <tbody>${A.map(a=>`<tr><td><b>${esc(a.numeroMaglia?a.numeroMaglia+' · ':'')}${esc(fullName(a))}</b></td>${Array.from({length:n},(_,i)=>`<td style="text-align:center"><input type="checkbox" data-pl-set="${i+1}" data-pl-id="${a.id}" ${on(a.id,i+1)?'checked':''} aria-label="${esc(fullName(a))}, set ${i+1}"></td>`).join('')}<td style="text-align:center" class="pl-tot" data-id="${a.id}">${Array.from({length:n},(_,i)=>on(a.id,i+1)?1:0).reduce((x,y)=>x+y,0)}</td></tr>`).join('')}</tbody></table></div>
+    <tbody>${A.map(a=>`<tr><td><b>${esc(numOf(a,m)?numOf(a,m)+' · ':'')}${esc(fullName(a))}</b></td>${Array.from({length:n},(_,i)=>`<td style="text-align:center"><input type="checkbox" data-pl-set="${i+1}" data-pl-id="${a.id}" ${on(a.id,i+1)?'checked':''} aria-label="${esc(fullName(a))}, set ${i+1}"></td>`).join('')}<td style="text-align:center" class="pl-tot" data-id="${a.id}">${Array.from({length:n},(_,i)=>on(a.id,i+1)?1:0).reduce((x,y)=>x+y,0)}</td></tr>`).join('')}</tbody></table></div>
     ${src==='manuale'?`<div class="actions" style="margin-top:8px"><button class="btn sm" data-action="pl-auto">Torna al calcolo automatico (${refHas(m)?'dal referto':'dalle azioni'})</button></div>`:''}</div>`;
 }
 function playedToggle(t){
@@ -4701,7 +4711,7 @@ function liveSub(){
   const court=z.map(s=>({s, id:who(s)})), bench=convocati(m).filter(a=>!onCourt(m).includes(a.id));
   openModal(`<div class="modal-box" style="max-width:520px"><div class="modal-head"><div style="flex:1"><h2>${start?'Formazione del set '+L.set:'Cambio'}</h2>${start?`<div class="muted" style="font-size:13.5px;margin-top:4px">Il set non è ancora iniziato: chi metti in campo adesso è la formazione di partenza, non una sostituzione.</div>`:''}</div><button class="iconbtn" data-action="close-modal">✕</button></div>
     <div class="modal-body"><div class="grid g2"><label class="f">Esce<select id="sub-out">${court.map(c=>`<option value="${c.s}">${esc(athShort(c.id))} (${esc(SLOTS.find(x=>x[0]===c.s)[1])})</option>`).join('')}</select></label>
-    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div>
+    <label class="f">Entra<select id="sub-in">${bench.map(a=>`<option value="${a.id}">${esc((numOf(a)?numOf(a)+' · ':'')+fullName(a))} (${isF(a)?'D':isM(a)?'U':'?'}${roleText(a)?' · '+esc(roleText(a)):''})</option>`).join('')}</select></label></div>
     ${start?`<p class="muted" style="font-size:13px;margin:10px 0 0">In campo ora: ${court.map(c=>esc(athShort(c.id))).join(', ')}. Dopo ogni scelta la finestra resta aperta per il giocatore successivo; premi «Fatto» quando hai finito.</p>`:''}</div>
     <div class="modal-foot"><span style="flex:1"></span><button class="btn" data-action="close-modal">${start?'Fatto':'Annulla'}</button><button class="btn primary" id="sub-ok" ${bench.length?'':'disabled'}>${start?'Metti in campo':'Fai il cambio'}</button></div></div>`);
   $('#sub-ok').onclick=()=>{ const s=$('#sub-out').value, id=$('#sub-in').value; const outA=getAt(who(s)), inA=getAt(id);
@@ -4802,13 +4812,15 @@ function convTable(m){
   if(!db.athletes.length) return `<div class="empty">Nessun atleta in anagrafica: aggiungili nella sezione «Atleti».</div>`;
   const ids=new Set(m.convocati||[]);
   const list=[...db.athletes].sort((a,b)=>((b.iscritto?1:0)-(a.iscritto?1:0)) || byNumber(a,b));
-  const nums={}; list.filter(a=>ids.has(a.id)).forEach(a=>{ if(a.numeroMaglia) nums[a.numeroMaglia]=(nums[a.numeroMaglia]||0)+1; });
+  const nums={}; list.filter(a=>ids.has(a.id)).forEach(a=>{ if(numOf(a,m)) nums[numOf(a,m)]=(nums[numOf(a,m)]||0)+1; });
   const ref=m.data||'9999-12-31';
-  return `<table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Atleta</th><th>Ruolo</th><th style="text-align:right" title="Allenamenti con presenze segnate prima della partita">Assenze ultimi 5 all.</th></tr></thead><tbody>${list.map(a=>{ const on=ids.has(a.id), w=on?convWarn(a,m,nums):[];
+  const has2=list.some(a=>ids.has(a.id)&&a.magliaAllenamento), n2=list.filter(a=>ids.has(a.id)&&maglia2(a,m)).length;
+  const bar=has2?`<div class="mg-bar"><span>👕 Maglie: ${n2?`<b>${n2}</b> con la 2° maglia`:'tutti con la 1° maglia'} · tocca il numero per cambiarlo</span><span style="flex:1"></span><button class="btn sm" data-action="m-maglia-all" data-v="1">Tutti 1° maglia</button><button class="btn sm" data-action="m-maglia-all" data-v="2">Tutti 2° maglia</button></div>`:'';
+  return bar+`<table class="ctable"><thead><tr><th></th><th style="text-align:center">N°</th><th>Atleta</th><th>Ruolo</th><th style="text-align:right" title="Allenamenti con presenze segnate prima della partita">Assenze ultimi 5 all.</th></tr></thead><tbody>${list.map(a=>{ const on=ids.has(a.id), w=on?convWarn(a,m,nums):[];
     const ab=(m.assenti||[]).includes(a.id); if(ab && on) w.unshift('segnato assente per impegni personali');
     return `<tr class="${on?'sel':''} ${a.iscritto?'':'off'} ${ab?'abs':''}">
       <td style="width:30px"><input type="checkbox" id="cv-${a.id}" data-conv="${a.id}" ${on?'checked':''}></td>
-      <td class="num">${esc(a.numeroMaglia)||'–'}</td>
+      <td class="num">${on&&a.magliaAllenamento?`<button type="button" class="mg-sw ${maglia2(a,m)?'on':''}" data-action="m-maglia" data-id="${a.id}" title="Tocca per cambiare maglia (1° maglia n° ${esc(a.numeroMaglia||'–')} · 2° maglia n° ${esc(a.magliaAllenamento)})"><b>${esc(numOf(a,m)||'–')}</b><small>${maglia2(a,m)?'2°':'1°'}</small></button>`:(esc(numOf(a,m))||'–')}</td>
       <td><label for="cv-${a.id}">${avatarHTML(a,26)}<b>${esc(fullName(a))}</b>${(m.disponibili||[]).includes(a.id)?'<span class="disp-tag">sì</span>':''}${ab?'<span class="abs-tag">assente</span>':''}${(a.iscritto && !visitaOk(a,m))?`<span class="abs-tag" style="background:#8a1c2c">${a.scadenzaVisita?'visita scaduta':'senza visita'}</span>`:''}${a.iscritto?'':' <span class="muted" style="font-size:12.5px">(non iscritto)</span>'}</label>${w.length?`<div class="cwarn">⚠ ${w.join(' · ')}</div>`:''}</td>
       <td class="muted">${esc(roleText(a))}${a.sesso?' · '+(isF(a)?'D':'U'):''}</td><td style="text-align:right">${absBadge(absStats(a.id, ref))}</td></tr>`; }).join('')}</tbody></table>`;
 }
@@ -4892,7 +4904,7 @@ function printConv(m, arb){
   const ref=m.data||todayISO();
   const meta=[m.data?`<span><b>${esc(cap(fmtDate(m.data)))}</b></span>`:'', m.oraRitrovo?`<span>Ritrovo: <b>${esc(m.oraRitrovo)}</b></span>`:'', m.ora?`<span>Inizio gara: <b>${esc(m.ora)}</b></span>`:'', `<span>${m.inCasa?'In casa':'In trasferta'}</span>`, m.divisa?`<span>Divisa: <b>${esc(m.divisa)}</b></span>`:''].filter(Boolean).join('');
   const where=[m.palestra,m.indirizzo].filter(Boolean).join(', ');
-  const rows=c.map(a=>`<tr><td class="n" style="font-weight:800;font-size:11pt">${esc(a.numeroMaglia)}</td><td><b>${esc(a.cognome)}</b> ${esc(a.nome)}</td><td>${esc(a.ruolo)}</td>${arb?`<td>${shortDate(a.dataNascita)}</td><td>${esc(a.numeroDocumento)}</td><td>${shortDate(a.scadenzaDocumento)}${a.scadenzaDocumento&&a.scadenzaDocumento<ref?' <b style="color:#b3263a">SCADUTO</b>':''}</td>`:''}</tr>`).join('');
+  const rows=c.map(a=>`<tr><td class="n" style="font-weight:800;font-size:11pt">${esc(numOf(a,m))}</td><td><b>${esc(a.cognome)}</b> ${esc(a.nome)}</td><td>${esc(a.ruolo)}</td>${arb?`<td>${shortDate(a.dataNascita)}</td><td>${esc(a.numeroDocumento)}</td><td>${shortDate(a.scadenzaDocumento)}${a.scadenzaDocumento&&a.scadenzaDocumento<ref?' <b style="color:#b3263a">SCADUTO</b>':''}</td>`:''}</tr>`).join('');
   doPrint(`<div class="p-head">${headTeam()}<h1>${arb?'Elenco atleti per l\'arbitro':'Convocazione'}</h1>
       <div style="font-size:14pt;font-weight:700;margin-bottom:4pt">${esc(matchTitle(m))}</div>
       <div class="p-meta">${meta}</div>
@@ -5048,7 +5060,7 @@ function openAtProfile(id){
         ${tile('','🎂 Compleanno', a.dataNascita?shortDate(a.dataNascita).slice(0,5):'—', age===null?'':`${age} anni${nb?(nb.days===0?' · oggi!':' · tra '+nb.days+' gg'):''}`)}
         ${tile(doc[0],'🪪 Documento', esc(doc[1]), doc[2])}
         ${tile(tes[0],'🎫 Tessera PGS', esc(tes[1]), tes[2])}
-        ${tile('','👕 Taglia', esc(a.taglia||'—'), '')}
+        ${tile('','👕 Taglia', esc(a.taglia||'—'), a.magliaAllenamento?'2° maglia n° '+esc(a.magliaAllenamento):'')}
         ${tile('','📏 Fisico', esc(fis[0]||'—'), esc(fis[1]||(fis.length?'':'altezza e mano')))}
       </div>
       ${(a.cellulare||a.email)?`<div class="atp-contact">${a.cellulare?`<a class="btn" href="tel:${esc(a.cellulare.replace(/[^\d+]/g,''))}">📞 Chiama</a><a class="btn wa" href="https://wa.me/${waNumber(a.cellulare)}" target="_blank" rel="noopener">WhatsApp</a><span class="muted">${esc(a.cellulare)}</span>`:''}${a.email?`<a class="btn" href="mailto:${esc(a.email)}">✉️ Email</a><span class="muted">${esc(a.email)}</span>`:''}</div>`:''}
@@ -5455,7 +5467,7 @@ function refScores(m){ return refSets(m).map((s,i)=>{ const R=refReplay(s); retu
 function refWins(m){ const S=refScores(m); const w=S.filter(x=>x.noi>x.loro).length; return {noi:w, loro:S.length-w}; }
 function refMatchOver(m){ const w=refWins(m); return w.noi>=3||w.loro>=3; }
 function refRole(a){ const k=a&&roleKey(a.ruolo); return k?' ('+k+')':''; }
-function refName(id){ const a=getAt(id); if(!a) return '?'; return (a.numeroMaglia?a.numeroMaglia+' ':'')+athShort(id); }
+function refName(id){ const a=getAt(id); if(!a) return '?'; return (numOf(a)?numOf(a)+' ':'')+athShort(id); }
 function refPool(m){ const c=convocati(m); const ids=new Set(c.map(a=>a.id)); return [...c, ...db.athletes.filter(a=>a.iscritto && !ids.has(a.id)).sort((a,b)=>fullName(a).localeCompare(fullName(b)))]; }
 function refDefaultLineup(m, i){
   const S=refSets(m), prev=S[i-1]||S[S.length-1];
@@ -5481,7 +5493,7 @@ function viewReferto(){
 function refLineupHTML(m,i){
   if(!ui.refDraft || ui.refDraft.i!==i){ const s=refSets(m)[i]; ui.refDraft=Object.assign({i}, s?{our:[...s.our], pal:s.pal||'', opp:s.opp?[...s.opp]:null, firstServe:s.firstServe||'noi'}:refDefaultLineup(m,i)); if(!ui.refDraft.pal) ui.refDraft.pal=refAutoPal(ui.refDraft.our); }
   const d=ui.refDraft, pool=refPool(m), conv=new Set(convocati(m).map(a=>a.id)), R=['I','II','III','IV','V','VI'];
-  const opt=(sel)=>`<option value="">—</option>`+pool.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc((a.numeroMaglia?a.numeroMaglia+' ':'')+(refRole(a)?refRole(a).trim()+' ':'')+athShort(a.id))}${conv.has(a.id)?'':' (non conv.)'}</option>`).join('');
+  const opt=(sel)=>`<option value="">—</option>`+pool.map(a=>`<option value="${a.id}" ${a.id===sel?'selected':''}>${esc((numOf(a)?numOf(a)+' ':'')+(refRole(a)?refRole(a).trim()+' ':'')+athShort(a.id))}${conv.has(a.id)?'':' (non conv.)'}</option>`).join('');
   const has=refSets(m)[i] && (refSets(m)[i].ev||[]).length;
   return `<div class="panel"><h2 style="margin-bottom:4px">Formazione di partenza · set ${i+1}</h2>
     <p class="muted" style="margin:0 0 10px;font-size:13px">Ricopiala dal referto: la posizione I è chi batte per primo, poi II, III… nell'ordine di rotazione.${i===0&&formOk(getForm(m))?' Ho già messo quella preparata per la partita.':''}</p>
@@ -5532,7 +5544,7 @@ function openRefSub(who){
   let body;
   if(who==='N'){ const on=new Set(R.our); const pool=refPool(m).filter(a=>!on.has(a.id));
     body=`<label class="f">Esce<select id="rs-out">${R.our.map(id=>`<option value="${id}">${esc(refName(id)+refRole(getAt(id)))}</option>`).join('')}</select></label>
-      <label class="f" style="margin-top:8px">Entra<select id="rs-in">${pool.map(a=>`<option value="${a.id}">${esc((a.numeroMaglia?a.numeroMaglia+' · ':'')+fullName(a)+refRole(a))}</option>`).join('')}</select></label>`; }
+      <label class="f" style="margin-top:8px">Entra<select id="rs-in">${pool.map(a=>`<option value="${a.id}">${esc((numOf(a)?numOf(a)+' · ':'')+fullName(a)+refRole(a))}</option>`).join('')}</select></label>`; }
   else body=`<label class="f">Esce il n°<select id="rs-out">${R.opp.map(n=>`<option value="${esc(n)}">${esc(n||'?')}</option>`).join('')}</select></label>
       <label class="f" style="margin-top:8px">Entra il n°<input id="rs-in" type="text" inputmode="numeric"></label>`;
   openModal(`<div class="modal-box" style="max-width:420px"><div class="modal-head"><h2 style="flex:1">Cambio ${who==='N'?'nostro':'avversario'} · ${R.noi}–${R.loro}</h2><button class="iconbtn" data-action="close-modal" title="Chiudi">✕</button></div>
@@ -5977,7 +5989,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v76-2026-10-12';
+const APP_VERSION='v78-2026-10-15';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;
@@ -6823,7 +6835,7 @@ function viewLiveSimple(){
   const m=getMatch(ui.matchId); if(!m) return `<div class="empty">Partita non trovata.</div>`;
   const S=getStats(m), L=S.live, server=liveServer(m), tiles=simpleTiles(m), conv=convocati(m), court=new Set(onCourt(m));
   const pick=ui.livePick, e=S.ev[S.ev.length-1];
-  const chip=a=>`<button class="pchip ${court.has(a.id)?'court':''} ${pick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(athShort(a.id))}</button>`;
+  const chip=a=>`<button class="pchip ${court.has(a.id)?'court':''} ${pick===a.id?'on':''}" data-pick="${a.id}"><span class="nr">${esc(numOf(a)||'–')}</span>${esc(athShort(a.id))}</button>`;
   const tile=t=>{ const a=getAt(t.id); return `<button class="st-tile ${pick&&pick===t.id?'on':''} ${L.servo&&t.zone===1?'srv':''}" ${t.id?`data-pick="${t.id}"`:'disabled'}><span class="z">${t.zone}</span><b>${esc(a?athNum(t.id):'—')}</b><span class="nm">${esc(a?athShort(t.id):'')}</span></button>`; };
   const bench=conv.filter(a=>!court.has(a.id));
   const focus=L.servo?'bat':'ric';
@@ -6894,14 +6906,14 @@ async function scProbe(c){
 const scEncode=o=>'VSC1-'+btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 function scDecode(s){ const m=/VSC1-([A-Za-z0-9_-]+)/.exec(String(s||'')); if(!m) return null; try{ let b=m[1].replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='='; const o=JSON.parse(decodeURIComponent(escape(atob(b)))); return o && o.o && o.r && o.t ? {owner:o.o, repo:o.r, token:o.t, branch:o.b||'main', team:o.n||''} : null; }catch(e){ return null; } }
 /* --- pacchetto per lo scoutman: solo quello che gli serve --- */
-const SC_AT=['nome','cognome','numeroMaglia','ruolo','ruolo2','sesso'];
+const SC_AT=['nome','cognome','numeroMaglia','magliaAllenamento','ruolo','ruolo2','sesso'];
 function scoutPackage(){
   const from=licAddDays(todayISO(), -60);
   const ms=db.matches.filter(m=>m.data && m.data>=from).sort((a,b)=>((a.data||'')+(a.ora||'')).localeCompare((b.data||'')+(b.ora||'')));
   const ids=new Set(ms.flatMap(m=>m.convocati||[]));
   const athletes=db.athletes.filter(a=>ids.has(a.id)).map(a=>{ const o={id:a.id}; SC_AT.forEach(k=>o[k]=a[k]||''); return o; });
   const matches=ms.map(m=>({id:m.id, data:m.data, ora:m.ora||'', avversario:m.avversario||'', inCasa:!!m.inCasa, competizione:m.competizione||'', giornata:m.giornata||'',
-    convocati:(m.convocati||[]).filter(id=>ids.has(id)), formazione:m.formazione||null, stats:m.stats||null, risultato:m.risultato||''}));
+    convocati:(m.convocati||[]).filter(id=>ids.has(id)), maglia2:m.maglia2||[], formazione:m.formazione||null, stats:m.stats||null, risultato:m.risultato||''}));
   const o=opz();
   return {kind:'vs-scout-pack', v:1, at:Date.now(), team:{nome:db.settings.squadra||'', genere:teamGen(), noLibero:!!o.noLibero}, athletes, matches};
 }
@@ -6914,7 +6926,7 @@ async function scoutApplyPack(p){
   const keep=new Set();
   for(const pm of p.matches||[]){ keep.add(pm.id); const cur=db.matches.find(x=>x.id===pm.id);
     const r=cur?clone(cur):{id:pm.id, assenti:[], disponibili:[], note:'', risultato:''};
-    Object.assign(r, {data:pm.data, ora:pm.ora, avversario:pm.avversario, inCasa:pm.inCasa, competizione:pm.competizione, giornata:pm.giornata, convocati:pm.convocati||[]});
+    Object.assign(r, {data:pm.data, ora:pm.ora, avversario:pm.avversario, inCasa:pm.inCasa, competizione:pm.competizione, giornata:pm.giornata, convocati:pm.convocati||[], maglia2:pm.maglia2||[]});
     if(!cur || !edited[pm.id]) r.formazione=pm.formazione||null;
     if(!scHasEv(cur) && scHasEv(pm)){ r.stats=pm.stats; if(pm.risultato) r.risultato=pm.risultato; pushed[pm.id]=scSig(r); }
     if(!cur || JSON.stringify(cur)!==JSON.stringify(r)){ r.updatedAt=Date.now(); await persist.match(r); }
@@ -7033,7 +7045,7 @@ function viewScoutMatch(){
   <div class="page-head"><div><a href="#" data-nav="home" class="muted" style="font-size:13.5px;text-decoration:none">← Partite</a><h1 style="margin-top:4px">${esc(matchTitle(m))}</h1>
     <p class="muted">${esc(fmtDate(m.data))}${m.ora?' · ore '+esc(m.ora):''} · ${m.inCasa?'in casa':'in trasferta'}${m.risultato?' · risultato '+esc(m.risultato):''}</p></div></div>
   <div class="panel"><h2 style="margin:0 0 8px">Convocati (${conv.length})</h2>
-    <div class="sc-conv">${conv.map(a=>`<span class="pchip"><span class="nr">${esc(a.numeroMaglia||'–')}</span>${esc(fullName(a))}${roleText(a)?` <small class="muted" style="font-weight:600">${esc(roleText(a))}</small>`:''}</span>`).join('')||'<span class="muted">L\'allenatore non ha ancora scelto i convocati.</span>'}</div>
+    <div class="sc-conv">${conv.map(a=>`<span class="pchip"><span class="nr">${esc(numOf(a)||'–')}</span>${esc(fullName(a))}${roleText(a)?` <small class="muted" style="font-weight:600">${esc(roleText(a))}</small>`:''}</span>`).join('')||'<span class="muted">L\'allenatore non ha ancora scelto i convocati.</span>'}</div>
     <p class="muted" style="font-size:12.5px;margin:8px 0 0">I convocati li sceglie l'allenatore: se cambiano, arrivano con il prossimo aggiornamento.</p></div>
   <div class="panel" id="form-panel">${formPanelHTML(m)}</div></section>`;
 }
@@ -7672,6 +7684,8 @@ const actions={
   'conv-none': ()=>{ const m=getMatch(ui.matchId); m.convocati=[]; touchMatch(m); refreshMatch(m,'conv'); },
   'wa-copy': ()=>copyText($('#wa-text').value),
   'wa-open': ()=>{ window.open('https://wa.me/?text='+encodeURIComponent($('#wa-text').value), '_blank'); },
+  'm-maglia': b=>{ const m=getMatch(ui.matchId); if(!m) return; const id=b.dataset.id, S=new Set(m.maglia2||[]); S.has(id)?S.delete(id):S.add(id); m.maglia2=[...S]; touchMatch(m); if($('#m-title')) refreshMatch(m,'conv'); },
+  'm-maglia-all': b=>{ const m=getMatch(ui.matchId); if(!m) return; m.maglia2 = b.dataset.v==='2' ? convocati(m).filter(a=>a.magliaAllenamento).map(a=>a.id) : []; touchMatch(m); if($('#m-title')) refreshMatch(m,'conv'); toast(b.dataset.v==='2'?'Chi ha la 2° maglia la usa in questa partita':'Tutti con la 1° maglia'); },
   'print-conv': ()=>printConv(getMatch(ui.matchId), false),
   'print-arb': ()=>printConv(getMatch(ui.matchId), true),
   'print-cal': ()=>printCalendar(),

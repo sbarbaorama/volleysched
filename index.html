@@ -4905,6 +4905,8 @@ function printConv(m, arb){
   const ref=m.data||todayISO();
   const meta=[m.data?`<span><b>${esc(cap(fmtDate(m.data)))}</b></span>`:'', m.oraRitrovo?`<span>Ritrovo: <b>${esc(m.oraRitrovo)}</b></span>`:'', m.ora?`<span>Inizio gara: <b>${esc(m.ora)}</b></span>`:'', `<span>${m.inCasa?'In casa':'In trasferta'}</span>`, m.divisa?`<span>Divisa: <b>${esc(m.divisa)}</b></span>`:''].filter(Boolean).join('');
   const where=[m.palestra,m.indirizzo].filter(Boolean).join(', ');
+  const nn=a=>{ const v=parseInt(numOf(a,m),10); return isNaN(v)?9999:v; };
+  c.sort((x,y)=>nn(x)-nn(y) || fullName(x).localeCompare(fullName(y),'it'));
   const rows=c.map(a=>`<tr><td class="n" style="font-weight:800;font-size:11pt">${esc(numOf(a,m))}</td><td><b>${esc(a.cognome)}</b> ${esc(a.nome)}</td><td>${esc(a.ruolo)}</td>${arb?`<td>${shortDate(a.dataNascita)}</td><td>${esc(a.numeroDocumento)}</td><td>${shortDate(a.scadenzaDocumento)}${a.scadenzaDocumento&&a.scadenzaDocumento<ref?' <b style="color:#b3263a">SCADUTO</b>':''}</td>`:''}</tr>`).join('');
   doPrint(`<div class="p-head">${headTeam()}<h1>${arb?'Elenco atleti per l\'arbitro':'Convocazione'}</h1>
       <div style="font-size:14pt;font-weight:700;margin-bottom:4pt">${esc(matchTitle(m))}</div>
@@ -5990,7 +5992,7 @@ async function demoClear(){
 }
 
 /* ===== Versione dell'app ===== */
-const APP_VERSION='v80-2026-10-15';
+const APP_VERSION='v81-2026-10-17';
 function verLabel(v){ const m=String(v||'').match(/^v(\d+)-(\d{4})-(\d\d)-(\d\d)/); return m?`${m[1]} del ${+m[4]}/${+m[3]}/${m[2]}`:String(v||'?'); }
 const verNum=v=>{ const m=String(v||'').match(/^v(\d+)/); return m?+m[1]:0; };
 let swReg=null;

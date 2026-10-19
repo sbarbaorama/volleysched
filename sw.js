@@ -1,6 +1,6 @@
 /* Volleysched – funzionamento senza rete.
    Cambiare VERSION a ogni pubblicazione: l'app proporrà "Aggiorna". */
-const VERSION = 'v82-2026-10-19';
+const VERSION = 'v83-2026-10-19';
 const SHELL = ['./', 'index.html', 'store.js', 'sync.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open('shell-' + VERSION).then(c => c.addAll(SHELL)));
